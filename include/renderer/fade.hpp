@@ -37,4 +37,6 @@ private:
     SDL_Color m_col {0, 0, 0, 0};
 
     bool m_justFinishedOut = false;
+
+    static constexpr float s_minDuration = 0.1f;
 };

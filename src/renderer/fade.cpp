@@ -15,19 +15,19 @@ Fade::Fade(Renderer& renderer)
 
 void Fade::update()
 {
-    if (m_duration <= 0.0f)
+    if (m_state == FadeState::IDLE)
     {
-        m_duration = 0.5f;
+        return;
     }
+
+    m_duration = std::max(m_duration, s_minDuration);
 
     m_timer += Time::deltaTime();
     m_timer = std::min(m_timer, m_duration);
 
     switch (m_state)
     {
-        case FadeState::IDLE: return;
-
-        case FadeState::OUT: 
+        case FadeState::OUT:
             m_col.a = (Uint8)((m_timer / m_duration) * 255);
 
             if (m_timer >= m_duration)
