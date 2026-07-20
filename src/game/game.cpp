@@ -6,6 +6,7 @@
 #include "renderer/renderer.hpp"
 #include "renderer/sprite.hpp"
 #include "renderer/textureManager.hpp"
+#include "renderer/fade.hpp"
 
 #include "time/time.hpp"
 
@@ -53,7 +54,9 @@ bool Game::start()
 
     Time::init();
 
-    m_level = std::make_unique<Level>(*m_renderer, *m_textureMng, m_input);
+    m_fade = std::make_unique<Fade>(*m_renderer);
+
+    m_level = std::make_unique<Level>(*m_renderer, *m_textureMng, m_input, *m_fade);
     m_level->load();
 
     m_isRunning = true;
@@ -74,11 +77,13 @@ bool Game::update()
     Time::update();
 
     m_level->update();
+    m_fade->update();
 
     m_renderer->setClearColor({30, 15, 8, 255});
     m_renderer->clear();
 
     m_level->draw();
+    m_fade->draw();
 
     m_renderer->draw();
 

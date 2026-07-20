@@ -13,10 +13,14 @@
 #include <iostream>
 #include <algorithm>
 
-Level::Level(Renderer& renderer, TextureManager& textureMng, const Input& input) 
+Level::Level(Renderer& renderer,
+             TextureManager& textureMng,
+             const Input& input,
+             Fade& fade) 
     : m_renderer(renderer),
       m_textureMng(textureMng),
       m_input(input),
+      m_transition(*this, fade),
       m_grid(*this, GameConfig::gridWidth, GameConfig::gridHeight),
       m_ruleParser(*this)
 {
@@ -348,15 +352,25 @@ void Level::checkReload()
 {
     m_reloadTimer += Time::deltaTime();
 
-    if (m_reloadTimer < 1.0f ||
-        !m_input.isKeyDown(SDL_SCANCODE_R))
+    if (m_reloadTimer >= 1.0f &&
+        m_input.isKeyDown(SDL_SCANCODE_R))
+    {
+        m_reloadRequested = true;
+    }
+
+    if (!reloadRequested())
     {
         return;
     }
 
-    m_reloadTimer = 0.0f;
+    if (m_canReload)
+    {
+        m_reloadRequested = false;
+        m_canReload = false;
+        m_reloadTimer = 0.0f;
 
-    reload();
+        reload();
+    }
 }
 
 void Level::reload()
@@ -427,6 +441,8 @@ void Level::update()
         case LevelState::WIN:     updateStateWin();     break;
         case LevelState::DEFEAT:  updateStateDefeat();  break;
     }
+
+    m_transition.update();
 }
 
 void Level::draw()

@@ -4,6 +4,7 @@
 #include "game/object.hpp"
 #include "game/rule.hpp"
 #include "game/ruleParser.hpp"
+#include "game/levelTransition.hpp"
 
 // std
 #include <vector>
@@ -15,6 +16,7 @@
 class Renderer;
 class TextureManager;
 class Input;
+class Fade;
 
 enum class LevelState
 {
@@ -27,7 +29,7 @@ enum class LevelState
 class Level
 {
 public:
-    Level(Renderer& renderer, TextureManager& textureMng, const Input& input);
+    Level(Renderer& renderer, TextureManager& textureMng, const Input& input, Fade& fade);
     ~Level() noexcept;
 
     void load();
@@ -40,6 +42,9 @@ public:
     Object* findObjectFromUID(std::size_t objectUID);
 
     const std::vector<std::unique_ptr<Object>>& getObjects() const { return m_objects; }
+
+    bool reloadRequested() const { return m_reloadRequested; }
+    void allowReload() { m_canReload = true; }
 
 private:
     bool updateMoveTimer();
@@ -73,6 +78,7 @@ private:
     Renderer& m_renderer;
     TextureManager& m_textureMng;
     const Input& m_input;
+    LevelTransition m_transition;
     std::vector<std::unique_ptr<Object>> m_objects;
     std::unordered_map<std::size_t, Object*> m_objectsByUID;
     Grid m_grid;
@@ -86,4 +92,6 @@ private:
     std::unordered_map<Object*, ObjectId> m_objectsWithTransformation;
     bool m_movedLastFrame = false;
     float m_reloadTimer = 0.0f;
+    bool m_reloadRequested = false;
+    bool m_canReload = false;
 };

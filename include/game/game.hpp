@@ -10,6 +10,7 @@ class Window;
 class Renderer;
 class TextureManager;
 class Level;
+class Fade;
 
 class Game
 {
@@ -25,6 +26,7 @@ private:
     std::unique_ptr<Renderer> m_renderer;
     std::unique_ptr<TextureManager> m_textureMng;
     Input m_input;
+    std::unique_ptr<Fade> m_fade;
 
     std::unique_ptr<Level> m_level;
 
