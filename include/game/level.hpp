@@ -49,6 +49,10 @@ public:
 private:
     bool updateMoveTimer();
     bool tryMoveYou(Object& object);
+
+    bool handleSinkInteraction(Object& object, Object& other);
+    bool handlePushInteraction(Object& object, Direction dir);
+    bool handleObjectInteractionsAt(Object& object, Cell cell, Direction dir);
     bool tryMove(Object& object, Direction dir);
 
     void addBehavior(ObjectId id, BehaviorType behavior);

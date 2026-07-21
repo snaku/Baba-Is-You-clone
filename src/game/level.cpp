@@ -172,6 +172,71 @@ bool Level::tryMoveYou(Object& object)
     return tryMove(object, dir);
 }
 
+bool Level::handleSinkInteraction(Object& object, Object& other)
+{
+    if (!hasBehavior(object.getId(), BehaviorType::SINK) &&
+        !hasBehavior(other.getId(), BehaviorType::SINK))
+    {
+        return false;
+    }
+
+    object.requestKill();
+    other.requestKill();
+
+    return true;
+}
+
+bool Level::handlePushInteraction(Object& object, Direction dir)
+{
+    if (!hasBehavior(object.getId(), BehaviorType::PUSH) &&
+        !object.isText())
+    {
+        return true; // objects without PUSH behavior can be passed through
+    }
+
+    Cell nextCell = GameUtils::getNextCellFromDir(object.getCell(), dir);
+    if (!nextCell.isValidPos() ||
+        nextCell == object.getCell())
+    {
+        return false;
+    }
+
+    if (!tryMove(object, dir))
+    {
+        return false;
+    }
+
+    if (object.isText())
+    {
+        m_rulesDirty = true;
+    }
+
+    return true;
+}
+
+bool Level::handleObjectInteractionsAt(Object& object, Cell cell, Direction dir)
+{
+    std::vector<Object*> others;
+    getObjectsAt(cell, others);
+
+    for (auto& other : others)
+    {
+        if (other == nullptr)
+        {
+            continue;
+        }
+
+        if (handleSinkInteraction(object, *other) ||
+            hasBehavior(other->getId(), BehaviorType::STOP) ||
+            !handlePushInteraction(*other, dir))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool Level::tryMove(Object& object, Direction dir)
 {
     Cell next = GameUtils::getNextCellFromDir(object.getCell(), dir);
@@ -181,48 +246,9 @@ bool Level::tryMove(Object& object, Direction dir)
         return false;
     }
 
-    std::vector<Object*> others;
-    getObjectsAt(next, others);
-    for (auto& other : others)
+    if (!handleObjectInteractionsAt(object, next, dir))
     {
-        if (other == nullptr)
-        {
-            continue;
-        }
-
-        if (hasBehavior(object.getId(), BehaviorType::SINK) ||
-            hasBehavior(other->getId(), BehaviorType::SINK))
-        {
-            object.requestKill();
-            other->requestKill();
-            return true;
-        }
-
-        if (hasBehavior(other->getId(), BehaviorType::STOP))
-        {
-            return false;
-        }
-
-        if (hasBehavior(other->getId(), BehaviorType::PUSH) ||
-            other->isText())
-        {
-            Cell otherNext = GameUtils::getNextCellFromDir(other->getCell(), dir);
-            if (!otherNext.isValidPos() ||
-                otherNext == other->getCell())
-            {
-                return false;
-            }
-
-            if (!tryMove(*other, dir))
-            {
-                return false;
-            }
-
-            if (other->isText())
-            {
-                m_rulesDirty = true;
-            }
-        }
+        return false;
     }
 
     if (object.shouldGetKilled())
