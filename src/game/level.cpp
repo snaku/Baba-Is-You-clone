@@ -331,6 +331,21 @@ void Level::revertObjectsTransformation()
     m_objectsWithTransformation.clear();
 }
 
+void Level::buildYouObjects()
+{
+    m_youObjectsUID.clear();
+
+    for (const auto& object : m_objects)
+    {
+        if (!hasBehavior(object->getId(), BehaviorType::YOU))
+        {
+            continue;
+        }
+
+        m_youObjectsUID.push_back(object->getUID());
+    }
+}
+
 void Level::applyRules()
 {
     m_behaviors.clear();
@@ -369,6 +384,9 @@ bool Level::updateRules()
 
     m_rules = m_ruleParser.parse();
     applyRules();
+
+    buildYouObjects();
+
     m_rulesDirty = false;
 
     return true;
@@ -501,9 +519,11 @@ void Level::addToDestroyQueue(Object& object)
 
 void Level::checkWin()
 {
-    for (const auto& object : m_objects)
+    for (auto uid : m_youObjectsUID)
     {
-        if (!hasBehavior(object->getId(), BehaviorType::YOU))
+        Object* object = findObjectFromUID(uid);
+
+        if (object == nullptr)
         {
             continue;
         }
@@ -551,6 +571,9 @@ void Level::removeObject(std::size_t uid)
     m_grid.removeObjectAt(uid, object->getCell());
     m_objectsWithTransformation.erase(object);
     m_objectsByUID.erase(uid);
+    m_youObjectsUID.erase(std::remove(m_youObjectsUID.begin(),
+                                      m_youObjectsUID.end(),
+                                      uid));
 
     auto it = std::find_if(m_objects.begin(), m_objects.end(), 
     [object](const std::unique_ptr<Object>& ptr)

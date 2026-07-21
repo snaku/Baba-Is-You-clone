@@ -63,6 +63,8 @@ private:
     void applyObjectsTransformation();
     void revertObjectsTransformation();
 
+    void buildYouObjects();
+
     void applyRules();
     bool updateRules();
 
@@ -85,6 +87,7 @@ private:
     LevelTransition m_transition;
     std::vector<std::unique_ptr<Object>> m_objects;
     std::unordered_map<std::size_t, Object*> m_objectsByUID;
+    std::vector<std::size_t> m_youObjectsUID;
     Grid m_grid;
     RuleParser m_ruleParser;
     float m_moveTimer = 0.0f;
