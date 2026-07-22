@@ -45,13 +45,5 @@ void Texture::drawAt(const SDL_FPoint& pos,
         (float)m_height
     };
 
-    SDL_SetTextureColorMod(m_texture, col.r, col.g, col.b);
-
-    SDL_RenderCopyExF(m_renderer.getSDLRenderer(),
-                      m_texture,
-                      nullptr,
-                      &rect,
-                      angle,
-                      nullptr,
-                      flip);
+    m_renderer.drawTexture(*m_texture, rect, flip, angle, col);
 }

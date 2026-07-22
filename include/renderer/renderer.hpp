@@ -1,5 +1,6 @@
 #pragma once
 
+// SDL2
 #include <SDL2/SDL.h>
 
 class Window;
@@ -13,6 +14,9 @@ public:
     bool init();
 
     void draw();
+
+    void drawRect(const SDL_Rect& rect, SDL_Color col);
+    void drawTexture(SDL_Texture& texture, const SDL_FRect& rect, SDL_RendererFlip flip, float angle, SDL_Color col);
 
     void clear();
     void setClearColor(SDL_Color col) { m_clearCol = col; };
