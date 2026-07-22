@@ -1,4 +1,5 @@
 #include "game/level.hpp"
+#include "game/levelLoader.hpp"
 #include "game/config.hpp"
 #include "game/utils.hpp"
 
@@ -27,91 +28,21 @@ Level::Level(Renderer& renderer,
 }
 Level::~Level() noexcept = default;
 
-
 void Level::load()
 {
-    // OBJECT BABA + BABA IS YOU RULE
-    addObject(ObjectId::BABA, Cell{0, 0});
+    LevelDefinition def = LevelLoader::read("level_1.txt");
+    if (!def.isValid)
+    {
+        m_state = LevelState::IDLE;
+        return;
+    }
 
-    Object& textBaba = addObject(ObjectId::TEXT_BABA, Cell{8, 5});
-    textBaba.setColor(217, 57, 106);
-
-    addObject(ObjectId::TEXT_IS, Cell{9, 5});
-
-    Object& textYou = addObject(ObjectId::TEXT_YOU, Cell{10, 5});
-    textYou.setColor(217, 57, 106);
-
-    // OBJECT WATER + WATER IS SINK AND NOT YOU RULE
-    addObject(ObjectId::WATER, Cell{23, 5});
-
-    Object& textWater = addObject(ObjectId::TEXT_WATER, Cell{14, 5});
-    textWater.setColor(95, 157, 209);
-
-    addObject(ObjectId::TEXT_IS, Cell{15, 5});
-
-    Object& textSink = addObject(ObjectId::TEXT_SINK, Cell{16, 5});
-    textSink.setColor(95, 157, 209);
-
-    addObject(ObjectId::TEXT_AND, Cell{17, 5});
-
-    Object& textNot = addObject(ObjectId::TEXT_NOT, Cell{18, 5});
-    textNot.setColor(229, 83, 59);
-
-    Object& textNot2 = addObject(ObjectId::TEXT_NOT, Cell{19, 5});
-    textNot2.setColor(229, 83, 59);
-
-    Object& textYou2 = addObject(ObjectId::TEXT_YOU, Cell{20, 5});
-    textYou2.setColor(217, 57, 106);
-
-    // OBJECT ROCK + ROCK IS PUSH RULE
-    Object& rock = addObject(ObjectId::ROCK, Cell{15, 15});
-    rock.setColor(194, 158, 70);
-
-    Object& textRock = addObject(ObjectId::TEXT_ROCK, Cell{10, 8});
-    textRock.setColor(144, 103, 62);
-
-    addObject(ObjectId::TEXT_IS, Cell{10, 9});
-
-    Object& textFlag2 = addObject(ObjectId::TEXT_FLAG, Cell{11, 10});
-    textFlag2.setColor(237, 226, 133);
-
-    addObject(ObjectId::TEXT_AND, Cell{10, 11});
-
-    Object& textPush = addObject(ObjectId::TEXT_PUSH, Cell{10, 12});
-    textPush.setColor(144, 103, 62);
-
-    // OBJECT WALL + WALL IS STOP RULE
-    Object& wall = addObject(ObjectId::WALL, Cell{15, 16});
-    wall.setColor(41, 49, 65);
-
-    Object& wall2 = addObject(ObjectId::WALL, Cell{16, 16});
-    wall2.setColor(41, 49, 65);
-
-    Object& wall3 = addObject(ObjectId::WALL, Cell{17, 16});
-    wall3.setColor(41, 49, 65);
-
-    Object& textWall = addObject(ObjectId::TEXT_WALL, Cell{13, 8});
-    textWall.setColor(115, 115, 115);
-
-    addObject(ObjectId::TEXT_IS, Cell{13, 9});
-
-    Object& textStop = addObject(ObjectId::TEXT_STOP, Cell{13, 10});
-    textStop.setColor(27, 92, 28);
-
-    // OBJECT FLAG + FLAG IS WIN RULE
-    Object& flag = addObject(ObjectId::FLAG, Cell{1, 0});
-    flag.setColor(237, 226, 133);
-
-    Object& textFlag = addObject(ObjectId::TEXT_FLAG, Cell{13, 1});
-    textFlag.setColor(237, 226, 133);
-
-    addObject(ObjectId::TEXT_IS, Cell{13, 2});
-
-    Object& textWin = addObject(ObjectId::TEXT_WIN, Cell{13, 3});
-    textWin.setColor(237, 226, 133);
+    for (const auto& data : def.objects)
+    {
+        addObject(data.id, data.cell);
+    }
 
     m_rulesDirty = true;
-
     m_state = LevelState::PLAYING;
 }
 
