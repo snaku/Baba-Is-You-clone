@@ -502,9 +502,8 @@ void Level::removeObject(std::size_t uid)
     m_grid.removeObjectAt(uid, object->getCell());
     m_objectsWithTransformation.erase(object);
     m_objectsByUID.erase(uid);
-    m_youObjectsUID.erase(std::remove(m_youObjectsUID.begin(),
-                                      m_youObjectsUID.end(),
-                                      uid));
+    m_youObjectsUID.erase(std::remove(m_youObjectsUID.begin(), m_youObjectsUID.end(), uid),
+                          m_youObjectsUID.end());
 
     auto it = std::find_if(m_objects.begin(), m_objects.end(), 
     [object](const std::unique_ptr<Object>& ptr)
