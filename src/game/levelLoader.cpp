@@ -9,7 +9,8 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
 {
     LevelDefinition def;
 
-    if (path.extension() != ".txt")
+    if (!std::filesystem::exists(path) ||
+        path.extension() != ".txt")
     {
         return def;
     }

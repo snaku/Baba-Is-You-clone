@@ -13,6 +13,7 @@
 // std
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 
 Level::Level(Renderer& renderer,
              TextureManager& textureMng,
@@ -30,7 +31,15 @@ Level::~Level() noexcept = default;
 
 void Level::load()
 {
-    LevelDefinition def = LevelLoader::read("level_1.txt");
+    if (m_state == LevelState::WIN)
+    {
+        m_id++;
+    }
+
+    std::ostringstream ostream;
+    ostream << "level_" << m_id << ".txt";
+
+    LevelDefinition def = LevelLoader::read(ostream.str());
     if (!def.isValid)
     {
         m_state = LevelState::IDLE;
@@ -473,6 +482,8 @@ void Level::checkWin()
         {
             std::cout << "WIN !" << std::endl;
             m_state = LevelState::WIN;
+            m_reloadRequested = true;
+
             return;
         }
     }

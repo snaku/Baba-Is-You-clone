@@ -101,4 +101,5 @@ private:
     float m_reloadTimer = 0.0f;
     bool m_reloadRequested = false;
     bool m_canReload = false;
+    int m_id = 0;
 };
