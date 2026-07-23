@@ -24,7 +24,7 @@ Level::Level(Renderer& renderer,
       m_input(input),
       m_transition(*this, fade),
       m_grid(*this, GameConfig::gridWidth, GameConfig::gridHeight),
-      m_ruleParser(*this)
+      m_ruleSystem(*this)
 {
 }
 Level::~Level() noexcept = default;
@@ -51,7 +51,7 @@ void Level::load()
         addObject(data.id, data.cell);
     }
 
-    m_rulesDirty = true;
+    m_ruleSystem.requestDirty();
     m_state = LevelState::PLAYING;
 }
 
@@ -75,7 +75,7 @@ bool Level::updateMoveTimer()
 
 bool Level::tryMoveYou(Object& object)
 {
-    if (!hasBehavior(object.getId(), BehaviorType::YOU))
+    if (!m_ruleSystem.hasBehavior(object.getId(), BehaviorType::YOU))
     {
         return false;
     }
@@ -114,8 +114,8 @@ bool Level::tryMoveYou(Object& object)
 
 bool Level::handleSinkInteraction(Object& object, Object& other)
 {
-    if (!hasBehavior(object.getId(), BehaviorType::SINK) &&
-        !hasBehavior(other.getId(), BehaviorType::SINK))
+    if (!m_ruleSystem.hasBehavior(object.getId(), BehaviorType::SINK) &&
+        !m_ruleSystem.hasBehavior(other.getId(), BehaviorType::SINK))
     {
         return false;
     }
@@ -128,7 +128,7 @@ bool Level::handleSinkInteraction(Object& object, Object& other)
 
 bool Level::handlePushInteraction(Object& object, Direction dir)
 {
-    if (!hasBehavior(object.getId(), BehaviorType::PUSH) &&
+    if (!m_ruleSystem.hasBehavior(object.getId(), BehaviorType::PUSH) &&
         !object.isText())
     {
         return true; // objects without PUSH behavior can be passed through
@@ -148,7 +148,7 @@ bool Level::handlePushInteraction(Object& object, Direction dir)
 
     if (object.isText())
     {
-        m_rulesDirty = true;
+        m_ruleSystem.requestDirty();
     }
 
     return true;
@@ -167,7 +167,7 @@ bool Level::handleObjectInteractionsAt(Object& object, Cell cell, Direction dir)
         }
 
         if (handleSinkInteraction(object, *other) ||
-            hasBehavior(other->getId(), BehaviorType::STOP) ||
+            m_ruleSystem.hasBehavior(other->getId(), BehaviorType::STOP) ||
             !handlePushInteraction(*other, dir))
         {
             return false;
@@ -203,133 +203,19 @@ bool Level::tryMove(Object& object, Direction dir)
     return true;
 }
 
-void Level::addBehavior(ObjectId id, BehaviorType behavior)
-{
-    m_behaviors[id].set((std::size_t)behavior);
-}
-
-void Level::clearBehaviors(ObjectId id)
-{
-    m_behaviors[id].reset();
-}
-
-bool Level::hasBehavior(ObjectId id, BehaviorType behavior)
-{
-    auto it = m_behaviors.find(id);
-
-    if (it == m_behaviors.end())
-    {
-        return false;
-    }
-
-    return it->second.test((std::size_t)behavior);
-}
-
-void Level::addToTransformationQueue(ObjectId id, ObjectId newId)
-{
-    if (newId == ObjectId::NONE)
-    {
-        return;
-    }
-
-    for (auto& object : m_objects)
-    {
-        if (object->getId() != id)
-        {
-            continue;
-        }
-
-        m_objectsWithTransformation.insert({object.get(), newId});
-    }
-}
-
-void Level::applyObjectsTransformation()
-{
-    for (auto& [object, newId] : m_objectsWithTransformation)
-    {
-        if (object == nullptr)
-        {
-            continue;
-        }
-
-        object->changeTo(newId);
-    }
-}
-
-void Level::revertObjectsTransformation()
-{
-    for (auto& [object, _] : m_objectsWithTransformation)
-    {
-        if (object == nullptr)
-        {
-            continue;
-        }
-
-        object->changeBack();
-    }
-
-    m_objectsWithTransformation.clear();
-}
-
 void Level::buildYouObjects()
 {
     m_youObjectsUID.clear();
 
     for (const auto& object : m_objects)
     {
-        if (!hasBehavior(object->getId(), BehaviorType::YOU))
+        if (!m_ruleSystem.hasBehavior(object->getId(), BehaviorType::YOU))
         {
             continue;
         }
 
         m_youObjectsUID.push_back(object->getUID());
     }
-}
-
-void Level::applyRules()
-{
-    m_behaviors.clear();
-    revertObjectsTransformation();
-
-    for (const auto& rule : m_rules)
-    {
-        if (!rule.negate)
-        {
-            if (std::holds_alternative<BehaviorType>(rule.predicate))
-            {
-                addBehavior(rule.subject, std::get<BehaviorType>(rule.predicate));
-            }
-            else
-            {
-                addToTransformationQueue(rule.subject, std::get<ObjectId>(rule.predicate));
-            }
-        }
-        else
-        {
-            std::cout << "Negated !" << std::endl;
-        }
-    }
-
-    applyObjectsTransformation();
-}
-
-bool Level::updateRules()
-{
-    if (!m_rulesDirty)
-    {
-        return false;
-    }
-
-    std::cout << "Updating rules..." << std::endl;
-
-    m_rules = m_ruleParser.parse();
-    applyRules();
-
-    buildYouObjects();
-
-    m_rulesDirty = false;
-
-    return true;
 }
 
 void Level::checkReload()
@@ -362,11 +248,9 @@ void Level::reload()
     std::cout << "Reloading level" << std::endl;
 
     m_moveTimer = 0.0f;
-    m_rules.clear();
-    m_behaviors.clear();
+    m_ruleSystem.clear();
     m_destroyQueue.clear();
     m_grid.clearObjects();
-    m_objectsWithTransformation.clear();
     m_objectsByUID.clear();
     m_objects.clear();
 
@@ -401,7 +285,13 @@ void Level::updateStatePlaying()
 
     updateDestroyQueue();
 
-    if (updateRules() || moved)
+    bool rulesChanged = m_ruleSystem.update();
+    if (rulesChanged)
+    {
+        buildYouObjects();
+    }
+
+    if (rulesChanged || moved)
     {
         checkWin();
     }
@@ -475,7 +365,7 @@ void Level::checkWin()
         [this](const Object* other)
         {
             return other != nullptr &&
-                   hasBehavior(other->getId(), BehaviorType::WIN);
+                   m_ruleSystem.hasBehavior(other->getId(), BehaviorType::WIN);
         });
         
         if (it != others.end())
@@ -511,7 +401,7 @@ void Level::removeObject(std::size_t uid)
     }
 
     m_grid.removeObjectAt(uid, object->getCell());
-    m_objectsWithTransformation.erase(object);
+    m_ruleSystem.eraseObjectWithTransformation(uid);
     m_objectsByUID.erase(uid);
     m_youObjectsUID.erase(std::remove(m_youObjectsUID.begin(), m_youObjectsUID.end(), uid),
                           m_youObjectsUID.end());
