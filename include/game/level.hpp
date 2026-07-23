@@ -48,9 +48,6 @@ private:
     void updateStateWin();
     void updateStateDefeat();
 
-    void updateDestroyQueue();
-    void addToDestroyQueue(Object& object);
-
     void checkWin();
 
     Renderer& m_renderer;
@@ -64,7 +61,6 @@ private:
     LevelState m_state = LevelState::IDLE;
     uint32_t m_id = 0;
     std::vector<std::size_t> m_youObjectsUID;
-    std::vector<std::size_t> m_destroyQueue;
     float m_reloadTimer = 0.0f;
     bool m_reloadRequested = false;
     bool m_canReload = false;

@@ -1,5 +1,4 @@
 #include "game/ruleParser.hpp"
-#include "game/level.hpp"
 #include "game/objectManager.hpp"
 #include "game/utils.hpp"
 

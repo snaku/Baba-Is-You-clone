@@ -26,8 +26,11 @@ public:
     }
 
     Object& addObject(ObjectId id, Cell cell);
-    void removeObject(std::size_t uid);
+    void removeObject(Object& object);
     Object* findObjectFromUID(std::size_t objectUID);
+
+    void addToDestroyQueue(Object& object);
+    void updateDestroyQueue();
 
     void clear();
 
@@ -44,6 +47,7 @@ private:
 
     std::vector<std::unique_ptr<Object>> m_objects;
     std::unordered_map<std::size_t, Object*> m_objectsByUID;
+    std::vector<std::size_t> m_destroyQueue;
 
     Callback m_addCallback = nullptr;
     Callback m_removeCallback = nullptr;

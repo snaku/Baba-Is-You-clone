@@ -24,26 +24,19 @@ Object& ObjectManager::addObject(ObjectId id, Cell cell)
     return *m_objects.back();
 }
 
-void ObjectManager::removeObject(std::size_t uid)
+void ObjectManager::removeObject(Object& object)
 {
-    Object* object = findObjectFromUID(uid);
-
-    if (object == nullptr)
-    {
-        return;
-    }
-
     if (m_removeCallback != nullptr)
     {
-        m_removeCallback(*object);
+        m_removeCallback(object);
     }
 
-    m_objectsByUID.erase(uid);
+    m_objectsByUID.erase(object.getUID());
 
     auto it = std::find_if(m_objects.begin(), m_objects.end(), 
-    [object](const std::unique_ptr<Object>& ptr)
+    [&object](const std::unique_ptr<Object>& ptr)
     {
-        return ptr.get() == object;
+        return ptr.get() == &object;
     });
 
     if (it == m_objects.end())
@@ -67,8 +60,35 @@ Object* ObjectManager::findObjectFromUID(std::size_t objectUID)
     return it->second;
 }
 
+void ObjectManager::updateDestroyQueue()
+{
+    if (m_destroyQueue.empty())
+    {
+        return;
+    }
+
+    for (auto uid : m_destroyQueue)
+    {
+        Object* object = findObjectFromUID(uid);
+        if (object == nullptr)
+        {
+            continue;
+        }
+
+        removeObject(*object);
+    }
+
+    m_destroyQueue.clear();
+}
+
+void ObjectManager::addToDestroyQueue(Object& object)
+{
+    m_destroyQueue.push_back(object.getUID());
+}
+
 void ObjectManager::clear()
 {
+    m_destroyQueue.clear();
     m_objectsByUID.clear();
     m_objects.clear();
 }
