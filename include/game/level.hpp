@@ -4,6 +4,7 @@
 #include "game/object.hpp"
 #include "game/levelTransition.hpp"
 #include "game/ruleSystem.hpp"
+#include "game/movementSystem.hpp"
 
 // std
 #include <vector>
@@ -45,14 +46,6 @@ public:
     void allowReload() { m_canReload = true; }
 
 private:
-    bool updateMoveTimer();
-    bool tryMoveYou(Object& object);
-
-    bool handleSinkInteraction(Object& object, Object& other);
-    bool handlePushInteraction(Object& object, Direction dir);
-    bool handleObjectInteractionsAt(Object& object, Cell cell, Direction dir);
-    bool tryMove(Object& object, Direction dir);
-
     void buildYouObjects();
 
     void checkReload();
@@ -70,20 +63,18 @@ private:
 
     Renderer& m_renderer;
     TextureManager& m_textureMng;
+    Grid m_grid;
     const Input& m_input;
     LevelTransition m_transition;
-
+    MovementSystem m_movementSystem;
     RuleSystem m_ruleSystem;
+    LevelState m_state = LevelState::IDLE;
+    uint32_t m_id = 0;
     std::vector<std::unique_ptr<Object>> m_objects;
     std::unordered_map<std::size_t, Object*> m_objectsByUID;
     std::vector<std::size_t> m_youObjectsUID;
-    Grid m_grid;
-    float m_moveTimer = 0.0f;
     std::vector<std::size_t> m_destroyQueue;
-    LevelState m_state = LevelState::IDLE;
-    bool m_movedLastFrame = false;
     float m_reloadTimer = 0.0f;
     bool m_reloadRequested = false;
     bool m_canReload = false;
-    uint32_t m_id = 0;
 };
