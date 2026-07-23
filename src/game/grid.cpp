@@ -5,9 +5,8 @@
 #include <iostream>
 #include <algorithm>
 
-Grid::Grid(Level& level, int width, int height) 
-    : m_level(level),
-      m_objectsUID(height, std::vector<std::vector<std::size_t>>(width)),
+Grid::Grid(uint32_t width, uint32_t height) 
+    : m_objectsUID(height, std::vector<std::vector<std::size_t>>(width)),
       m_width(width),
       m_height(height)
 {

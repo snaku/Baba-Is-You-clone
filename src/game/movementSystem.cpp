@@ -1,5 +1,4 @@
 #include "game/movementSystem.hpp"
-#include "game/level.hpp"
 #include "game/grid.hpp"
 #include "game/ruleSystem.hpp"
 #include "game/utils.hpp"

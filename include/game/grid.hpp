@@ -10,7 +10,7 @@ class Level;
 class Grid
 {
 public:
-    Grid(Level& level, int width, int height);
+    Grid(uint32_t width, uint32_t height);
 
     void addObjectAt(std::size_t uid, Cell cell);
     void removeObjectAt(std::size_t uid, Cell cell);
@@ -18,8 +18,7 @@ public:
     const std::vector<std::size_t>& getObjectsAt(Cell cell) const;
 
 private:
-    Level& m_level;
     std::vector<std::vector<std::vector<std::size_t>>> m_objectsUID;
-    int m_width;
-    int m_height;
+    uint32_t m_width;
+    uint32_t m_height;
 };

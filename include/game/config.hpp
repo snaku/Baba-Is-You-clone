@@ -5,11 +5,11 @@
 namespace GameConfig
 {
     constexpr std::string_view name = "Baba Is You";
-    constexpr int windowWidth = 1280;
-    constexpr int windowHeight = 720;
+    constexpr uint32_t windowWidth = 1280;
+    constexpr uint32_t windowHeight = 720;
 
-    constexpr int cellSize = 24;
+    constexpr uint32_t cellSize = 24;
 
-    constexpr int gridWidth = windowWidth / cellSize;
-    constexpr int gridHeight = windowHeight / cellSize;
+    constexpr uint32_t gridWidth = windowWidth / cellSize;
+    constexpr uint32_t gridHeight = windowHeight / cellSize;
 }

@@ -1,7 +1,9 @@
 #include "window/window.hpp"
 
-Window::Window(const std::string& name, int width, int height)
-    : m_name(name), m_width(width), m_height(height)
+Window::Window(const std::string& name, uint32_t width, uint32_t height)
+    : m_name(name),
+      m_width(width),
+      m_height(height)
 {
 }
 Window::~Window() noexcept

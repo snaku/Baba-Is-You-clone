@@ -24,7 +24,7 @@ Level::Level(Renderer& renderer,
       m_input(input),
       m_objectMng(renderer, textureMng),
       m_transition(*this, fade),
-      m_grid(*this, GameConfig::gridWidth, GameConfig::gridHeight),
+      m_grid(GameConfig::gridWidth, GameConfig::gridHeight),
       m_ruleSystem(m_objectMng, m_grid),
       m_movementSystem(m_objectMng, m_grid, m_ruleSystem, m_input)
 {
@@ -118,7 +118,6 @@ void Level::reload()
     std::cout << "Reloading level" << std::endl;
 
     m_ruleSystem.clear();
-    m_destroyQueue.clear();
     m_grid.clearObjects();
     m_objectMng.clear();
 
@@ -150,12 +149,12 @@ void Level::updateStatePlaying()
             }
             else
             {
-                addToDestroyQueue(object);
+                m_objectMng.addToDestroyQueue(object);
             }
         }
     );
 
-    updateDestroyQueue();
+    m_objectMng.updateDestroyQueue();
 
     bool rulesChanged = m_ruleSystem.update();
     if (rulesChanged)
@@ -199,26 +198,6 @@ void Level::draw()
             object.draw();
         }
     );
-}
-
-void Level::updateDestroyQueue()
-{
-    if (m_destroyQueue.empty())
-    {
-        return;
-    }
-
-    for (auto uid : m_destroyQueue)
-    {
-        m_objectMng.removeObject(uid);
-    }
-
-    m_destroyQueue.clear();
-}
-
-void Level::addToDestroyQueue(Object& object)
-{
-    m_destroyQueue.push_back(object.getUID());
 }
 
 void Level::checkWin()
