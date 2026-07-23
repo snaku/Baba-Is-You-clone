@@ -7,6 +7,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <type_traits>
 
 class Renderer;
 class TextureManager;
@@ -19,6 +20,8 @@ public:
     template<typename Fn>
     void forEach(Fn&& fn)
     {
+        static_assert(std::is_invocable_v<Fn&, Object&>, "ObjectManager::forEach");
+
         for (auto& object : m_objects)
         {
             fn(*object);
@@ -48,6 +51,8 @@ private:
     std::vector<std::unique_ptr<Object>> m_objects;
     std::unordered_map<std::size_t, Object*> m_objectsByUID;
     std::vector<std::size_t> m_destroyQueue;
+
+    inline static std::size_t s_nextUID = 0;
 
     Callback m_addCallback = nullptr;
     Callback m_removeCallback = nullptr;

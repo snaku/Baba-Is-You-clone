@@ -33,12 +33,14 @@ static constexpr std::array<std::string_view, (std::size_t)ObjectId::MAX> s_path
     "assets/text_wall_0_1.png"   // ObjectId::TEXT_WALL
 };
 
-std::size_t Object::s_nextUID = 0;
-
-Object::Object(Renderer& renderer, TextureManager& textureMng, ObjectId id, Cell baseCell) 
+Object::Object(Renderer& renderer,
+               TextureManager& textureMng,
+               std::size_t uid,
+               ObjectId id,
+               Cell baseCell) 
     : m_textureMng(textureMng),
       m_sprite(renderer, m_textureMng, getSpritePath(id), baseCell.toFPoint()),
-      m_uid(s_nextUID++),
+      m_uid(uid),
       m_id(id),
       m_oldId(id),
       m_type(getTypeFromId(id)),

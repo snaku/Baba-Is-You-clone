@@ -92,7 +92,7 @@ enum class BehaviorType
 class Object
 {
 public:
-    Object(Renderer& renderer, TextureManager& textureMng, ObjectId id, Cell baseCell);
+    Object(Renderer& renderer, TextureManager& textureMng, std::size_t uid, ObjectId id, Cell baseCell);
     ~Object() noexcept;
 
     void update();
@@ -134,7 +134,6 @@ private:
     TextureManager& m_textureMng;
     Sprite m_sprite;
     std::size_t m_uid;
-    static std::size_t s_nextUID;
     ObjectId m_id = ObjectId::NONE;
     ObjectId m_oldId = ObjectId::NONE;
     ObjectType m_type = ObjectType::NONE;

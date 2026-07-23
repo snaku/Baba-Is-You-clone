@@ -11,7 +11,7 @@ ObjectManager::ObjectManager(Renderer& renderer, TextureManager& textureMng)
 
 Object& ObjectManager::addObject(ObjectId id, Cell cell)
 {
-    auto object = std::make_unique<Object>(m_renderer, m_textureMng, id, cell);
+    auto object = std::make_unique<Object>(m_renderer, m_textureMng, s_nextUID++, id, cell);
 
     if (m_addCallback != nullptr)
     {
