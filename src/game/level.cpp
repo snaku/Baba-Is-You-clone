@@ -193,7 +193,12 @@ void Level::update()
 
 void Level::draw()
 {
-    m_objectMng.draw();
+    m_objectMng.forEach(
+        [](Object& object)
+        {
+            object.draw();
+        }
+    );
 }
 
 void Level::updateDestroyQueue()

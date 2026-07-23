@@ -25,8 +25,6 @@ public:
         }
     }
 
-    void draw();
-
     Object& addObject(ObjectId id, Cell cell);
     void removeObject(std::size_t uid);
     Object* findObjectFromUID(std::size_t objectUID);

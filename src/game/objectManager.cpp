@@ -9,14 +9,6 @@ ObjectManager::ObjectManager(Renderer& renderer, TextureManager& textureMng)
 {
 }
 
-void ObjectManager::draw()
-{
-    for (auto& object : m_objects)
-    {
-        object->draw();
-    }
-}
-
 Object& ObjectManager::addObject(ObjectId id, Cell cell)
 {
     auto object = std::make_unique<Object>(m_renderer, m_textureMng, id, cell);
