@@ -22,11 +22,28 @@ Level::Level(Renderer& renderer,
     : m_renderer(renderer),
       m_textureMng(textureMng),
       m_input(input),
+      m_objectMng(renderer, textureMng),
       m_transition(*this, fade),
       m_grid(*this, GameConfig::gridWidth, GameConfig::gridHeight),
-      m_ruleSystem(*this),
-      m_movementSystem(*this, m_grid, m_ruleSystem, m_input)
+      m_ruleSystem(m_objectMng, m_grid),
+      m_movementSystem(m_objectMng, m_grid, m_ruleSystem, m_input)
 {
+    m_objectMng.setAddCallback(
+        [this](const Object& object)
+        {
+            m_grid.addObjectAt(object.getUID(), object.getCell());
+        }
+    );
+
+    m_objectMng.setRemoveCallback(
+        [this](const Object& object)
+        {
+            m_grid.removeObjectAt(object.getUID(), object.getCell());
+            m_ruleSystem.eraseObjectWithTransformation(object.getUID());
+            m_youObjectsUID.erase(std::remove(m_youObjectsUID.begin(), m_youObjectsUID.end(), object.getUID()),
+                                  m_youObjectsUID.end());
+        }
+    );
 }
 Level::~Level() noexcept = default;
 
@@ -49,7 +66,7 @@ void Level::load()
 
     for (const auto& data : def.objects)
     {
-        addObject(data.id, data.cell);
+        m_objectMng.addObject(data.id, data.cell);
     }
 
     m_ruleSystem.requestDirty();
@@ -60,15 +77,15 @@ void Level::buildYouObjects()
 {
     m_youObjectsUID.clear();
 
-    for (const auto& object : m_objects)
-    {
-        if (!m_ruleSystem.hasBehavior(object->getId(), BehaviorType::YOU))
+    m_objectMng.forEach(
+        [this](const Object& object)
         {
-            continue;
+            if (m_ruleSystem.hasBehavior(object.getId(), BehaviorType::YOU))
+            {
+                m_youObjectsUID.push_back(object.getUID());
+            }
         }
-
-        m_youObjectsUID.push_back(object->getUID());
-    }
+    );
 }
 
 void Level::checkReload()
@@ -103,8 +120,7 @@ void Level::reload()
     m_ruleSystem.clear();
     m_destroyQueue.clear();
     m_grid.clearObjects();
-    m_objectsByUID.clear();
-    m_objects.clear();
+    m_objectMng.clear();
 
     load();
 }
@@ -119,21 +135,25 @@ void Level::updateStatePlaying()
 
     bool canMove = m_movementSystem.updateMoveTimer();
     bool moved = false;
-    for (auto& object : m_objects)
-    {
-        if (object->shouldGetKilled())
-        {
-            addToDestroyQueue(*object);
-            continue;
-        }
 
-        if (canMove)
+    m_objectMng.forEach(
+        [&](Object& object)
         {
-            moved = m_movementSystem.tryMoveYou(*object) || moved;
-        }
+            if (!object.shouldGetKilled())
+            {
+                if (canMove)
+                {
+                    moved = m_movementSystem.tryMoveYou(object) || moved;
+                }
 
-        object->update();
-    }
+                object.update();
+            }
+            else
+            {
+                addToDestroyQueue(object);
+            }
+        }
+    );
 
     updateDestroyQueue();
 
@@ -173,10 +193,7 @@ void Level::update()
 
 void Level::draw()
 {
-    for (auto& object : m_objects)
-    {
-        object->draw();
-    }
+    m_objectMng.draw();
 }
 
 void Level::updateDestroyQueue()
@@ -188,7 +205,7 @@ void Level::updateDestroyQueue()
 
     for (auto uid : m_destroyQueue)
     {
-        removeObject(uid);
+        m_objectMng.removeObject(uid);
     }
 
     m_destroyQueue.clear();
@@ -203,7 +220,7 @@ void Level::checkWin()
 {
     for (auto uid : m_youObjectsUID)
     {
-        Object* object = findObjectFromUID(uid);
+        Object* object = m_objectMng.findObjectFromUID(uid);
 
         if (object == nullptr)
         {
@@ -211,7 +228,7 @@ void Level::checkWin()
         }
 
         std::vector<Object*> others;
-        getObjectsAt(object->getCell(), others);
+        GameUtils::getObjectsAt(m_objectMng, m_grid, object->getCell(), others);
 
         auto it = std::find_if(others.begin(), others.end(), 
         [this](const Object* other)
@@ -229,77 +246,4 @@ void Level::checkWin()
             return;
         }
     }
-}
-
-Object& Level::addObject(ObjectId id, Cell cell)
-{
-    auto object = std::make_unique<Object>(m_renderer, m_textureMng, id, cell);
-
-    m_grid.addObjectAt(object->getUID(), object->getCell());
-
-    m_objectsByUID.insert({object->getUID(), object.get()});
-    m_objects.push_back(std::move(object));
-
-    return *m_objects.back();
-}
-
-void Level::removeObject(std::size_t uid)
-{
-    Object* object = findObjectFromUID(uid);
-
-    if (object == nullptr)
-    {
-        return;
-    }
-
-    m_grid.removeObjectAt(uid, object->getCell());
-    m_ruleSystem.eraseObjectWithTransformation(uid);
-    m_objectsByUID.erase(uid);
-    m_youObjectsUID.erase(std::remove(m_youObjectsUID.begin(), m_youObjectsUID.end(), uid),
-                          m_youObjectsUID.end());
-
-    auto it = std::find_if(m_objects.begin(), m_objects.end(), 
-    [object](const std::unique_ptr<Object>& ptr)
-    {
-        return ptr.get() == object;
-    });
-
-    if (it == m_objects.end())
-    {
-        return;
-    }
-
-    m_objects.erase(it);
-}
-
-void Level::getObjectsAt(Cell cell, std::vector<Object*>& out)
-{
-    const std::vector<std::size_t>& objectsUID = m_grid.getObjectsAt(cell);
-
-    out.clear();
-    out.reserve(objectsUID.size());
-
-    for (auto uid : objectsUID)
-    {
-        Object* object = findObjectFromUID(uid);
-        if (object == nullptr)
-        {
-            continue;
-        }
-
-        out.push_back(object);
-    }
-}
-
-Object* Level::findObjectFromUID(std::size_t objectUID)
-{
-    auto it = m_objectsByUID.find(objectUID);
-
-    if (it == m_objectsByUID.end() ||
-        it->second == nullptr)
-    {
-        return nullptr;
-    }
-
-    return it->second;
 }

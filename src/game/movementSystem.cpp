@@ -8,8 +8,8 @@
 
 #include "time/time.hpp"
 
-MovementSystem::MovementSystem(Level& level, Grid& grid, RuleSystem& ruleSystem, const Input& input)
-    : m_level(level),
+MovementSystem::MovementSystem(ObjectManager& objectMng, Grid& grid, RuleSystem& ruleSystem, const Input& input)
+    : m_objectMng(objectMng),
       m_grid(grid),
       m_ruleSystem(ruleSystem),
       m_input(input)
@@ -118,7 +118,7 @@ bool MovementSystem::handlePushInteraction(Object& object, Direction dir)
 bool MovementSystem::handleObjectInteractionsAt(Object& object, Cell cell, Direction dir)
 {
     std::vector<Object*> others;
-    m_level.getObjectsAt(cell, others);
+    GameUtils::getObjectsAt(m_objectMng, m_grid, cell, others);
 
     for (auto& other : others)
     {

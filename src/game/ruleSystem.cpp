@@ -4,9 +4,9 @@
 // std
 #include <iostream>
 
-RuleSystem::RuleSystem(Level& level)
-    : m_level(level),
-      m_parser(level)
+RuleSystem::RuleSystem(ObjectManager& objectMng, const Grid& grid)
+    : m_objectMng(objectMng),
+      m_parser(objectMng, grid)
 {
 }
 
@@ -68,23 +68,22 @@ void RuleSystem::addToTransformationQueue(ObjectId id, ObjectId newId)
         return;
     }
 
-    const std::vector<std::unique_ptr<Object>>& objects = m_level.getObjects();
-    for (const auto& object : objects)
-    {
-        if (object->getId() != id)
+    m_objectMng.forEach(
+        [&](const Object& object)
         {
-            continue;
+            if (object.getId() == id)
+            {
+                m_objectsWithTransformation.insert({object.getUID(), newId});
+            }
         }
-
-        m_objectsWithTransformation.insert({object->getUID(), newId});
-    }
+    );
 }
 
 void RuleSystem::applyObjectsTransformation()
 {
     for (auto& [uid, newId] : m_objectsWithTransformation)
     {
-        Object* object = m_level.findObjectFromUID(uid);
+        Object* object = m_objectMng.findObjectFromUID(uid);
         if (object == nullptr)
         {
             continue;
@@ -98,7 +97,7 @@ void RuleSystem::revertObjectsTransformation()
 {
     for (auto& [uid, _] : m_objectsWithTransformation)
     {
-        Object* object = m_level.findObjectFromUID(uid);
+        Object* object = m_objectMng.findObjectFromUID(uid);
         if (object == nullptr)
         {
             continue;

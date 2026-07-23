@@ -4,13 +4,13 @@
 
 class Input;
 class Grid;
-class Level;
+class ObjectManager;
 class RuleSystem;
 
 class MovementSystem
 {
 public:
-    MovementSystem(Level& level, Grid& grid, RuleSystem& ruleSystem, const Input& input);
+    MovementSystem(ObjectManager& objectMng, Grid& grid, RuleSystem& ruleSystem, const Input& input);
 
     bool tryMoveYou(Object& object);
     bool updateMoveTimer();
@@ -21,7 +21,7 @@ private:
 
     bool tryMove(Object& object, Direction dir);
 
-    Level& m_level;
+    ObjectManager& m_objectMng;
     Grid& m_grid;
     RuleSystem& m_ruleSystem;
     const Input& m_input;

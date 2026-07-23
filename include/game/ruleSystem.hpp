@@ -8,12 +8,13 @@
 #include <unordered_map>
 #include <bitset>
 
-class Level;
+class Grid;
+class ObjectManager;
 
 class RuleSystem
 {
 public:
-    explicit RuleSystem(Level& level);
+    RuleSystem(ObjectManager& objectMng, const Grid& grid);
 
     bool update();
 
@@ -33,7 +34,7 @@ private:
     void applyObjectsTransformation();
     void revertObjectsTransformation();
 
-    Level& m_level;
+    ObjectManager& m_objectMng;
     RuleParser m_parser;
     std::vector<Rule> m_rules;
     std::unordered_map<ObjectId, std::bitset<(std::size_t)BehaviorType::MAX>> m_behaviors;

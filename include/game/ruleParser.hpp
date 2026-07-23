@@ -11,12 +11,13 @@
 #include <algorithm>
 #include <type_traits>
 
-class Level;
+class ObjectManager;
+class Grid;
 
 class RuleParser
 {
 public:
-    RuleParser(Level& level);
+    RuleParser(ObjectManager& objectMng, const Grid& grid);
 
     std::vector<Rule> parse();
 
@@ -34,7 +35,8 @@ private:
 
     void createRule(ObjectId subject, std::variant<ObjectId, BehaviorType> predicate, bool negate);
 
-    Level& m_level;
+    ObjectManager& m_objectMng;
+    const Grid& m_grid;
     std::vector<Rule> m_rules;
     std::unordered_set<std::size_t> m_parsedNounsUID;
     Direction m_dir;

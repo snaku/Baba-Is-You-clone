@@ -1,5 +1,6 @@
 #include "game/ruleParser.hpp"
 #include "game/level.hpp"
+#include "game/objectManager.hpp"
 #include "game/utils.hpp"
 
 // std
@@ -7,8 +8,9 @@
 #include <vector>
 #include <iostream>
 
-RuleParser::RuleParser(Level& level) 
-    : m_level(level)
+RuleParser::RuleParser(ObjectManager& objectMng, const Grid& grid) 
+    : m_objectMng(objectMng),
+      m_grid(grid)
 {
 }
 
@@ -28,7 +30,7 @@ void RuleParser::parseInDir(Direction dir)
 
     m_dir = dir;
 
-    while (Object* nounText = findText(m_level.getObjects(), TextType::NOUN))
+    while (Object* nounText = findText(m_objectMng.getObjects(), TextType::NOUN))
     {
         parseFromNoun(*nounText);
     }
@@ -144,7 +146,7 @@ Object* RuleParser::findNextText(TextType type, Cell baseCell)
     }
 
     std::vector<Object*> texts;
-    m_level.getObjectsAt(nextCell, texts);
+    GameUtils::getObjectsAt(m_objectMng, m_grid, nextCell, texts);
 
     return findText(texts, type);
 }
