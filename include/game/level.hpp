@@ -51,7 +51,6 @@ private:
     void checkWin();
 
     Renderer& m_renderer;
-    TextureManager& m_textureMng;
     Grid m_grid;
     const Input& m_input;
     ObjectManager m_objectMng;

@@ -126,10 +126,8 @@ public:
     std::size_t getUID() const { return m_uid; }
     Direction getDir() const { return m_dir; }
 
-    void setColor(Uint8 r, Uint8 g, Uint8 b);
-
 private:
-    static std::string_view getSpritePath(ObjectId id);
+    const SpriteInfo& getSpriteInfo(ObjectId id) const;
 
     TextureManager& m_textureMng;
     Sprite m_sprite;
@@ -141,10 +139,8 @@ private:
     TextType m_textType = TextType::NONE;
     TextType m_oldTextType = TextType::NONE;
     Cell m_cell;
-    Cell m_oldCell;
     Direction m_dir;
     float m_angle = 0.0f;
     bool m_dirty = false;
     bool m_kill = false;
-    SDL_Color m_col;
 };

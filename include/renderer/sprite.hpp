@@ -10,15 +10,21 @@ class Renderer;
 class Texture;
 class TextureManager;
 
+struct SpriteInfo
+{
+    std::filesystem::path path;
+    SDL_Color col;
+};
+
 class Sprite
 {
 public:
-    Sprite(Renderer& renderer, TextureManager& textureMng, const std::filesystem::path& texturePath, const SDL_FPoint& basePos);
+    Sprite(Renderer& renderer, TextureManager& textureMng, const SpriteInfo& info, const SDL_FPoint& basePos);
     ~Sprite() noexcept;
 
     void draw();
 
-    void reload(const std::filesystem::path& texturePath);
+    void reload(const SpriteInfo& info);
 
     void setColor(SDL_Color col) { m_col = col; };
     void setFlip(SDL_RendererFlip flip) { m_flip = flip; };

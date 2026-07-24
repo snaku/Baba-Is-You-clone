@@ -6,7 +6,6 @@
 #include "input/input.hpp"
 
 #include "renderer/renderer.hpp"
-#include "renderer/textureManager.hpp"
 
 #include "time/time.hpp"
 
@@ -18,9 +17,8 @@
 Level::Level(Renderer& renderer,
              TextureManager& textureMng,
              const Input& input,
-             Fade& fade) 
+             Fade& fade)
     : m_renderer(renderer),
-      m_textureMng(textureMng),
       m_input(input),
       m_objectMng(renderer, textureMng),
       m_transition(*this, fade),

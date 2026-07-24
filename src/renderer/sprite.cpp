@@ -3,13 +3,13 @@
 #include "renderer/texture.hpp"
 #include "renderer/textureManager.hpp"
 
-Sprite::Sprite(Renderer& renderer, TextureManager& textureMng, const std::filesystem::path& texturePath, const SDL_FPoint& basePos) 
+Sprite::Sprite(Renderer& renderer, TextureManager& textureMng, const SpriteInfo& info, const SDL_FPoint& basePos) 
     : m_renderer(renderer),
       m_textureMng(textureMng),
       m_pos(basePos)
 {
-    m_texture = m_textureMng.getTexture(texturePath);
-    m_col = {255, 255, 255, 255};
+    m_texture = m_textureMng.getTexture(info.path);
+    m_col = info.col;
 }
 Sprite::~Sprite() noexcept
 {
@@ -23,7 +23,8 @@ void Sprite::draw()
     }
 }
 
-void Sprite::reload(const std::filesystem::path& texturePath)
+void Sprite::reload(const SpriteInfo& info)
 {
-    m_texture = m_textureMng.getTexture(texturePath);
+    m_texture = m_textureMng.getTexture(info.path);
+    m_col = info.col;
 }
