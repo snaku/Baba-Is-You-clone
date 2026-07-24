@@ -1,5 +1,6 @@
 #include "game/ruleParser.hpp"
 #include "game/objectManager.hpp"
+#include "game/objectUtils.hpp"
 #include "game/utils.hpp"
 
 // std
@@ -57,7 +58,7 @@ void RuleParser::parseFromNoun(const Object& nounText)
         return;
     }
 
-    createRule(nounText.textIdToNounId(), predicate, negate);
+    createRule(ObjectUtils::textIdToNounId(nounText.getId()), predicate, negate);
 
     parseANDOperator(nounText, *predicateText);
 }
@@ -86,7 +87,7 @@ void RuleParser::parseANDOperator(const Object& nounText, Object& basePredicateT
             break;
         }
 
-        createRule(nounText.textIdToNounId(), predicate, negate);
+        createRule(ObjectUtils::textIdToNounId(nounText.getId()), predicate, negate);
     }
 }
 
@@ -179,14 +180,14 @@ Object* RuleParser::findPredicate(Object& op,
     Object* behaviorPredicate = findNextText(TextType::BEHAVIOR, op.getCell());
     if (behaviorPredicate != nullptr)
     {
-        predicate = behaviorPredicate->textIdToBehavior();
+        predicate = ObjectUtils::textIdToBehavior(behaviorPredicate->getId());
         return behaviorPredicate;
     }
 
     Object* nounPredicate = findNextText(TextType::NOUN, op.getCell());
     if (nounPredicate != nullptr)
     {
-        predicate = nounPredicate->textIdToNounId();
+        predicate = ObjectUtils::textIdToNounId(nounPredicate->getId());
         return nounPredicate;
     }
 

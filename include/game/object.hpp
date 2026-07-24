@@ -113,12 +113,6 @@ public:
     void requestKill() { m_kill = true; };
     bool shouldGetKilled() { return m_kill; };
 
-    ObjectId textIdToNounId() const;
-    BehaviorType textIdToBehavior() const;
-    
-    static ObjectType getTypeFromId(ObjectId id);
-    static TextType getTextTypeFromId(ObjectId id);
-
     ObjectId getId() const { return m_id; }
     ObjectType getType() const { return m_type; }
     TextType getTextType() const { return m_textType; }
