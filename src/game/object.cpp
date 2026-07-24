@@ -46,9 +46,9 @@ Object::Object(Renderer& renderer,
       m_uid(uid),
       m_id(id),
       m_oldId(id),
-      m_type(ObjectUtils::getTypeFromId(id)),
+      m_type(ObjectUtils::idToType(id)),
       m_oldType(m_type),
-      m_textType(ObjectUtils::getTextTypeFromId(id)),
+      m_textType(ObjectUtils::textIdToTextType(id)),
       m_oldTextType(m_textType),
       m_cell(baseCell)
 {
@@ -105,8 +105,8 @@ void Object::faceDir(Direction dir)
 void Object::changeTo(ObjectId id)
 {
     m_id = id;
-    m_type = ObjectUtils::getTypeFromId(id);
-    m_textType = ObjectUtils::getTextTypeFromId(id);
+    m_type = ObjectUtils::idToType(id);
+    m_textType = ObjectUtils::textIdToTextType(id);
 
     m_sprite.reload(getSpriteInfo(id));
 }
@@ -114,8 +114,8 @@ void Object::changeTo(ObjectId id)
 void Object::changeBack()
 {
     m_id = m_oldId;
-    m_type = ObjectUtils::getTypeFromId(m_id);
-    m_textType = ObjectUtils::getTextTypeFromId(m_id);
+    m_type = ObjectUtils::idToType(m_id);
+    m_textType = ObjectUtils::textIdToTextType(m_id);
 
     m_sprite.reload(getSpriteInfo(m_id));
 }

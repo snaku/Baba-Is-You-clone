@@ -1,36 +1,36 @@
 # BABA
-1 3 3
+baba 3 3
 
 # BABA IS YOU RULE
-6 1 0
-8 2 0
-11 3 0
+text_baba 1 0
+text_is 2 0
+text_you 3 0
 
 # FLAG
-4 5 5
+flag 5 5
 
 # FLAG IS WIN RULE
-16 0 4
-8 0 5
-12 0 6
+text_flag 0 4
+text_is 0 5
+text_win 0 6
 
 # WALLS
-2 6 5
-2 5 6
-2 4 5
-2 5 4
+wall 6 5
+wall 5 6
+wall 4 5
+wall 5 4
 
 # WALL IS STOP RULE
-18 0 0
-8 0 1
-14 0 2
+text_wall 0 0
+text_is 0 1
+text_stop 0 2
 
 # ROCK
-5 10 10
+rock 10 10
 
 # ROCK IS PUSH AND SINK RULE
-17 18 10
-8 18 11
-15 18 12
-9 18 13
-13 18 14
+text_rock 18 10
+text_is 18 11
+text_push 18 12
+text_and 18 13
+text_sink 18 14

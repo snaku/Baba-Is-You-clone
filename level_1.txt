@@ -1,7 +1,7 @@
-# BABA
-2 0 0
+# WALL
+wall 0 0
 
-# BABA IS YOU RULE
-18 8 5
-8 9 5
-11 10 5
+# WALL IS YOU RULE
+text_wall 8 5
+text_is 9 5
+text_you 10 5

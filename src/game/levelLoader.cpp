@@ -1,13 +1,15 @@
 #include "game/levelLoader.hpp"
+#include "game/objectUtils.hpp"
 
 // std
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 LevelDefinition LevelLoader::read(const std::filesystem::path& path)
 {
-    LevelDefinition def;
+    LevelDefinition def{};
 
     if (!std::filesystem::exists(path) ||
         path.extension() != ".txt")
@@ -32,18 +34,29 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
         }
 
         std::stringstream stream(line);
-        uint32_t id = 0; // >> operator doesn't work with enum class
+        std::string name;
         Cell cell = {0, 0};
 
-        stream >> id >> cell.x >> cell.y;
+        stream >> name >> cell.x >> cell.y;
 
-        if (id == (uint32_t)ObjectId::NONE ||
-            id >= (uint32_t)ObjectId::MAX)
+        std::transform(name.begin(), name.end(), name.begin(), 
+        [](char c)
+        {
+            return std::tolower(c);
+        });
+
+        ObjectId id = ObjectUtils::stringToId(name);
+        if (id == ObjectId::NONE)
         {
             return def;
         }
 
-        def.objects.push_back({(ObjectId)id, cell});
+        if (!cell.isValidPos())
+        {
+            return def;
+        }
+
+        def.objects.push_back({id, cell});
     }
 
     def.isValid = !def.objects.empty();

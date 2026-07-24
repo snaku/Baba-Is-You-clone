@@ -1,12 +1,38 @@
 #include "game/objectUtils.hpp"
 
+// std
+#include <unordered_map>
+
 namespace ObjectUtils
 {
 
+static const std::unordered_map<std::string, ObjectId> s_nameIdMap = 
+{
+    {"baba", ObjectId::BABA},
+    {"wall", ObjectId::WALL},
+    {"water", ObjectId::WATER},
+    {"flag", ObjectId::FLAG},
+    {"rock", ObjectId::ROCK},
+
+    {"text_baba", ObjectId::TEXT_BABA},
+    {"text_water", ObjectId::TEXT_WATER},
+    {"text_is", ObjectId::TEXT_IS},
+    {"text_not", ObjectId::TEXT_NOT},
+    {"text_and", ObjectId::TEXT_AND},
+    {"text_you", ObjectId::TEXT_YOU},
+    {"text_win", ObjectId::TEXT_WIN},
+    {"text_sink", ObjectId::TEXT_SINK},
+    {"text_stop", ObjectId::TEXT_STOP},
+    {"text_push", ObjectId::TEXT_PUSH},
+    {"text_flag", ObjectId::TEXT_FLAG},
+    {"text_rock", ObjectId::TEXT_ROCK},
+    {"text_wall", ObjectId::TEXT_WALL},
+};
+
 ObjectId textIdToNounId(ObjectId textId)
 {
-    if (getTypeFromId(textId) != ObjectType::TEXT ||
-        getTextTypeFromId(textId) != TextType::NOUN)
+    if (idToType(textId) != ObjectType::TEXT ||
+        textIdToTextType(textId) != TextType::NOUN)
     {
         return ObjectId::NONE;
     }
@@ -25,8 +51,8 @@ ObjectId textIdToNounId(ObjectId textId)
 
 BehaviorType textIdToBehavior(ObjectId textId)
 {
-    if (getTypeFromId(textId) != ObjectType::TEXT ||
-        getTextTypeFromId(textId) != TextType::BEHAVIOR)
+    if (idToType(textId) != ObjectType::TEXT ||
+        textIdToTextType(textId) != TextType::BEHAVIOR)
     {
         return BehaviorType::NONE;
     }
@@ -43,7 +69,7 @@ BehaviorType textIdToBehavior(ObjectId textId)
     return BehaviorType::NONE;
 }
 
-ObjectType getTypeFromId(ObjectId id)
+ObjectType idToType(ObjectId id)
 {
     switch (id)
     {
@@ -71,7 +97,7 @@ ObjectType getTypeFromId(ObjectId id)
     return ObjectType::NONE;
 }
 
-TextType getTextTypeFromId(ObjectId textId)
+TextType textIdToTextType(ObjectId textId)
 {
     switch (textId)
     {
@@ -95,4 +121,15 @@ TextType getTextTypeFromId(ObjectId textId)
     return TextType::NONE;
 }
 
-};
+ObjectId stringToId(const std::string& name)
+{
+    auto it = s_nameIdMap.find(name);
+    if (it == s_nameIdMap.end())
+    {
+        return ObjectId::NONE;
+    }
+
+    return it->second;
+}
+
+}
