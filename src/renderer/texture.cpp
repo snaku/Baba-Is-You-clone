@@ -33,6 +33,8 @@ bool Texture::load(const std::filesystem::path& path)
 }
 
 void Texture::drawAt(const SDL_FPoint& pos,
+                     float width,
+                     float height,
                      SDL_RendererFlip flip,
                      float angle,
                      SDL_Color col)
@@ -41,8 +43,8 @@ void Texture::drawAt(const SDL_FPoint& pos,
     {
         pos.x,
         pos.y,
-        (float)m_width,
-        (float)m_height
+        width <= 0.0f ? m_width : width,
+        height <= 0.0f ? m_height : height
     };
 
     m_renderer.drawTexture(*m_texture, rect, flip, angle, col);

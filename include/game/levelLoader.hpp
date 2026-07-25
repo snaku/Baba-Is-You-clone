@@ -4,6 +4,7 @@
 
 // std
 #include <filesystem>
+#include <sstream>
 
 struct LevelObjectData
 {
@@ -15,10 +16,15 @@ struct LevelDefinition
 {
     bool isValid = false;
     std::vector<LevelObjectData> objects;
+    uint32_t width = 0;
+    uint32_t height = 0;
 };
 
 class LevelLoader
 {
 public:
     static LevelDefinition read(const std::filesystem::path& path);
+
+private:
+    static bool tryParseMetadata(LevelDefinition& def, std::stringstream& stream, const std::string& name);
 };

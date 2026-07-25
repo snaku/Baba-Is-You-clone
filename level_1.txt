@@ -1,7 +1,11 @@
+# METADATA
+width 10
+height 10
+
 # WALL
 wall 0 0
 
 # WALL IS YOU RULE
-text_wall 8 5
-text_is 9 5
-text_you 10 5
+text_wall 7 5
+text_is 8 5
+text_you 9 5

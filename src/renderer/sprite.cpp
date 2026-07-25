@@ -15,11 +15,16 @@ Sprite::~Sprite() noexcept
 {
 }
 
-void Sprite::draw()
+void Sprite::draw(float size)
 {
     if (m_texture != nullptr)
     {
-        m_texture->drawAt(m_pos, m_flip, m_angle, m_col);
+        m_texture->drawAt(m_pos,
+                         size,
+                         size,
+                         m_flip,
+                         m_angle,
+                         m_col);
     }
 }
 

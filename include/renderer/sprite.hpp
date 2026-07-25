@@ -22,7 +22,7 @@ public:
     Sprite(Renderer& renderer, TextureManager& textureMng, const SpriteInfo& info, const SDL_FPoint& basePos);
     ~Sprite() noexcept;
 
-    void draw();
+    void draw(float size);
 
     void reload(const SpriteInfo& info);
 

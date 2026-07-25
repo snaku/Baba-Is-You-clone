@@ -12,6 +12,14 @@ Grid::Grid(uint32_t width, uint32_t height)
 {
 }
 
+void Grid::resize(uint32_t width, uint32_t height)
+{
+    m_objectsUID.resize(height, std::vector<std::vector<std::size_t>>(width));
+
+    m_width = width;
+    m_height = height;
+}
+
 void Grid::addObjectAt(std::size_t uid, Cell cell)
 {
     if (!cell.isValidPos())

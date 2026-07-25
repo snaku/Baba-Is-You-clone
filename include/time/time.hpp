@@ -13,8 +13,8 @@ public:
     static float totalTime();
 
 private:
-    static std::chrono::high_resolution_clock::time_point m_lastTime;
-    static std::chrono::high_resolution_clock::time_point m_startTime;
+    inline static std::chrono::high_resolution_clock::time_point m_lastTime;
+    inline static std::chrono::high_resolution_clock::time_point m_startTime;
 
-    static float m_deltaTime;
+    inline static float m_deltaTime = 0.0f;
 };

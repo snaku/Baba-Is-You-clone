@@ -14,7 +14,7 @@ public:
     ~Texture() noexcept;
 
     bool load(const std::filesystem::path& path);
-    void drawAt(const SDL_FPoint& pos, SDL_RendererFlip flip, float angle, SDL_Color col);
+    void drawAt(const SDL_FPoint& pos, float width, float height, SDL_RendererFlip flip, float angle, SDL_Color col);
 
     SDL_Texture* getSDLTexture() const { return m_texture; }
 

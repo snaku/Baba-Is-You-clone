@@ -1,3 +1,7 @@
+# METADATA
+width 15
+height 15
+
 # BABA
 baba 3 3
 
@@ -29,8 +33,8 @@ text_stop 0 2
 rock 10 10
 
 # ROCK IS PUSH AND SINK RULE
-text_rock 18 10
-text_is 18 11
-text_push 18 12
-text_and 18 13
-text_sink 18 14
+text_rock 10 12
+text_is 10 13
+text_push 10 14
+text_and 11 14
+text_sink 12 14

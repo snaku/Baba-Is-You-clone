@@ -2,7 +2,6 @@
 #include "game/objectUtils.hpp"
 
 // std
-#include <sstream>
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -34,16 +33,24 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
         }
 
         std::stringstream stream(line);
-        std::string name;
-        Cell cell = {0, 0};
 
-        stream >> name >> cell.x >> cell.y;
+        std::string name;
+        stream >> name;
 
         std::transform(name.begin(), name.end(), name.begin(), 
         [](char c)
         {
             return std::tolower(c);
         });
+
+        if (tryParseMetadata(def, stream, name))
+        {
+            continue;
+        }
+
+        Cell cell = {0, 0};
+
+        stream >> cell.x >> cell.y;
 
         ObjectId id = ObjectUtils::stringToId(name);
         if (id == ObjectId::NONE)
@@ -59,9 +66,31 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
         def.objects.push_back({id, cell});
     }
 
-    def.isValid = !def.objects.empty();
+    def.isValid = !def.objects.empty() &&
+                  def.width > 0 &&
+                  def.height > 0;
 
     std::cout << "Level loaded: " << path << std::endl;
 
     return def;
+}
+
+bool LevelLoader::tryParseMetadata(LevelDefinition& def,
+                                   std::stringstream& stream,
+                                   const std::string& name)
+{
+    if (def.width == 0 &&
+        name == "width")
+    {
+        stream >> def.width;
+        return true;
+    }
+    else if (def.height == 0 &&
+        name == "height")
+    {
+        stream >> def.height;
+        return true;
+    }
+
+    return false;
 }

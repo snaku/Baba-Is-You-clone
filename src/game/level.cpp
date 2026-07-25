@@ -62,6 +62,15 @@ void Level::load()
         return;
     }
 
+    GameConfig::gridWidth = def.width;
+    GameConfig::gridHeight = def.height;
+    GameConfig::cellSize = GameConfig::windowHeight / def.height;
+
+    GameConfig::gridOffset.x = (GameConfig::windowWidth - GameConfig::gridWidth * GameConfig::cellSize) / 2;
+    GameConfig::gridOffset.y = (GameConfig::windowHeight - GameConfig::gridHeight * GameConfig::cellSize) / 2;
+
+    m_grid.resize(GameConfig::gridWidth, GameConfig::gridHeight);
+
     for (const auto& data : def.objects)
     {
         m_objectMng.addObject(data.id, data.cell);

@@ -12,8 +12,8 @@ SDL_FPoint Cell::toFPoint() const
 {
     SDL_FPoint point =
     {
-        (float)(x * GameConfig::cellSize),
-        (float)(y * GameConfig::cellSize)
+        (float)(GameConfig::gridOffset.x + x * GameConfig::cellSize),
+        (float)(GameConfig::gridOffset.y + y * GameConfig::cellSize)
     };
 
     return point;

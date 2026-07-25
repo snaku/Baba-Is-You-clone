@@ -12,6 +12,8 @@ class Grid
 public:
     Grid(uint32_t width, uint32_t height);
 
+    void resize(uint32_t width, uint32_t height);
+
     void addObjectAt(std::size_t uid, Cell cell);
     void removeObjectAt(std::size_t uid, Cell cell);
     void clearObjects();
