@@ -20,7 +20,7 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
 
     if (!file.is_open())
     {
-        return def;
+        return {};
     }
 
     std::string line;
@@ -55,12 +55,7 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
         ObjectId id = ObjectUtils::stringToId(name);
         if (id == ObjectId::NONE)
         {
-            return def;
-        }
-
-        if (!cell.isValidPos())
-        {
-            return def;
+            return {};
         }
 
         def.objects.push_back({id, cell});

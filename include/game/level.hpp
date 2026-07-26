@@ -4,6 +4,7 @@
 #include "game/object.hpp"
 #include "game/objectManager.hpp"
 #include "game/levelTransition.hpp"
+#include "game/levelBorder.hpp"
 #include "game/ruleSystem.hpp"
 #include "game/movementSystem.hpp"
 
@@ -55,6 +56,7 @@ private:
     const Input& m_input;
     ObjectManager m_objectMng;
     LevelTransition m_transition;
+    LevelBorder m_border;
     MovementSystem m_movementSystem;
     RuleSystem m_ruleSystem;
     LevelState m_state = LevelState::IDLE;

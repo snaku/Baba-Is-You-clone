@@ -30,11 +30,11 @@ text_is 0 1
 text_stop 0 2
 
 # ROCK
-rock 10 10
+rock 8 8
 
 # ROCK IS PUSH AND SINK RULE
-text_rock 10 12
-text_is 10 13
-text_push 10 14
-text_and 11 14
-text_sink 12 14
+text_rock 10 9
+text_is 10 10
+text_push 10 11
+text_and 10 12
+text_sink 10 13

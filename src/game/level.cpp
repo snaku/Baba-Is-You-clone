@@ -22,6 +22,7 @@ Level::Level(Renderer& renderer,
       m_input(input),
       m_objectMng(renderer, textureMng),
       m_transition(*this, fade),
+      m_border(renderer),
       m_grid(GameConfig::gridWidth, GameConfig::gridHeight),
       m_ruleSystem(m_objectMng, m_grid),
       m_movementSystem(m_objectMng, m_grid, m_ruleSystem, m_input)
@@ -64,15 +65,21 @@ void Level::load()
 
     GameConfig::gridWidth = def.width;
     GameConfig::gridHeight = def.height;
-    GameConfig::cellSize = GameConfig::windowHeight / def.height;
+    GameConfig::cellSize = std::min(GameConfig::windowWidth / def.width, GameConfig::windowHeight / def.height);
 
     GameConfig::gridOffset.x = (GameConfig::windowWidth - GameConfig::gridWidth * GameConfig::cellSize) / 2;
     GameConfig::gridOffset.y = (GameConfig::windowHeight - GameConfig::gridHeight * GameConfig::cellSize) / 2;
 
     m_grid.resize(GameConfig::gridWidth, GameConfig::gridHeight);
+    m_border.resize(GameConfig::gridWidth, GameConfig::gridHeight);
 
     for (const auto& data : def.objects)
     {
+        if (!data.cell.isValidPos())
+        {
+            continue;
+        }
+
         m_objectMng.addObject(data.id, data.cell);
     }
 
@@ -205,6 +212,8 @@ void Level::draw()
             object.draw();
         }
     );
+
+    m_border.draw();
 }
 
 void Level::checkWin()
