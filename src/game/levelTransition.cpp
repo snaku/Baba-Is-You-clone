@@ -17,7 +17,7 @@ void LevelTransition::update()
         m_fade.start();
     }
     else if (m_fade.isActive() &&
-        m_fade.justFinishedOut())
+             m_fade.justFinishedOut())
     {
         m_level.allowReload();
     }

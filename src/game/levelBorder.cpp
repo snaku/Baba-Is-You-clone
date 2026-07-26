@@ -19,7 +19,7 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
         (int)(gridHeight * GameConfig::cellSize)
     };
 
-    m_borders[(std::size_t)LevelBorderSide::TOP] =
+    m_sides[std::to_underlying(LevelBorderSide::TOP)] =
     {
         0,
         0,
@@ -28,7 +28,7 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
         m_levelArea.y
     };
 
-    m_borders[(std::size_t)LevelBorderSide::BOT] =
+    m_sides[std::to_underlying(LevelBorderSide::BOT)] =
     {
         0,
         m_levelArea.y + m_levelArea.h,
@@ -37,7 +37,7 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
         (int)(GameConfig::windowHeight - (m_levelArea.y + m_levelArea.h))
     };
 
-    m_borders[(std::size_t)LevelBorderSide::LEFT] = 
+    m_sides[std::to_underlying(LevelBorderSide::LEFT)] = 
     {
         0,
         m_levelArea.y,
@@ -46,7 +46,7 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
         m_levelArea.h
     };
 
-    m_borders[(std::size_t)LevelBorderSide::RIGHT] =
+    m_sides[std::to_underlying(LevelBorderSide::RIGHT)] =
     {
         m_levelArea.x + m_levelArea.w,
         m_levelArea.y,
@@ -58,19 +58,19 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
 
 void LevelBorder::draw()
 {
-    for (const auto& rect : m_borders)
+    for (const auto& side : m_sides)
     {
-        drawIfVisible(rect);
+        drawSide(side);
     }
 }
 
-void LevelBorder::drawIfVisible(const SDL_Rect& rect)
+void LevelBorder::drawSide(const SDL_Rect& side)
 {
-    if (rect.w <= 0 ||
-        rect.h <= 0)
+    if (side.w <= 0 ||
+        side.h <= 0)
     {
         return;
     }
 
-    m_renderer.drawRect(rect, s_color);
+    m_renderer.drawRect(side, s_color);
 }

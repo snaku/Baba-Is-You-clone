@@ -93,12 +93,12 @@ void RuleParser::parseANDOperator(const Object& nounText, Object& basePredicateT
 
 Object* RuleParser::findText(const std::vector<std::unique_ptr<Object>>& objects, TextType type)
 {
-    auto it = std::find_if(objects.begin(), objects.end(),
+    auto it = std::ranges::find_if(objects,
     [&](const std::unique_ptr<Object>& object)
     {
         return object->isText() &&
                object->getTextType() == type &&
-               m_parsedNounsUID.find(object->getUID()) == m_parsedNounsUID.end() &&
+               !m_parsedNounsUID.contains(object->getUID()) &&
                object->getCell().isValidPos();
     });
 
@@ -112,7 +112,7 @@ Object* RuleParser::findText(const std::vector<std::unique_ptr<Object>>& objects
 
 Object* RuleParser::findText(const std::vector<Object*>& objectsAt, TextType type)
 {
-    auto it = std::find_if(objectsAt.begin(), objectsAt.end(),
+    auto it = std::ranges::find_if(objectsAt,
     [&](const Object* object)
     {
         return object->isText() &&

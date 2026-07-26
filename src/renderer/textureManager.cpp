@@ -1,7 +1,7 @@
 #include "renderer/textureManager.hpp"
 #include "renderer/texture.hpp"
 
-#include <iostream>
+#include <print>
 
 TextureManager::TextureManager(Renderer& renderer) 
     : m_renderer(renderer)
@@ -14,7 +14,7 @@ std::shared_ptr<Texture> TextureManager::getTexture(const std::filesystem::path&
 
     if (texture != nullptr)
     {
-        std::cout << "Using texture cache for: " << path << std::endl;
+        std::println("Using texture cache for: {}", path.string());
         return texture;
     }
 

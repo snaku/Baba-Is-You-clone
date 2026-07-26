@@ -1,5 +1,4 @@
 #include "game/level.hpp"
-#include "game/levelLoader.hpp"
 #include "game/config.hpp"
 #include "game/utils.hpp"
 
@@ -10,9 +9,10 @@
 #include "time/time.hpp"
 
 // std
-#include <iostream>
 #include <algorithm>
 #include <fstream>
+#include <format>
+#include <print>
 
 Level::Level(Renderer& renderer,
              TextureManager& textureMng,
@@ -39,8 +39,7 @@ Level::Level(Renderer& renderer,
         {
             m_grid.removeObjectAt(object.getUID(), object.getCell());
             m_ruleSystem.eraseObjectWithTransformation(object.getUID());
-            m_youObjectsUID.erase(std::remove(m_youObjectsUID.begin(), m_youObjectsUID.end(), object.getUID()),
-                                  m_youObjectsUID.end());
+            std::erase(m_youObjectsUID, object.getUID());
         }
     );
 }
@@ -53,16 +52,20 @@ void Level::load()
         m_id++;
     }
 
-    std::ostringstream ostream;
-    ostream << "level_" << m_id << ".txt";
+    std::string fileName = std::format("level_{}.txt", m_id);
 
-    LevelDefinition def = LevelLoader::read(ostream.str());
+    LevelDefinition def = LevelLoader::read(fileName);
     if (!def.isValid)
     {
         m_state = LevelState::IDLE;
         return;
     }
 
+    initFromDef(def);
+}
+
+void Level::initFromDef(const LevelDefinition& def)
+{
     GameConfig::gridWidth = def.width;
     GameConfig::gridHeight = def.height;
     GameConfig::cellSize = std::min(GameConfig::windowWidth / def.width, GameConfig::windowHeight / def.height);
@@ -129,7 +132,7 @@ void Level::checkReload()
 
 void Level::reload()
 {
-    std::cout << "Reloading level" << std::endl;
+    std::println("Reloading level");
 
     m_ruleSystem.clear();
     m_grid.clearObjects();
@@ -230,7 +233,7 @@ void Level::checkWin()
         std::vector<Object*> others;
         GameUtils::getObjectsAt(m_objectMng, m_grid, object->getCell(), others);
 
-        auto it = std::find_if(others.begin(), others.end(), 
+        auto it = std::ranges::find_if(others, 
         [this](const Object* other)
         {
             return other != nullptr &&
@@ -239,7 +242,8 @@ void Level::checkWin()
         
         if (it != others.end())
         {
-            std::cout << "WIN !" << std::endl;
+            std::println("WIN !");
+
             m_state = LevelState::WIN;
             m_reloadRequested = true;
 

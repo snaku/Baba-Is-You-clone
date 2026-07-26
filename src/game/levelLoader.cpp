@@ -3,17 +3,15 @@
 
 // std
 #include <fstream>
-#include <iostream>
+#include <print>
 #include <algorithm>
 
 LevelDefinition LevelLoader::read(const std::filesystem::path& path)
 {
-    LevelDefinition def{};
-
     if (!std::filesystem::exists(path) ||
         path.extension() != ".txt")
     {
-        return def;
+        return {};
     }
 
     std::ifstream file(path);
@@ -23,6 +21,7 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
         return {};
     }
 
+    LevelDefinition def{};
     std::string line;
     while (std::getline(file, line))
     {
@@ -37,7 +36,7 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
         std::string name;
         stream >> name;
 
-        std::transform(name.begin(), name.end(), name.begin(), 
+        std::ranges::transform(name, name.begin(),
         [](char c)
         {
             return std::tolower(c);
@@ -65,7 +64,7 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
                   def.width > 0 &&
                   def.height > 0;
 
-    std::cout << "Level loaded: " << path << std::endl;
+    std::println("Level loaded: {}", path.string());
 
     return def;
 }
@@ -81,7 +80,7 @@ bool LevelLoader::tryParseMetadata(LevelDefinition& def,
         return true;
     }
     else if (def.height == 0 &&
-        name == "height")
+             name == "height")
     {
         stream >> def.height;
         return true;

@@ -4,6 +4,7 @@
 #include "game/object.hpp"
 #include "game/objectManager.hpp"
 #include "game/levelTransition.hpp"
+#include "game/levelLoader.hpp"
 #include "game/levelBorder.hpp"
 #include "game/ruleSystem.hpp"
 #include "game/movementSystem.hpp"
@@ -39,6 +40,8 @@ public:
     void allowReload() { m_canReload = true; }
 
 private:
+    void initFromDef(const LevelDefinition& def);
+
     void buildYouObjects();
 
     void checkReload();

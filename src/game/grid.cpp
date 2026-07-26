@@ -2,7 +2,6 @@
 #include "game/config.hpp"
 
 // std
-#include <iostream>
 #include <algorithm>
 
 Grid::Grid(uint32_t width, uint32_t height) 
@@ -37,9 +36,7 @@ void Grid::removeObjectAt(std::size_t uid, Cell cell)
         return;
     }
 
-    auto& cellObjects = m_objectsUID[cell.y][cell.x];
-    cellObjects.erase(std::remove(cellObjects.begin(), cellObjects.end(), uid),
-                      cellObjects.end());
+    std::erase(m_objectsUID[cell.y][cell.x], uid);
 }
 
 void Grid::clearObjects()

@@ -9,10 +9,10 @@ INC_DIR = include
 SRCS = $(shell find $(SRC_DIR) -name "*.cpp")
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
-CXXFLAGS = -std=c++17 -MMD -MP -O2 -I$(INC_DIR) $(shell pkg-config --cflags sdl2)
+CXXFLAGS = -std=c++23 -MMD -MP -O2 -I$(INC_DIR) $(shell pkg-config --cflags sdl2)
 
 LDFLAGS = $(shell pkg-config --libs \
-			sdl2 SDL2_image)
+			sdl2 SDL2_image) -lstdc++exp
 
 all: $(TARGET)
 

@@ -5,6 +5,7 @@
 
 // std
 #include <array>
+#include <utility>
 
 class Renderer;
 
@@ -27,12 +28,12 @@ public:
     void draw();
 
 private:
-    void drawIfVisible(const SDL_Rect& rect);
+    void drawSide(const SDL_Rect& side);
 
     Renderer& m_renderer;
 
     SDL_Rect m_levelArea{};
-    std::array<SDL_Rect, (std::size_t)LevelBorderSide::MAX> m_borders;
+    std::array<SDL_Rect, std::to_underlying(LevelBorderSide::MAX)> m_sides;
 
     static constexpr SDL_Color s_color {60, 60, 60, 255};
 };

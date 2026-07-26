@@ -1,10 +1,5 @@
 #include "time/time.hpp"
 
-std::chrono::high_resolution_clock::time_point Time::m_lastTime;
-std::chrono::high_resolution_clock::time_point Time::m_startTime;
-
-float Time::m_deltaTime = 0.0f;
-
 void Time::init()
 {
     m_startTime = std::chrono::high_resolution_clock::now();

@@ -2,7 +2,7 @@
 #include "game/objectManager.hpp"
 
 // std
-#include <iostream>
+#include <print>
 
 RuleSystem::RuleSystem(ObjectManager& objectMng, const Grid& grid)
     : m_objectMng(objectMng),
@@ -17,7 +17,7 @@ bool RuleSystem::update()
         return false;
     }
 
-    std::cout << "Updating rules..." << std::endl;
+    std::println("Updating rules...");
 
     m_rules = m_parser.parse();
     applyRules();
@@ -129,7 +129,7 @@ void RuleSystem::applyRules()
         }
         else
         {
-            std::cout << "Negated !" << std::endl;
+            std::println("Negated !");
         }
     }
 

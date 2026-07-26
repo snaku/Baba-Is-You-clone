@@ -10,8 +10,9 @@
 // std
 #include <array>
 #include <algorithm>
+#include <utility>
 
-static const std::array<SpriteInfo, (std::size_t)ObjectId::MAX> s_spriteInfos =
+static const std::array<SpriteInfo, std::to_underlying(ObjectId::MAX)> s_spriteInfos =
 {
     SpriteInfo{"NONE", {0, 0, 0, 0}},                             // ObjectId::NONE
 
@@ -134,5 +135,5 @@ void Object::setCell(Cell cell)
 
 const SpriteInfo& Object::getSpriteInfo(ObjectId id) const
 {
-    return s_spriteInfos.at((std::size_t)id);
+    return s_spriteInfos.at(std::to_underlying(id));
 }
