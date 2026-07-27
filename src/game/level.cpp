@@ -267,7 +267,7 @@ void Level::checkUndo()
 
     timer += Time::deltaTime();
 
-    if (timer < 0.2f ||
+    if (timer < 0.1f ||
         !m_input.isKeyDown(SDL_SCANCODE_Z))
     {
         return;

@@ -125,8 +125,12 @@ bool MovementSystem::handleObjectInteractionsAt(Object& object, Cell cell, Direc
             continue;
         }
 
-        if (handleSinkInteraction(object, *other) ||
-            m_ruleSystem.hasBehavior(other->getId(), BehaviorType::STOP) ||
+        if (handleSinkInteraction(object, *other))
+        {
+            continue; // an object with SINK behavior doesn't block the movement
+        }
+
+        if (m_ruleSystem.hasBehavior(other->getId(), BehaviorType::STOP) ||
             !handlePushInteraction(*other, dir))
         {
             return false;
@@ -148,11 +152,6 @@ bool MovementSystem::tryMove(Object& object, Direction dir)
     if (!handleObjectInteractionsAt(object, next, dir))
     {
         return false;
-    }
-
-    if (object.shouldGetKilled())
-    {
-        return true;
     }
 
     m_grid.removeObjectAt(object.getUID(), object.getCell());
