@@ -116,8 +116,7 @@ bool MovementSystem::handlePushInteraction(Object& object, Direction dir)
 
 bool MovementSystem::handleObjectInteractionsAt(Object& object, Cell cell, Direction dir)
 {
-    std::vector<Object*> others;
-    GameUtils::getObjectsAt(m_objectMng, m_grid, cell, others);
+    std::vector<Object*> others = GameUtils::getObjectsAt(m_objectMng, m_grid, cell);
 
     for (auto& other : others)
     {

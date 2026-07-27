@@ -12,6 +12,6 @@ namespace GameUtils
 {
 
 Cell getNextCellFromDir(Cell cell, Direction dir);
-void getObjectsAt(ObjectManager& objectMng, const Grid& grid, Cell cell, std::vector<Object*>& out);
+std::vector<Object*> getObjectsAt(ObjectManager& objectMng, const Grid& grid, Cell cell);
 
 }

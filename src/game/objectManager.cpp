@@ -34,10 +34,10 @@ void ObjectManager::removeObject(Object& object)
     m_objectsByUID.erase(object.getUID());
 
     auto it = std::ranges::find_if(m_objects, 
-    [&object](const std::unique_ptr<Object>& ptr)
-    {
-        return ptr.get() == &object;
-    });
+        [&object](const std::unique_ptr<Object>& ptr)
+        {
+            return ptr.get() == &object;
+        });
 
     if (it == m_objects.end())
     {

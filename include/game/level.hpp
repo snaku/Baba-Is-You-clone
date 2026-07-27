@@ -11,7 +11,6 @@
 
 // std
 #include <vector>
-#include <optional>
 
 class Renderer;
 class TextureManager;

@@ -230,15 +230,14 @@ void Level::checkWin()
             continue;
         }
 
-        std::vector<Object*> others;
-        GameUtils::getObjectsAt(m_objectMng, m_grid, object->getCell(), others);
+        std::vector<Object*> others = GameUtils::getObjectsAt(m_objectMng, m_grid, object->getCell());
 
         auto it = std::ranges::find_if(others, 
-        [this](const Object* other)
-        {
-            return other != nullptr &&
-                   m_ruleSystem.hasBehavior(other->getId(), BehaviorType::WIN);
-        });
+            [this](const Object* other)
+            {
+                return other != nullptr &&
+                       m_ruleSystem.hasBehavior(other->getId(), BehaviorType::WIN);
+            });
         
         if (it != others.end())
         {

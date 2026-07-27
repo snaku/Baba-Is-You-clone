@@ -37,10 +37,10 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
         stream >> name;
 
         std::ranges::transform(name, name.begin(),
-        [](char c)
-        {
-            return std::tolower(c);
-        });
+            [](char c)
+            {
+                return std::tolower(c);
+            });
 
         if (tryParseMetadata(def, stream, name))
         {

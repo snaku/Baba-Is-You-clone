@@ -94,13 +94,13 @@ void RuleParser::parseANDOperator(const Object& nounText, Object& basePredicateT
 Object* RuleParser::findText(const std::vector<std::unique_ptr<Object>>& objects, TextType type)
 {
     auto it = std::ranges::find_if(objects,
-    [&](const std::unique_ptr<Object>& object)
-    {
-        return object->isText() &&
-               object->getTextType() == type &&
-               !m_parsedNounsUID.contains(object->getUID()) &&
-               object->getCell().isValidPos();
-    });
+        [&](const std::unique_ptr<Object>& object)
+        {
+            return object->isText() &&
+                   object->getTextType() == type &&
+                   !m_parsedNounsUID.contains(object->getUID()) &&
+                   object->getCell().isValidPos();
+        });
 
     if (it == objects.end())
     {
@@ -113,12 +113,12 @@ Object* RuleParser::findText(const std::vector<std::unique_ptr<Object>>& objects
 Object* RuleParser::findText(const std::vector<Object*>& objectsAt, TextType type)
 {
     auto it = std::ranges::find_if(objectsAt,
-    [&](const Object* object)
-    {
-        return object->isText() &&
-               object->getTextType() == type &&
-               object->getCell().isValidPos();
-    });
+        [&](const Object* object)
+        {
+            return object->isText() &&
+                   object->getTextType() == type &&
+                   object->getCell().isValidPos();
+        });
 
     if (it == objectsAt.end())
     {
@@ -145,10 +145,8 @@ Object* RuleParser::findNextText(TextType type, Cell baseCell)
         return nullptr;
     }
 
-    std::vector<Object*> texts;
-    GameUtils::getObjectsAt(m_objectMng, m_grid, nextCell, texts);
-
-    return findText(texts, type);
+    return findText(GameUtils::getObjectsAt(m_objectMng, m_grid, nextCell),
+                    type);
 }
 
 Object* RuleParser::findOpNOT(Object& op, bool& negate)

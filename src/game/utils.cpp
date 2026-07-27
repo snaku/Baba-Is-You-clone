@@ -31,15 +31,14 @@ Cell getNextCellFromDir(Cell cell, Direction dir)
 }
 
 // TODO: move this function
-void getObjectsAt(ObjectManager& objectMng,
-                  const Grid& grid,
-                  Cell cell,
-                  std::vector<Object*>& out)
+std::vector<Object*> getObjectsAt(ObjectManager& objectMng,
+                                  const Grid& grid,
+                                  Cell cell)
 {
     const std::vector<std::size_t>& objectsUID = grid.getObjectsAt(cell);
+    std::vector<Object*> objects;
 
-    out.clear();
-    out.reserve(objectsUID.size());
+    objects.reserve(objectsUID.size());
 
     for (auto uid : objectsUID)
     {
@@ -49,8 +48,10 @@ void getObjectsAt(ObjectManager& objectMng,
             continue;
         }
 
-        out.push_back(object);
+        objects.push_back(object);
     }
+
+    return objects;
 }
 
 }
