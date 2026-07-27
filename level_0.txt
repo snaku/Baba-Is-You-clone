@@ -3,7 +3,7 @@ width 15
 height 15
 
 # BABA
-baba 3 3
+baba 5 8
 
 # BABA IS YOU RULE
 text_baba 1 0
@@ -33,8 +33,8 @@ text_stop 0 2
 rock 8 8
 
 # ROCK IS PUSH AND SINK RULE
-text_rock 10 9
-text_is 10 10
-text_push 10 11
-text_and 10 12
-text_sink 10 13
+text_rock 4 2
+text_is 5 2
+text_push 6 2
+text_and 7 2
+text_sink 8 2

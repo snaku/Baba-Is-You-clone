@@ -24,6 +24,18 @@ Object& ObjectManager::addObject(ObjectId id, Cell cell)
     return *m_objects.back();
 }
 
+Object& ObjectManager::addObjectFromUID(std::size_t uid, ObjectId id, Cell cell)
+{
+    std::size_t savedUID = s_nextUID;
+    s_nextUID = uid;
+
+    Object& object = addObject(id, cell);
+
+    s_nextUID = savedUID;
+
+    return object;
+}
+
 void ObjectManager::removeObject(Object& object)
 {
     if (m_removeCallback != nullptr)
@@ -47,9 +59,9 @@ void ObjectManager::removeObject(Object& object)
     m_objects.erase(it);
 }
 
-Object* ObjectManager::findObjectFromUID(std::size_t objectUID)
+Object* ObjectManager::findObjectFromUID(std::size_t uid)
 {
-    auto it = m_objectsByUID.find(objectUID);
+    auto it = m_objectsByUID.find(uid);
 
     if (it == m_objectsByUID.end() ||
         it->second == nullptr)
@@ -88,7 +100,10 @@ void ObjectManager::addToDestroyQueue(Object& object)
 
 void ObjectManager::clear()
 {
+    while (!m_objects.empty())
+    {
+        removeObject(*m_objects.back());
+    }
+
     m_destroyQueue.clear();
-    m_objectsByUID.clear();
-    m_objects.clear();
 }

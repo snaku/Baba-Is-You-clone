@@ -29,8 +29,9 @@ public:
     }
 
     Object& addObject(ObjectId id, Cell cell);
+    Object& addObjectFromUID(std::size_t uid, ObjectId id, Cell cell);
     void removeObject(Object& object);
-    Object* findObjectFromUID(std::size_t objectUID);
+    Object* findObjectFromUID(std::size_t uid);
 
     void addToDestroyQueue(Object& object);
     void updateDestroyQueue();
@@ -52,7 +53,7 @@ private:
     std::unordered_map<std::size_t, Object*> m_objectsByUID;
     std::vector<std::size_t> m_destroyQueue;
 
-    inline static std::size_t s_nextUID = 0;
+    inline static std::size_t s_nextUID = 1;
 
     Callback m_addCallback = nullptr;
     Callback m_removeCallback = nullptr;

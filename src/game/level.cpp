@@ -25,6 +25,7 @@ Level::Level(Renderer& renderer,
       m_border(renderer),
       m_grid(GameConfig::gridWidth, GameConfig::gridHeight),
       m_ruleSystem(m_objectMng, m_grid),
+      m_undoSystem(m_objectMng),
       m_movementSystem(m_objectMng, m_grid, m_ruleSystem, m_input)
 {
     m_objectMng.setAddCallback(
@@ -86,6 +87,8 @@ void Level::initFromDef(const LevelDefinition& def)
         m_objectMng.addObject(data.id, data.cell);
     }
 
+    m_undoSystem.snap();
+
     m_ruleSystem.requestDirty();
     m_state = LevelState::PLAYING;
 }
@@ -137,6 +140,7 @@ void Level::reload()
     m_ruleSystem.clear();
     m_grid.clearObjects();
     m_objectMng.clear();
+    m_undoSystem.clear();
 
     load();
 }
@@ -148,6 +152,7 @@ void Level::updateStateIdle()
 void Level::updateStatePlaying()
 {
     checkReload();
+    checkUndo();
 
     bool canMove = m_movementSystem.updateMoveTimer();
     bool moved = false;
@@ -170,6 +175,11 @@ void Level::updateStatePlaying()
             }
         }
     );
+
+    if (moved)
+    {
+        m_undoSystem.snap();
+    }
 
     m_objectMng.updateDestroyQueue();
 
@@ -249,4 +259,22 @@ void Level::checkWin()
             return;
         }
     }
+}
+
+void Level::checkUndo()
+{
+    static float timer = 0.0f;
+
+    timer += Time::deltaTime();
+
+    if (timer < 0.2f ||
+        !m_input.isKeyDown(SDL_SCANCODE_Z))
+    {
+        return;
+    }
+
+    timer = 0.0f;
+
+    m_undoSystem.undo();
+    m_ruleSystem.requestDirty();
 }

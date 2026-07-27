@@ -8,6 +8,7 @@
 #include "game/levelBorder.hpp"
 #include "game/ruleSystem.hpp"
 #include "game/movementSystem.hpp"
+#include "game/undoSystem.hpp"
 
 // std
 #include <vector>
@@ -53,6 +54,8 @@ private:
 
     void checkWin();
 
+    void checkUndo();
+
     Renderer& m_renderer;
     Grid m_grid;
     const Input& m_input;
@@ -61,6 +64,7 @@ private:
     LevelBorder m_border;
     MovementSystem m_movementSystem;
     RuleSystem m_ruleSystem;
+    UndoSystem m_undoSystem;
     LevelState m_state = LevelState::IDLE;
     uint32_t m_id = 0;
     std::vector<std::size_t> m_youObjectsUID;
