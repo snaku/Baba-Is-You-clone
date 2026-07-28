@@ -1,6 +1,4 @@
 #include "game/utils.hpp"
-#include "game/grid.hpp"
-#include "game/objectManager.hpp"
 
 namespace GameUtils
 {
@@ -28,30 +26,6 @@ Cell getNextCellFromDir(Cell cell, Direction dir)
     }
 
     return next;
-}
-
-// TODO: move this function
-std::vector<Object*> getObjectsAt(ObjectManager& objectMng,
-                                  const Grid& grid,
-                                  Cell cell)
-{
-    const std::vector<std::size_t>& objectsUID = grid.getObjectsAt(cell);
-    std::vector<Object*> objects;
-
-    objects.reserve(objectsUID.size());
-
-    for (auto uid : objectsUID)
-    {
-        Object* object = objectMng.findObjectFromUID(uid);
-        if (object == nullptr)
-        {
-            continue;
-        }
-
-        objects.push_back(object);
-    }
-
-    return objects;
 }
 
 }

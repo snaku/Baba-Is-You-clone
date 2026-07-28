@@ -244,14 +244,14 @@ LevelSituation Level::findSituation()
 
     for (auto uid : m_youObjectsUID)
     {
-        Object* object = m_objectMng.findObjectFromUID(uid);
+        Object* object = m_objectMng.findFromUID(uid);
 
         if (object == nullptr)
         {
             continue;
         }
 
-        std::vector<Object*> others = GameUtils::getObjectsAt(m_objectMng, m_grid, object->getCell());
+        std::vector<Object*> others = m_objectMng.findFromUIDs(m_grid.getObjectsAt(object->getCell()));
         for (const auto& other : others)
         {
             if (other == nullptr)

@@ -2,6 +2,7 @@
 #include "game/grid.hpp"
 #include "game/ruleSystem.hpp"
 #include "game/utils.hpp"
+#include "game/objectManager.hpp"
 
 #include "input/input.hpp"
 
@@ -116,7 +117,7 @@ bool MovementSystem::handlePushInteraction(Object& object, Direction dir)
 
 bool MovementSystem::handleObjectInteractionsAt(Object& object, Cell cell, Direction dir)
 {
-    std::vector<Object*> others = GameUtils::getObjectsAt(m_objectMng, m_grid, cell);
+    std::vector<Object*> others = m_objectMng.findFromUIDs(m_grid.getObjectsAt(cell));
 
     for (auto& other : others)
     {

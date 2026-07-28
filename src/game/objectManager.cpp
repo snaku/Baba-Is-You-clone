@@ -59,7 +59,7 @@ void ObjectManager::removeObject(Object& object)
     m_objects.erase(it);
 }
 
-Object* ObjectManager::findObjectFromUID(std::size_t uid)
+Object* ObjectManager::findFromUID(std::size_t uid)
 {
     auto it = m_objectsByUID.find(uid);
 
@@ -72,6 +72,25 @@ Object* ObjectManager::findObjectFromUID(std::size_t uid)
     return it->second;
 }
 
+std::vector<Object*> ObjectManager::findFromUIDs(const std::vector<std::size_t>& uids)
+{
+    std::vector<Object*> objects;
+    objects.reserve(uids.size());
+
+    for (auto uid : uids)
+    {
+        Object* object = findFromUID(uid);
+        if (object == nullptr)
+        {
+            continue;
+        }
+
+        objects.push_back(object);
+    }
+
+    return objects;
+}
+
 void ObjectManager::updateDestroyQueue()
 {
     if (m_destroyQueue.empty())
@@ -81,7 +100,7 @@ void ObjectManager::updateDestroyQueue()
 
     for (auto uid : m_destroyQueue)
     {
-        Object* object = findObjectFromUID(uid);
+        Object* object = findFromUID(uid);
         if (object == nullptr)
         {
             continue;

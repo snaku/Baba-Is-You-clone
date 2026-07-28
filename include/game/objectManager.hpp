@@ -31,7 +31,9 @@ public:
     Object& addObject(ObjectId id, Cell cell);
     Object& addObjectFromUID(std::size_t uid, ObjectId id, Cell cell);
     void removeObject(Object& object);
-    Object* findObjectFromUID(std::size_t uid);
+
+    Object* findFromUID(std::size_t uid);
+    std::vector<Object*> findFromUIDs(const std::vector<std::size_t>& uids);
 
     void addToDestroyQueue(Object& object);
     void updateDestroyQueue();

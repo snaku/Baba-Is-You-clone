@@ -83,7 +83,7 @@ void RuleSystem::applyObjectsTransformation()
 {
     for (auto& [uid, newId] : m_objectsWithTransformation)
     {
-        Object* object = m_objectMng.findObjectFromUID(uid);
+        Object* object = m_objectMng.findFromUID(uid);
         if (object == nullptr)
         {
             continue;
@@ -97,7 +97,7 @@ void RuleSystem::revertObjectsTransformation()
 {
     for (auto& [uid, _] : m_objectsWithTransformation)
     {
-        Object* object = m_objectMng.findObjectFromUID(uid);
+        Object* object = m_objectMng.findFromUID(uid);
         if (object == nullptr)
         {
             continue;

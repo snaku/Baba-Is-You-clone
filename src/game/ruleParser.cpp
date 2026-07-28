@@ -2,6 +2,7 @@
 #include "game/objectManager.hpp"
 #include "game/objectUtils.hpp"
 #include "game/utils.hpp"
+#include "game/grid.hpp"
 
 // std
 #include <algorithm>
@@ -145,7 +146,7 @@ Object* RuleParser::findNextText(TextType type, Cell baseCell)
         return nullptr;
     }
 
-    return findText(GameUtils::getObjectsAt(m_objectMng, m_grid, nextCell),
+    return findText(m_objectMng.findFromUIDs(m_grid.getObjectsAt(nextCell)),
                     type);
 }
 
