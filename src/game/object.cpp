@@ -29,6 +29,7 @@ static const std::array<SpriteInfo, std::to_underlying(ObjectId::MAX)> s_spriteI
     SpriteInfo{"assets/text_not_0_1.png", {229, 83, 59, 255}},    // ObjectId::TEXT_NOT
     SpriteInfo{"assets/text_you_0_1.png", {217, 57, 106, 255}},   // ObjectId::TEXT_YOU
     SpriteInfo{"assets/text_win_0_1.png", {237, 226, 133, 255}},  // ObjectId::TEXT_WIN
+    SpriteInfo{"assets/text_defeat_0_1.png", {130, 38, 28, 255}}, // ObjectId::TEXT_DEFEAT
     SpriteInfo{"assets/text_sink_0_1.png", {95, 157, 209, 255}},  // ObjectId::TEXT_SINK
     SpriteInfo{"assets/text_stop_0_1.png", {27, 92, 28, 255}},    // ObjectId::TEXT_STOP
     SpriteInfo{"assets/text_push_0_1.png", {144, 103, 62, 255}},  // ObjectId::TEXT_PUSH

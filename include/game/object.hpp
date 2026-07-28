@@ -41,6 +41,7 @@ enum class ObjectId
     TEXT_NOT,
     TEXT_YOU,
     TEXT_WIN,
+    TEXT_DEFEAT,
     TEXT_SINK,
     TEXT_STOP,
     TEXT_PUSH,
@@ -86,6 +87,7 @@ enum class BehaviorType
     STOP,
     SINK,
     PUSH,
+    DEFEAT,
     MAX
 };
 

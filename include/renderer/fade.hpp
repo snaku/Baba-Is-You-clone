@@ -34,7 +34,7 @@ private:
     FadeState m_state = FadeState::IDLE;
     float m_duration = 0.5f;
     float m_timer = 0.0f;
-    SDL_Color m_col {0, 0, 0, 0};
+    SDL_Color m_col {255, 255, 255, 0};
 
     bool m_justFinishedOut = false;
 

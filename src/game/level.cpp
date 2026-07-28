@@ -191,7 +191,7 @@ void Level::updateStatePlaying()
 
     if (rulesChanged || moved)
     {
-        checkWin();
+        checkSituations();
     }
 }
 
@@ -202,6 +202,7 @@ void Level::updateStateWin()
 
 void Level::updateStateDefeat()
 {
+    checkReload();
 }
 
 void Level::update()
@@ -229,8 +230,14 @@ void Level::draw()
     m_border.draw();
 }
 
-void Level::checkWin()
+LevelSituation Level::findSituation()
 {
+    static constexpr std::array<std::pair<BehaviorType, LevelSituation>, 2> s_bhvSituations =
+    {
+        std::pair{BehaviorType::DEFEAT, LevelSituation::DEFEAT}, // need to check defeat first
+        std::pair{BehaviorType::WIN, LevelSituation::WIN}
+    };
+
     for (auto uid : m_youObjectsUID)
     {
         Object* object = m_objectMng.findObjectFromUID(uid);
@@ -241,23 +248,45 @@ void Level::checkWin()
         }
 
         std::vector<Object*> others = GameUtils::getObjectsAt(m_objectMng, m_grid, object->getCell());
-
-        auto it = std::ranges::find_if(others, 
-            [this](const Object* other)
-            {
-                return other != nullptr &&
-                       m_ruleSystem.hasBehavior(other->getId(), BehaviorType::WIN);
-            });
-        
-        if (it != others.end())
+        for (const auto& other : others)
         {
-            std::println("WIN !");
+            if (other == nullptr)
+            {
+                continue;
+            }
 
+            for (const auto& [behavior, situation] : s_bhvSituations)
+            {
+                if (m_ruleSystem.hasBehavior(other->getId(), behavior))
+                {
+                    return situation;
+                }
+            }
+        }
+    }
+
+    return LevelSituation::NONE;
+}
+
+void Level::checkSituations()
+{
+    switch (findSituation())
+    {
+        case LevelSituation::NONE: return;
+
+        case LevelSituation::WIN:
+            std::println("WIN !");
             m_state = LevelState::WIN;
             m_reloadRequested = true;
+            m_transition.setColor(255, 255, 255);
 
-            return;
-        }
+            break;
+
+        case LevelSituation::DEFEAT:
+            std::println("DEFEAT...");
+            m_state = LevelState::DEFEAT;
+            m_reloadRequested = true;
+            m_transition.setColor(0, 0, 0);
     }
 }
 

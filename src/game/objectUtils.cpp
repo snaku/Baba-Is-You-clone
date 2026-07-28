@@ -21,6 +21,7 @@ static const std::unordered_map<std::string, ObjectId> s_nameIdMap =
     {"text_and", ObjectId::TEXT_AND},
     {"text_you", ObjectId::TEXT_YOU},
     {"text_win", ObjectId::TEXT_WIN},
+    {"text_defeat", ObjectId::TEXT_DEFEAT},
     {"text_sink", ObjectId::TEXT_SINK},
     {"text_stop", ObjectId::TEXT_STOP},
     {"text_push", ObjectId::TEXT_PUSH},
@@ -59,11 +60,12 @@ BehaviorType textIdToBehavior(ObjectId textId)
 
     switch (textId)
     {
-        case ObjectId::TEXT_YOU:  return BehaviorType::YOU;
-        case ObjectId::TEXT_WIN:  return BehaviorType::WIN;
-        case ObjectId::TEXT_SINK: return BehaviorType::SINK;
-        case ObjectId::TEXT_STOP: return BehaviorType::STOP;
-        case ObjectId::TEXT_PUSH: return BehaviorType::PUSH;
+        case ObjectId::TEXT_YOU:    return BehaviorType::YOU;
+        case ObjectId::TEXT_WIN:    return BehaviorType::WIN;
+        case ObjectId::TEXT_DEFEAT: return BehaviorType::DEFEAT;
+        case ObjectId::TEXT_SINK:   return BehaviorType::SINK;
+        case ObjectId::TEXT_STOP:   return BehaviorType::STOP;
+        case ObjectId::TEXT_PUSH:   return BehaviorType::PUSH;
     }
 
     return BehaviorType::NONE;
@@ -79,19 +81,20 @@ ObjectType idToType(ObjectId id)
         case ObjectId::FLAG:  [[fallthrough]];
         case ObjectId::ROCK:  return ObjectType::ENTITY;
 
-        case ObjectId::TEXT_BABA:  [[fallthrough]];
-        case ObjectId::TEXT_WATER: [[fallthrough]];
-        case ObjectId::TEXT_IS:    [[fallthrough]];
-        case ObjectId::TEXT_NOT:   [[fallthrough]];
-        case ObjectId::TEXT_AND:   [[fallthrough]];
-        case ObjectId::TEXT_YOU:   [[fallthrough]];
-        case ObjectId::TEXT_WIN:   [[fallthrough]];
-        case ObjectId::TEXT_SINK:  [[fallthrough]];
-        case ObjectId::TEXT_STOP:  [[fallthrough]];
-        case ObjectId::TEXT_PUSH:  [[fallthrough]];
-        case ObjectId::TEXT_FLAG:  [[fallthrough]];
-        case ObjectId::TEXT_ROCK:  [[fallthrough]];
-        case ObjectId::TEXT_WALL:  return ObjectType::TEXT;
+        case ObjectId::TEXT_BABA:   [[fallthrough]];
+        case ObjectId::TEXT_WATER:  [[fallthrough]];
+        case ObjectId::TEXT_IS:     [[fallthrough]];
+        case ObjectId::TEXT_NOT:    [[fallthrough]];
+        case ObjectId::TEXT_AND:    [[fallthrough]];
+        case ObjectId::TEXT_YOU:    [[fallthrough]];
+        case ObjectId::TEXT_WIN:    [[fallthrough]];
+        case ObjectId::TEXT_DEFEAT: [[fallthrough]];
+        case ObjectId::TEXT_SINK:   [[fallthrough]];
+        case ObjectId::TEXT_STOP:   [[fallthrough]];
+        case ObjectId::TEXT_PUSH:   [[fallthrough]];
+        case ObjectId::TEXT_FLAG:   [[fallthrough]];
+        case ObjectId::TEXT_ROCK:   [[fallthrough]];
+        case ObjectId::TEXT_WALL:   return ObjectType::TEXT;
     }
 
     return ObjectType::NONE;
@@ -111,10 +114,11 @@ TextType textIdToTextType(ObjectId textId)
         case ObjectId::TEXT_AND: [[fallthrough]];
         case ObjectId::TEXT_NOT: return TextType::OPERATOR;
 
-        case ObjectId::TEXT_YOU:  [[fallthrough]];
-        case ObjectId::TEXT_WIN:  [[fallthrough]];
-        case ObjectId::TEXT_SINK: [[fallthrough]];
-        case ObjectId::TEXT_STOP: [[fallthrough]];
+        case ObjectId::TEXT_YOU:    [[fallthrough]];
+        case ObjectId::TEXT_WIN:    [[fallthrough]];
+        case ObjectId::TEXT_DEFEAT: [[fallthrough]];
+        case ObjectId::TEXT_SINK:   [[fallthrough]];
+        case ObjectId::TEXT_STOP:   [[fallthrough]];
         case ObjectId::TEXT_PUSH: return TextType::BEHAVIOR;
     }
 

@@ -22,3 +22,8 @@ void LevelTransition::update()
         m_level.allowReload();
     }
 }
+
+void LevelTransition::setColor(Uint8 r, Uint8 g, Uint8 b)
+{
+    m_fade.setColor(r, g, b);
+}

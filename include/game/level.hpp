@@ -26,6 +26,14 @@ enum class LevelState
     DEFEAT
 };
 
+enum class LevelSituation
+{
+    NONE,
+
+    WIN,
+    DEFEAT
+};
+
 class Level
 {
 public:
@@ -52,7 +60,8 @@ private:
     void updateStateWin();
     void updateStateDefeat();
 
-    void checkWin();
+    LevelSituation findSituation();
+    void checkSituations();
 
     void checkUndo();
 
