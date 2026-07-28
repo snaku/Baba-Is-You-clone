@@ -112,7 +112,7 @@ void Level::checkReload()
 {
     m_reloadTimer += Time::deltaTime();
 
-    if (m_reloadTimer >= 1.0f &&
+    if (m_reloadTimer >= s_reloadDelay &&
         m_input.isKeyDown(SDL_SCANCODE_R))
     {
         m_reloadRequested = true;
@@ -125,11 +125,8 @@ void Level::checkReload()
 
     if (m_canReload)
     {
-        m_reloadRequested = false;
-        m_canReload = false;
-        m_reloadTimer = 0.0f;
-
         reload();
+        clearReloadState();
     }
 }
 
@@ -143,6 +140,13 @@ void Level::reload()
     m_undoSystem.clear();
 
     load();
+}
+
+void Level::clearReloadState()
+{
+    m_reloadRequested = false;
+    m_canReload = false;
+    m_reloadTimer = 0.0f;
 }
 
 void Level::updateStateIdle()
@@ -176,12 +180,12 @@ void Level::updateStatePlaying()
         }
     );
 
+    m_objectMng.updateDestroyQueue();
+
     if (moved)
     {
         m_undoSystem.snap();
     }
-
-    m_objectMng.updateDestroyQueue();
 
     bool rulesChanged = m_ruleSystem.update();
     if (rulesChanged)
@@ -292,18 +296,14 @@ void Level::checkSituations()
 
 void Level::checkUndo()
 {
-    static float timer = 0.0f;
-
-    timer += Time::deltaTime();
-
-    if (timer < 0.1f ||
+    if (!m_undoSystem.updateTimer() ||
         !m_input.isKeyDown(SDL_SCANCODE_Z))
     {
         return;
     }
 
-    timer = 0.0f;
-
+    m_undoSystem.clearTimer();
     m_undoSystem.undo();
+
     m_ruleSystem.requestDirty();
 }

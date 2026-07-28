@@ -21,12 +21,12 @@ bool MovementSystem::updateMoveTimer()
 
     if (!m_movedLastFrame)
     {
-        m_moveTimer = 0.10f;
+        m_moveTimer = s_delay;
     }
 
-    if (m_moveTimer >= 0.10f)
+    if (m_moveTimer >= s_delay)
     {
-        m_moveTimer -= 0.10f;
+        m_moveTimer -= s_delay;
         return true;
     }
 

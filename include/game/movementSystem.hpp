@@ -28,4 +28,6 @@ private:
 
     float m_moveTimer = 0.0f;
     bool m_movedLastFrame = false;
+
+    static constexpr float s_delay = 0.12f;
 };

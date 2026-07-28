@@ -113,7 +113,7 @@ public:
     bool isAt(Cell cell) const { return m_cell == cell; }
 
     void requestKill() { m_kill = true; };
-    bool shouldGetKilled() { return m_kill; };
+    bool shouldGetKilled() const { return m_kill; };
 
     ObjectId getId() const { return m_id; }
     ObjectType getType() const { return m_type; }

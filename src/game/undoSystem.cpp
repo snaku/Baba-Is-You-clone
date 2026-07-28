@@ -1,6 +1,8 @@
 #include "game/undoSystem.hpp"
 #include "game/objectManager.hpp"
 
+#include "time/time.hpp"
+
 UndoSystem::UndoSystem(ObjectManager& objectMng)
     : m_objectMng(objectMng)
 {
@@ -31,7 +33,8 @@ void UndoSystem::undo()
 
     m_objectMng.clear();
 
-    m_history.pop();
+    m_history.pop(); // pop first because the top will always be the level current state
+
     const LevelSnapshot& snapshot = m_history.top();
     for (const auto& objectSnapshot : snapshot.objectSnapshots)
     {
@@ -41,10 +44,24 @@ void UndoSystem::undo()
     }
 }
 
+bool UndoSystem::updateTimer()
+{
+    m_timer += Time::deltaTime();
+
+    return m_timer > s_delay;
+}
+
+void UndoSystem::clearTimer()
+{
+    m_timer = 0.0f;
+}
+
 void UndoSystem::clear()
 {
     while (!m_history.empty())
     {
         m_history.pop();
     }
+
+    clearTimer();
 }

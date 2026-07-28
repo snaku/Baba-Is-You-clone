@@ -54,6 +54,7 @@ private:
 
     void checkReload();
     void reload();
+    void clearReloadState();
 
     void updateStateIdle();
     void updateStatePlaying();
@@ -74,10 +75,15 @@ private:
     MovementSystem m_movementSystem;
     RuleSystem m_ruleSystem;
     UndoSystem m_undoSystem;
+
     LevelState m_state = LevelState::IDLE;
     uint32_t m_id = 0;
+
     std::vector<std::size_t> m_youObjectsUID;
+
     float m_reloadTimer = 0.0f;
     bool m_reloadRequested = false;
     bool m_canReload = false;
+
+    static constexpr float s_reloadDelay = 1.0f;
 };

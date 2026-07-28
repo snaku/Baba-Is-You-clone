@@ -26,9 +26,14 @@ public:
 
     void snap();
     void undo();
+    bool updateTimer();
+    void clearTimer();
     void clear();
 
 private:
     ObjectManager& m_objectMng;
     std::stack<LevelSnapshot> m_history;
+    float m_timer = 0.0f;
+
+    static constexpr float s_delay = 0.15f;
 };

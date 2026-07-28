@@ -10,7 +10,7 @@ text_baba 0 0
 text_is 1 0
 text_you 2 0
 
-# WALL IS STOP RULE
+# WALL IS DEFEAT RULE
 text_wall 0 14
 text_is 1 14
 text_defeat 2 14
