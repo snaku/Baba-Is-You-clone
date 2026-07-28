@@ -1,11 +1,81 @@
 # METADATA
-width 10
-height 10
+width 15
+height 15
 
-# WALL
-wall 0 0
+# BABA
+baba 5 11
 
-# WALL IS YOU RULE
-text_wall 7 5
-text_is 8 5
-text_you 9 5
+# BABA IS YOU RULE
+text_baba 0 0
+text_is 1 0
+text_you 2 0
+
+# WALL IS STOP RULE
+text_wall 0 14
+text_is 1 14
+text_defeat 2 14
+
+# ROCK IS PUSH RULE
+text_rock 1 6
+text_is 2 6
+text_push 3 6
+text_and 4 6
+text_sink 5 6
+
+# TEXT WIN
+text_win 12 6
+
+# WALLS 1
+wall 0 10
+wall 1 10
+wall 2 10
+wall 3 10
+wall 4 10
+wall 6 10
+wall 7 10
+wall 8 10
+wall 9 10
+wall 10 10
+wall 10 9
+wall 9 9
+wall 9 8
+wall 8 9
+
+# WALLS 2
+wall 0 2
+wall 1 2
+wall 2 2
+wall 3 2
+wall 4 2
+wall 5 2
+wall 6 2
+wall 7 2
+wall 8 2
+wall 9 2
+wall 10 2
+wall 10 3
+wall 9 3
+wall 9 4
+wall 8 3
+
+# ROCKS
+rock 9 5
+rock 9 6
+rock 9 7
+
+# WALLS 3
+wall 10 4
+wall 11 4
+wall 12 4
+wall 13 4
+wall 14 4
+wall 10 5
+wall 14 5
+wall 14 6
+wall 10 7
+wall 14 7
+wall 10 8
+wall 11 8
+wall 12 8
+wall 13 8
+wall 14 8
