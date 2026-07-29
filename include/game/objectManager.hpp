@@ -55,8 +55,8 @@ private:
     std::unordered_map<std::size_t, Object*> m_objectsByUID;
     std::vector<std::size_t> m_destroyQueue;
 
-    inline static std::size_t s_nextUID = 1;
-
     Callback m_addCallback = nullptr;
     Callback m_removeCallback = nullptr;
+
+    inline static std::size_t s_nextUID = 1;
 };

@@ -63,7 +63,8 @@ bool RuleSystem::hasBehavior(ObjectId id, BehaviorType behavior)
 
 void RuleSystem::addToTransformationQueue(ObjectId id, ObjectId newId)
 {
-    if (newId == ObjectId::NONE)
+    if (id == ObjectId::NONE ||
+        newId == ObjectId::NONE)
     {
         return;
     }
@@ -109,6 +110,37 @@ void RuleSystem::revertObjectsTransformation()
     m_objectsWithTransformation.clear();
 }
 
+void RuleSystem::applyPredicate(ObjectId subject, BehaviorType behavior)
+{
+    addBehavior(subject, behavior);
+}
+
+void RuleSystem::applyPredicate(ObjectId subject, ObjectId newId)
+{
+    addToTransformationQueue(subject, newId);
+}
+
+void RuleSystem::applyRule(const Rule& rule)
+{
+    if (rule.negate)
+    {
+        // TODO
+        std::println("Negated !");
+        return;
+    }
+
+    for (const auto& subject : rule.subjects)
+    {
+        std::visit(
+            [&](const auto& predicate)
+            {
+                applyPredicate(subject, predicate);
+            },
+            rule.predicate
+        );
+    }
+}
+
 void RuleSystem::applyRules()
 {
     m_behaviors.clear();
@@ -116,21 +148,7 @@ void RuleSystem::applyRules()
 
     for (const auto& rule : m_rules)
     {
-        if (!rule.negate)
-        {
-            if (std::holds_alternative<BehaviorType>(rule.predicate))
-            {
-                addBehavior(rule.subject, std::get<BehaviorType>(rule.predicate));
-            }
-            else
-            {
-                addToTransformationQueue(rule.subject, std::get<ObjectId>(rule.predicate));
-            }
-        }
-        else
-        {
-            std::println("Negated !");
-        }
+        applyRule(rule);
     }
 
     applyObjectsTransformation();

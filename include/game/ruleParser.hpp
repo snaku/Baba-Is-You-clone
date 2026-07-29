@@ -10,6 +10,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <type_traits>
+#include <optional>
 
 class ObjectManager;
 class Grid;
@@ -23,17 +24,19 @@ public:
 
 private:
     void parseInDir(Direction dir);
-    void parseFromNoun(const Object& nounText);
-    void parseANDOperator(const Object& nounText, Object& basePredicateText);
+    void parseFromNoun(Object& nounText);
+    std::optional<std::vector<ObjectId>> parseANDOperatorForNouns(Object& baseNounText, Object*& lastTextNoun);
+    void parseANDOperatorForPredicate(const std::vector<ObjectId>& textIds, Object& basePredicateText);
 
     Object* findText(const std::vector<std::unique_ptr<Object>>& objects, TextType type);
     Object* findText(const std::vector<Object*>& objectsAt, TextType type);
     Object* findNextText(TextType type, Cell baseCell);
 
-    Object* findOpNOT(Object& op, bool& negate);
-    Object* findPredicate(Object& op, std::variant<ObjectId, BehaviorType>& predicate);
+    Object* findOpAND(const Object& text);
+    Object* findOpNOT(const Object& op, bool& negate);
+    Object* findPredicate(const Object& op, std::variant<ObjectId, BehaviorType>& predicate);
 
-    void createRule(ObjectId subject, std::variant<ObjectId, BehaviorType> predicate, bool negate);
+    void createRule(const std::vector<ObjectId>& subjects, std::variant<ObjectId, BehaviorType> predicate, bool negate);
 
     ObjectManager& m_objectMng;
     const Grid& m_grid;

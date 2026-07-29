@@ -31,7 +31,7 @@ Object& ObjectManager::addObjectFromUID(std::size_t uid, ObjectId id, Cell cell)
 
     Object& object = addObject(id, cell);
 
-    s_nextUID = savedUID;
+    s_nextUID = ++savedUID;
 
     return object;
 }
@@ -45,18 +45,11 @@ void ObjectManager::removeObject(Object& object)
 
     m_objectsByUID.erase(object.getUID());
 
-    auto it = std::ranges::find_if(m_objects, 
+    std::erase_if(m_objects, 
         [&object](const std::unique_ptr<Object>& ptr)
         {
-            return ptr.get() == &object;
+            return ptr->getUID() == object.getUID();
         });
-
-    if (it == m_objects.end())
-    {
-        return;
-    }
-
-    m_objects.erase(it);
 }
 
 Object* ObjectManager::findFromUID(std::size_t uid)

@@ -37,11 +37,18 @@ void RuleParser::parseInDir(Direction dir)
     }
 }
 
-void RuleParser::parseFromNoun(const Object& nounText)
+void RuleParser::parseFromNoun(Object& nounText)
 {
     m_parsedNounsUID.insert(nounText.getUID());
 
-    Object* opIS = findNextText(TextType::OPERATOR, nounText.getCell());
+    Object* lastNounText = &nounText;
+    auto subjects = parseANDOperatorForNouns(nounText, lastNounText);
+    if (subjects == std::nullopt)
+    {
+        return;
+    }
+
+    Object* opIS = findNextText(TextType::OPERATOR, lastNounText->getCell());
     if (opIS == nullptr ||
         opIS->getId() != ObjectId::TEXT_IS)
     {
@@ -59,20 +66,58 @@ void RuleParser::parseFromNoun(const Object& nounText)
         return;
     }
 
-    createRule(ObjectUtils::textIdToNounId(nounText.getId()), predicate, negate);
+    createRule(subjects.value(), predicate, negate);
 
-    parseANDOperator(nounText, *predicateText);
+    parseANDOperatorForPredicate(subjects.value(), *predicateText);
 }
 
-void RuleParser::parseANDOperator(const Object& nounText, Object& basePredicateText)
+std::optional<std::vector<ObjectId>> RuleParser::parseANDOperatorForNouns(Object& baseNounText, Object*& lastTextNoun)
+{
+    std::vector<ObjectId> subjects;
+    Object* currentNounText = &baseNounText;
+    std::size_t opANDCount = 0;
+
+    while (currentNounText != nullptr)
+    {
+        subjects.push_back(ObjectUtils::textIdToNounId(currentNounText->getId()));
+
+        Object* opAND = findOpAND(*currentNounText);
+        if (opAND == nullptr)
+        {
+            break;
+        }
+
+        opANDCount++;
+
+        currentNounText = findNextText(TextType::NOUN, opAND->getCell());
+        m_parsedNounsUID.insert(currentNounText->getUID());
+    }
+
+    // a valid chain with n subjects needs n - 1 AND operators
+    if (subjects.size() != opANDCount + 1)
+    {
+        return std::nullopt;
+    }
+
+    if (currentNounText == nullptr)
+    {
+        return std::nullopt;
+    }
+
+    lastTextNoun = currentNounText;
+
+    return subjects;
+}
+
+void RuleParser::parseANDOperatorForPredicate(const std::vector<ObjectId>& nounsIds, 
+                                              Object& basePredicateText)
 {
     Object* currentPredicateText = &basePredicateText;
 
     while (currentPredicateText != nullptr)
     {
-        Object* opAND = findNextText(TextType::OPERATOR, currentPredicateText->getCell());
-        if (opAND == nullptr ||
-            opAND->getId() != ObjectId::TEXT_AND)
+        Object* opAND = findOpAND(*currentPredicateText);
+        if (opAND == nullptr)
         {
             break;
         }
@@ -88,7 +133,10 @@ void RuleParser::parseANDOperator(const Object& nounText, Object& basePredicateT
             break;
         }
 
-        createRule(ObjectUtils::textIdToNounId(nounText.getId()), predicate, negate);
+        for (auto id : nounsIds)
+        {
+            createRule({id}, predicate, negate);
+        }
     }
 }
 
@@ -150,7 +198,20 @@ Object* RuleParser::findNextText(TextType type, Cell baseCell)
                     type);
 }
 
-Object* RuleParser::findOpNOT(Object& op, bool& negate)
+Object* RuleParser::findOpAND(const Object& text)
+{
+    Object* opAND = findNextText(TextType::OPERATOR, text.getCell());
+
+    if (opAND == nullptr ||
+        opAND->getId() != ObjectId::TEXT_AND)
+    {
+        return nullptr;
+    }
+
+    return opAND;
+}
+
+Object* RuleParser::findOpNOT(const Object& op, bool& negate)
 {
     int count = 0;
     Cell nextCell = op.getCell();
@@ -173,7 +234,7 @@ Object* RuleParser::findOpNOT(Object& op, bool& negate)
     return last;
 }
 
-Object* RuleParser::findPredicate(Object& op,
+Object* RuleParser::findPredicate(const Object& op,
                                   std::variant<ObjectId, BehaviorType>& predicate)
 {
     Object* behaviorPredicate = findNextText(TextType::BEHAVIOR, op.getCell());
@@ -193,9 +254,9 @@ Object* RuleParser::findPredicate(Object& op,
     return nullptr;
 }
 
-void RuleParser::createRule(ObjectId subject,
-                           std::variant<ObjectId, BehaviorType> predicate,
-                           bool negate)
+void RuleParser::createRule(const std::vector<ObjectId>& subjects,
+                            std::variant<ObjectId, BehaviorType> predicate,
+                            bool negate)
 {
-    m_rules.push_back({subject, predicate, negate});
+    m_rules.push_back({subjects, predicate, negate});
 }

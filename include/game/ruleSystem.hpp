@@ -29,7 +29,11 @@ public:
     void requestDirty() { m_dirty = true; }
 
 private:
+    void applyPredicate(ObjectId subject, BehaviorType behavior);
+    void applyPredicate(ObjectId subject, ObjectId newId);
+    void applyRule(const Rule& rule);
     void applyRules();
+
     void addToTransformationQueue(ObjectId id, ObjectId newId);
     void applyObjectsTransformation();
     void revertObjectsTransformation();

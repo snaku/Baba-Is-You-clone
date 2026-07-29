@@ -3,11 +3,12 @@
 #include "game/object.hpp"
 
 // std
+#include <vector>
 #include <variant>
 
 struct Rule
 {
-    ObjectId subject;
+    std::vector<ObjectId> subjects;
     std::variant<ObjectId, BehaviorType> predicate;
     bool negate = false;
 };
