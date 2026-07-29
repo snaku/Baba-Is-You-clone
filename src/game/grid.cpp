@@ -50,7 +50,7 @@ void Grid::clearObjects()
     }
 }
 
-const std::vector<std::size_t>& Grid::getObjectsAt(Cell cell) const
+std::span<const std::size_t> Grid::getObjectsAt(Cell cell) const
 {
     static std::vector<std::size_t> empty;
 

@@ -65,7 +65,7 @@ Object* ObjectManager::findFromUID(std::size_t uid)
     return it->second;
 }
 
-std::vector<Object*> ObjectManager::findFromUIDs(const std::vector<std::size_t>& uids)
+std::vector<Object*> ObjectManager::findFromUIDs(std::span<const std::size_t> uids)
 {
     std::vector<Object*> objects;
     objects.reserve(uids.size());

@@ -109,7 +109,7 @@ std::optional<std::vector<ObjectId>> RuleParser::parseANDOperatorForNouns(Object
     return subjects;
 }
 
-void RuleParser::parseANDOperatorForPredicate(const std::vector<ObjectId>& nounsIds, 
+void RuleParser::parseANDOperatorForPredicate(std::span<const ObjectId> nounsIds, 
                                               Object& basePredicateText)
 {
     Object* currentPredicateText = &basePredicateText;
@@ -135,12 +135,13 @@ void RuleParser::parseANDOperatorForPredicate(const std::vector<ObjectId>& nouns
 
         for (auto id : nounsIds)
         {
-            createRule({id}, predicate, negate);
+            std::array<ObjectId, 1> arr{id}; // so i can pass it to createRule() std::span argument
+            createRule(arr, predicate, negate);
         }
     }
 }
 
-Object* RuleParser::findText(const std::vector<std::unique_ptr<Object>>& objects, TextType type)
+Object* RuleParser::findText(std::span<const std::unique_ptr<Object>> objects, TextType type)
 {
     auto it = std::ranges::find_if(objects,
         [&](const std::unique_ptr<Object>& object)
@@ -159,7 +160,7 @@ Object* RuleParser::findText(const std::vector<std::unique_ptr<Object>>& objects
     return it->get();
 }
 
-Object* RuleParser::findText(const std::vector<Object*>& objectsAt, TextType type)
+Object* RuleParser::findText(std::span<Object*> objectsAt, TextType type)
 {
     auto it = std::ranges::find_if(objectsAt,
         [&](const Object* object)
@@ -194,8 +195,8 @@ Object* RuleParser::findNextText(TextType type, Cell baseCell)
         return nullptr;
     }
 
-    return findText(m_objectMng.findFromUIDs(m_grid.getObjectsAt(nextCell)),
-                    type);
+    auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(nextCell));
+    return findText(objects, type);
 }
 
 Object* RuleParser::findOpAND(const Object& text)
@@ -254,9 +255,9 @@ Object* RuleParser::findPredicate(const Object& op,
     return nullptr;
 }
 
-void RuleParser::createRule(const std::vector<ObjectId>& subjects,
+void RuleParser::createRule(std::span<const ObjectId> subjects,
                             std::variant<ObjectId, BehaviorType> predicate,
                             bool negate)
 {
-    m_rules.push_back({subjects, predicate, negate});
+    m_rules.push_back({{subjects.begin(), subjects.end()}, predicate, negate});
 }

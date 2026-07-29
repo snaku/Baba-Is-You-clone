@@ -4,6 +4,7 @@
 
 // std
 #include <vector>
+#include <span>
 
 class Level;
 
@@ -17,7 +18,7 @@ public:
     void addObjectAt(std::size_t uid, Cell cell);
     void removeObjectAt(std::size_t uid, Cell cell);
     void clearObjects();
-    const std::vector<std::size_t>& getObjectsAt(Cell cell) const;
+    std::span<const std::size_t> getObjectsAt(Cell cell) const;
 
 private:
     std::vector<std::vector<std::vector<std::size_t>>> m_objectsUID;

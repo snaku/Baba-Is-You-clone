@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <functional>
 #include <type_traits>
+#include <span>
 
 class Renderer;
 class TextureManager;
@@ -33,7 +34,7 @@ public:
     void removeObject(Object& object);
 
     Object* findFromUID(std::size_t uid);
-    std::vector<Object*> findFromUIDs(const std::vector<std::size_t>& uids);
+    std::vector<Object*> findFromUIDs(std::span<const std::size_t> uids);
 
     void addToDestroyQueue(Object& object);
     void updateDestroyQueue();
@@ -45,7 +46,7 @@ public:
     void setAddCallback(Callback addCallback) { m_addCallback = addCallback; }
     void setRemoveCallback(Callback removeCallback) { m_removeCallback = removeCallback; }
 
-    const std::vector<std::unique_ptr<Object>>& getObjects() const { return m_objects; }
+    std::span<const std::unique_ptr<Object>> getObjects() const { return m_objects; }
 
 private:
     Renderer& m_renderer;
