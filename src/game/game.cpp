@@ -61,19 +61,30 @@ bool Game::start()
 
     m_isRunning = true;
 
+    m_state = GameState::MAIN_MENU;
+
     return true;
 }
 
-bool Game::update()
+bool Game::updateStateIdle()
 {
-    m_input.update();
+    return true;
+}
 
-    if (m_input.quitRequested())
+bool Game::updateStateMainMenu()
+{
+    // TODO
+
+    if (m_input.isKeyDown(SDL_SCANCODE_RETURN))
     {
-        m_isRunning = false;
-        return false;
+        m_state = GameState::PLAYING;
     }
 
+    return true;
+}
+
+bool Game::updateStatePlaying()
+{
     Time::update();
 
     m_level->update();
@@ -88,4 +99,38 @@ bool Game::update()
     m_renderer->draw();
 
     return true;
+}
+
+bool Game::updateStatePause()
+{
+    // TODO
+
+    return true;
+}
+
+bool Game::update()
+{
+    if (!m_isRunning)
+    {
+        return false;
+    }
+
+    m_input.update();
+
+    if (m_input.quitRequested())
+    {
+        m_isRunning = false;
+        return false;
+    }
+
+    bool result = false;
+    switch (m_state)
+    {
+        case GameState::IDLE:      result = updateStateIdle();     break;
+        case GameState::MAIN_MENU: result = updateStateMainMenu(); break;
+        case GameState::PLAYING:   result = updateStatePlaying();  break;
+        case GameState::PAUSE:     result = updateStatePause();    break;
+    }
+
+    return result;
 }

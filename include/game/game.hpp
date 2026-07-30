@@ -12,6 +12,14 @@ class TextureManager;
 class Level;
 class Fade;
 
+enum class GameState
+{
+    IDLE,
+    MAIN_MENU,
+    PLAYING,
+    PAUSE
+};
+
 class Game
 {
 public:
@@ -22,6 +30,13 @@ public:
     bool update();
 
 private:
+    bool updateStateIdle();
+    bool updateStateMainMenu();
+    bool updateStatePlaying();
+    bool updateStatePause();
+
+    GameState m_state = GameState::IDLE;
+
     std::unique_ptr<Window> m_window;
     std::unique_ptr<Renderer> m_renderer;
     std::unique_ptr<TextureManager> m_textureMng;
