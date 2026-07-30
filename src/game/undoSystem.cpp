@@ -12,6 +12,8 @@ void UndoSystem::snap()
 {
     LevelSnapshot snapshot;
 
+    snapshot.objectSnapshots.reserve(m_objectMng.getObjects().size());
+
     m_objectMng.forEach(
         [&snapshot](const Object& object)
         {

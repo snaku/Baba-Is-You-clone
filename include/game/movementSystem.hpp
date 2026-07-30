@@ -10,10 +10,10 @@ class RuleSystem;
 class MovementSystem
 {
 public:
-    MovementSystem(ObjectManager& objectMng, Grid& grid, RuleSystem& ruleSystem, const Input& input);
+    MovementSystem(ObjectManager& objectMng, Grid& grid, RuleSystem& ruleSystem);
 
-    bool tryMoveYou(Object& object);
     bool updateMoveTimer();
+    bool tryMoveYou(Object& object, const Input& input);
 private:
     bool handleSinkInteraction(Object& object, Object& other);
     bool handlePushInteraction(Object& object, Direction dir);
@@ -24,7 +24,6 @@ private:
     ObjectManager& m_objectMng;
     Grid& m_grid;
     RuleSystem& m_ruleSystem;
-    const Input& m_input;
 
     float m_moveTimer = 0.0f;
     bool m_movedLastFrame = false;

@@ -26,7 +26,7 @@ Level::Level(Renderer& renderer,
       m_grid(GameConfig::gridWidth, GameConfig::gridHeight),
       m_ruleSystem(m_objectMng, m_grid),
       m_undoSystem(m_objectMng),
-      m_movementSystem(m_objectMng, m_grid, m_ruleSystem, m_input)
+      m_movementSystem(m_objectMng, m_grid, m_ruleSystem)
 {
     m_objectMng.setAddCallback(
         [this](const Object& object)
@@ -168,7 +168,7 @@ void Level::updateStatePlaying()
             {
                 if (canMove)
                 {
-                    moved = m_movementSystem.tryMoveYou(object) || moved;
+                    moved = m_movementSystem.tryMoveYou(object, m_input) || moved;
                 }
 
                 object.update();

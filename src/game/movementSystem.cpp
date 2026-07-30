@@ -8,11 +8,10 @@
 
 #include "time/time.hpp"
 
-MovementSystem::MovementSystem(ObjectManager& objectMng, Grid& grid, RuleSystem& ruleSystem, const Input& input)
+MovementSystem::MovementSystem(ObjectManager& objectMng, Grid& grid, RuleSystem& ruleSystem)
     : m_objectMng(objectMng),
       m_grid(grid),
-      m_ruleSystem(ruleSystem),
-      m_input(input)
+      m_ruleSystem(ruleSystem)
 {
 }
 
@@ -34,7 +33,7 @@ bool MovementSystem::updateMoveTimer()
     return false;
 }
 
-bool MovementSystem::tryMoveYou(Object& object)
+bool MovementSystem::tryMoveYou(Object& object, const Input& input)
 {
     if (!m_ruleSystem.hasBehavior(object.getId(), BehaviorType::YOU))
     {
@@ -43,19 +42,19 @@ bool MovementSystem::tryMoveYou(Object& object)
 
     Direction dir = Direction::NONE;
 
-    if (m_input.isKeyDown(SDL_SCANCODE_W))
+    if (input.isKeyDown(SDL_SCANCODE_W))
     {
         dir = Direction::UP;
     }
-    else if (m_input.isKeyDown(SDL_SCANCODE_S))
+    else if (input.isKeyDown(SDL_SCANCODE_S))
     {
         dir = Direction::DOWN;
     }
-    else if (m_input.isKeyDown(SDL_SCANCODE_A))
+    else if (input.isKeyDown(SDL_SCANCODE_A))
     {
         dir = Direction::LEFT;
     }
-    else if (m_input.isKeyDown(SDL_SCANCODE_D))
+    else if (input.isKeyDown(SDL_SCANCODE_D))
     {
         dir = Direction::RIGHT;
     }
