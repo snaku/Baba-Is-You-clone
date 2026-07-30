@@ -14,7 +14,7 @@ std::shared_ptr<Texture> TextureManager::getTexture(const std::filesystem::path&
 
     if (texture != nullptr)
     {
-        std::println("Using texture cache for: {}", path.string());
+        // std::println("Using texture cache for: {}", path.string());
         return texture;
     }
 

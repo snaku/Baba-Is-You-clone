@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <vector>
 #include <iostream>
+#include <print>
 
 RuleParser::RuleParser(ObjectManager& objectMng, const Grid& grid) 
     : m_objectMng(objectMng),
@@ -90,6 +91,11 @@ std::optional<std::vector<ObjectId>> RuleParser::parseANDOperatorForNouns(Object
         opANDCount++;
 
         currentNounText = findNextText(TextType::NOUN, opAND->getCell());
+        if (currentNounText == nullptr)
+        {
+            break;
+        }
+
         m_parsedNounsUID.insert(currentNounText->getUID());
     }
 
