@@ -22,6 +22,14 @@ text_push 3 6
 text_and 4 6
 text_sink 5 6
 
+# ROCK IS DEFEAT RULE
+text_rock 12 0
+text_is 13 0
+text_defeat 14 0
+
+# TEXT AND
+text_and 13 2
+
 # TEXT WIN
 text_win 12 6
 
