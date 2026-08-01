@@ -11,4 +11,5 @@ struct Rule
     std::vector<ObjectId> subjects;
     std::variant<ObjectId, BehaviorType> predicate;
     bool negate = false;
+    bool possessivePredicate = false;
 };

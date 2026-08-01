@@ -110,14 +110,39 @@ void RuleSystem::revertObjectsTransformation()
     m_objectsWithTransformation.clear();
 }
 
-void RuleSystem::applyPredicate(ObjectId subject, BehaviorType behavior)
+void RuleSystem::applyPredicate(ObjectId subject, BehaviorType behavior, bool _)
 {
     addBehavior(subject, behavior);
 }
 
-void RuleSystem::applyPredicate(ObjectId subject, ObjectId newId)
+void RuleSystem::applyPredicate(ObjectId subject, ObjectId newId, bool possessive)
 {
-    addToTransformationQueue(subject, newId);
+    if (!possessive)
+    {
+        addToTransformationQueue(subject, newId);
+        return;
+    }
+
+    std::vector<Object*> objects;
+    m_objectMng.forEach(
+        [&](Object& object)
+        {
+            if (object.getId() == subject)
+            {
+                objects.push_back(&object);
+            }
+        }
+    );
+
+    if (objects.empty())
+    {
+        return;
+    }
+
+    for (auto* object : objects)
+    {
+        object->setPossessedId(newId);
+    }
 }
 
 void RuleSystem::applyRule(const Rule& rule)
@@ -134,7 +159,7 @@ void RuleSystem::applyRule(const Rule& rule)
         std::visit(
             [&](const auto& predicate)
             {
-                applyPredicate(subject, predicate);
+                applyPredicate(subject, predicate, rule.possessivePredicate);
             },
             rule.predicate
         );

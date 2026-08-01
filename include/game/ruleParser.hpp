@@ -27,17 +27,18 @@ private:
     void parseInDir(Direction dir);
     void parseFromNoun(Object& nounText);
     std::optional<std::vector<ObjectId>> parseANDOperatorForNouns(Object& baseNounText, Object*& lastTextNoun);
-    void parseANDOperatorForPredicate(std::span<const ObjectId> textIds, Object& basePredicateText);
+    void parseANDOperatorForPredicate(std::span<const ObjectId> textIds, Object& basePredicateText, bool possessivePredicate);
 
     Object* findText(std::span<const std::unique_ptr<Object>> objects, TextType type);
     Object* findText(std::span<Object*> objectsAt, TextType type);
     Object* findNextText(TextType type, Cell baseCell);
 
+    Object* findAssignmentOp(const Object& nounText, bool& possessivePredicate);
     Object* findOpAND(const Object& text);
     Object* findOpNOT(const Object& op, bool& negate);
-    Object* findPredicate(const Object& op, std::variant<ObjectId, BehaviorType>& predicate);
+    Object* findPredicate(const Object& op, std::variant<ObjectId, BehaviorType>& predicate, bool possessivePredicate);
 
-    void createRule(std::span<const ObjectId> subjects, std::variant<ObjectId, BehaviorType> predicate, bool negate);
+    void createRule(std::span<const ObjectId> subjects, std::variant<ObjectId, BehaviorType> predicate, bool negate, bool possessivePredicate);
 
     ObjectManager& m_objectMng;
     const Grid& m_grid;

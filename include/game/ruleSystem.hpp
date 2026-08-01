@@ -29,8 +29,8 @@ public:
     void requestDirty() { m_dirty = true; }
 
 private:
-    void applyPredicate(ObjectId subject, BehaviorType behavior);
-    void applyPredicate(ObjectId subject, ObjectId newId);
+    void applyPredicate(ObjectId subject, BehaviorType behavior, bool _);
+    void applyPredicate(ObjectId subject, ObjectId newId, bool possessive);
     void applyRule(const Rule& rule);
     void applyRules();
 

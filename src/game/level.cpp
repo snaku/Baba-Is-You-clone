@@ -38,6 +38,14 @@ Level::Level(Renderer& renderer,
     m_objectMng.setRemoveCallback(
         [this](const Object& object)
         {
+            // for a valid rule with the HAS operator
+            // TODO: find a better way to do this
+            if (object.getPossessedId() != ObjectId::NONE)
+            {
+                m_objectMng.addObject(object.getPossessedId(), object.getCell());
+                m_ruleSystem.requestDirty();
+            }
+
             m_grid.removeObjectAt(object.getUID(), object.getCell());
             m_ruleSystem.eraseObjectWithTransformation(object.getUID());
             std::erase(m_youObjectsUID, object.getUID());
@@ -173,7 +181,13 @@ void Level::updateStatePlaying()
 
                 object.update();
             }
-            else
+        }
+    );
+
+    m_objectMng.forEach(
+        [&](Object& object)
+        {
+            if (object.shouldGetKilled())
             {
                 m_objectMng.addToDestroyQueue(object);
             }

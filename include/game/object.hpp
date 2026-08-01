@@ -37,6 +37,7 @@ enum class ObjectId
     TEXT_BABA,
     TEXT_WATER,
     TEXT_IS,
+    TEXT_HAS,
     TEXT_AND,
     TEXT_NOT,
     TEXT_YOU,
@@ -112,9 +113,12 @@ public:
     void setCell(Cell cell);
     bool isAt(Cell cell) const { return m_cell == cell; }
 
-    void requestKill() { m_kill = true; };
-    bool shouldGetKilled() const { return m_kill; };
+    void requestKill() { m_kill = true; }
+    bool shouldGetKilled() const { return m_kill; }
 
+    void setPossessedId(ObjectId id) { m_possessedId = id; }
+
+    ObjectId getPossessedId() const { return m_possessedId; }
     ObjectId getId() const { return m_id; }
     ObjectType getType() const { return m_type; }
     TextType getTextType() const { return m_textType; }
@@ -134,6 +138,7 @@ private:
     ObjectType m_oldType = ObjectType::NONE;
     TextType m_textType = TextType::NONE;
     TextType m_oldTextType = TextType::NONE;
+    ObjectId m_possessedId = ObjectId::NONE;
     Cell m_cell;
     Direction m_dir;
     float m_angle = 0.0f;

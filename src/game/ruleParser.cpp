@@ -49,27 +49,33 @@ void RuleParser::parseFromNoun(Object& nounText)
         return;
     }
 
-    Object* opIS = findNextText(TextType::OPERATOR, lastNounText->getCell());
-    if (opIS == nullptr ||
-        opIS->getId() != ObjectId::TEXT_IS)
+    bool possessivePredicate = false;
+    Object* assignmentOp = findAssignmentOp(*lastNounText, possessivePredicate);
+    if (assignmentOp == nullptr)
     {
         return;
     }
 
     bool negate = false;
-    Object* opNOT = findOpNOT(*opIS, negate);
+    Object* opNOT = findOpNOT(*assignmentOp, negate);
 
     std::variant<ObjectId, BehaviorType> predicate;
-    Object* predicateText = findPredicate(opNOT != nullptr ? *opNOT : *opIS,
-                                          predicate);
+    Object* predicateText = findPredicate(opNOT != nullptr ? *opNOT : *assignmentOp,
+                                          predicate,
+                                          possessivePredicate);
     if (predicateText == nullptr)
     {
         return;
     }
 
-    createRule(subjects.value(), predicate, negate);
+    createRule(subjects.value(), predicate, negate, possessivePredicate);
 
-    parseANDOperatorForPredicate(subjects.value(), *predicateText);
+    parseANDOperatorForPredicate(subjects.value(), *predicateText, possessivePredicate);
+
+    if (possessivePredicate)
+    {
+        std::println("POSSESSIVE PREDICATE !");
+    }
 }
 
 std::optional<std::vector<ObjectId>> RuleParser::parseANDOperatorForNouns(Object& baseNounText, Object*& lastTextNoun)
@@ -116,7 +122,8 @@ std::optional<std::vector<ObjectId>> RuleParser::parseANDOperatorForNouns(Object
 }
 
 void RuleParser::parseANDOperatorForPredicate(std::span<const ObjectId> nounsIds, 
-                                              Object& basePredicateText)
+                                              Object& basePredicateText,
+                                              bool possessivePredicate)
 {
     Object* currentPredicateText = &basePredicateText;
 
@@ -133,7 +140,8 @@ void RuleParser::parseANDOperatorForPredicate(std::span<const ObjectId> nounsIds
 
         std::variant<ObjectId, BehaviorType> predicate;
         currentPredicateText = findPredicate(opNOT != nullptr ? *opNOT : *opAND,
-                                             predicate);
+                                             predicate,
+                                             possessivePredicate);
         if (currentPredicateText == nullptr)
         {
             break;
@@ -142,7 +150,7 @@ void RuleParser::parseANDOperatorForPredicate(std::span<const ObjectId> nounsIds
         for (auto id : nounsIds)
         {
             std::array<ObjectId, 1> arr{id}; // so i can pass it to createRule() std::span argument
-            createRule(arr, predicate, negate);
+            createRule(arr, predicate, negate, possessivePredicate);
         }
     }
 }
@@ -205,6 +213,19 @@ Object* RuleParser::findNextText(TextType type, Cell baseCell)
     return findText(objects, type);
 }
 
+Object* RuleParser::findAssignmentOp(const Object& nounText, bool& possessivePredicate)
+{
+    Object* op = findNextText(TextType::OPERATOR, nounText.getCell());
+    if (op == nullptr)
+    {
+        return nullptr;
+    }
+
+    possessivePredicate = op->getId() == ObjectId::TEXT_HAS;
+
+    return op;
+}
+
 Object* RuleParser::findOpAND(const Object& text)
 {
     Object* opAND = findNextText(TextType::OPERATOR, text.getCell());
@@ -242,10 +263,16 @@ Object* RuleParser::findOpNOT(const Object& op, bool& negate)
 }
 
 Object* RuleParser::findPredicate(const Object& op,
-                                  std::variant<ObjectId, BehaviorType>& predicate)
+                                  std::variant<ObjectId, BehaviorType>& predicate,
+                                  bool possessivePredicate)
 {
     Object* behaviorPredicate = findNextText(TextType::BEHAVIOR, op.getCell());
-    if (behaviorPredicate != nullptr)
+    if (behaviorPredicate != nullptr && 
+        possessivePredicate)
+    {
+        return nullptr; // a behavior can't be used as a predicate with the HAS operator
+    }
+    else if (behaviorPredicate != nullptr)
     {
         predicate = ObjectUtils::textIdToBehavior(behaviorPredicate->getId());
         return behaviorPredicate;
@@ -263,7 +290,8 @@ Object* RuleParser::findPredicate(const Object& op,
 
 void RuleParser::createRule(std::span<const ObjectId> subjects,
                             std::variant<ObjectId, BehaviorType> predicate,
-                            bool negate)
+                            bool negate,
+                            bool possessivePredicate)
 {
-    m_rules.push_back({{subjects.begin(), subjects.end()}, predicate, negate});
+    m_rules.push_back({{subjects.begin(), subjects.end()}, predicate, negate, possessivePredicate});
 }

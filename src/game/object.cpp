@@ -25,6 +25,7 @@ static const std::array<SpriteInfo, std::to_underlying(ObjectId::MAX)> s_spriteI
     SpriteInfo{"assets/text_baba_0_1.png", {217, 57, 106, 255}},  // ObjectId::TEXT_BABA
     SpriteInfo{"assets/text_water_0_1.png", {95, 157, 209, 255}}, // ObjectId::TEXT_WATER
     SpriteInfo{"assets/text_is_0_1.png", {255, 255, 255, 255}},   // ObjectId::TEXT_IS
+    SpriteInfo{"assets/text_has_0_1.png", {255, 255, 255, 255}},  // ObjectId::TEXT_HAS
     SpriteInfo{"assets/text_and_0_1.png", {255, 255, 255, 255}},  // ObjectId::TEXT_AND
     SpriteInfo{"assets/text_not_0_1.png", {229, 83, 59, 255}},    // ObjectId::TEXT_NOT
     SpriteInfo{"assets/text_you_0_1.png", {217, 57, 106, 255}},   // ObjectId::TEXT_YOU
@@ -56,7 +57,7 @@ Object::Object(Renderer& renderer,
 {
     if (!m_cell.isValidPos())
     {
-        m_cell = Cell{0, 0};
+        m_cell = {0, 0};
     }
 }
 Object::~Object() noexcept = default;

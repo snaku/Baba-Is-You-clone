@@ -17,6 +17,7 @@ static const std::unordered_map<std::string, ObjectId> s_nameIdMap =
     {"text_baba", ObjectId::TEXT_BABA},
     {"text_water", ObjectId::TEXT_WATER},
     {"text_is", ObjectId::TEXT_IS},
+    {"text_has", ObjectId::TEXT_HAS},
     {"text_not", ObjectId::TEXT_NOT},
     {"text_and", ObjectId::TEXT_AND},
     {"text_you", ObjectId::TEXT_YOU},
@@ -84,6 +85,7 @@ ObjectType idToType(ObjectId id)
         case ObjectId::TEXT_BABA:   [[fallthrough]];
         case ObjectId::TEXT_WATER:  [[fallthrough]];
         case ObjectId::TEXT_IS:     [[fallthrough]];
+        case ObjectId::TEXT_HAS:    [[fallthrough]];
         case ObjectId::TEXT_NOT:    [[fallthrough]];
         case ObjectId::TEXT_AND:    [[fallthrough]];
         case ObjectId::TEXT_YOU:    [[fallthrough]];
@@ -111,6 +113,7 @@ TextType textIdToTextType(ObjectId textId)
         case ObjectId::TEXT_WALL:  return TextType::NOUN;
 
         case ObjectId::TEXT_IS:  [[fallthrough]];
+        case ObjectId::TEXT_HAS: [[fallthrough]];
         case ObjectId::TEXT_AND: [[fallthrough]];
         case ObjectId::TEXT_NOT: return TextType::OPERATOR;
 
