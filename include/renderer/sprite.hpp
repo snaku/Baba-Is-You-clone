@@ -22,7 +22,7 @@ public:
     Sprite(Renderer& renderer, TextureManager& textureMng, const SpriteInfo& info, const SDL_FPoint& basePos);
     ~Sprite() noexcept;
 
-    void draw(float size);
+    void draw(float width, float height);
 
     void reload(const SpriteInfo& info);
 
@@ -32,6 +32,8 @@ public:
 
     SDL_FPoint getPos() const { return m_pos; }
     void setPos(const SDL_FPoint& pos) { m_pos = pos; }
+
+    SDL_Color getColor() const { return m_col; }
 
 private:
     TextureManager& m_textureMng;

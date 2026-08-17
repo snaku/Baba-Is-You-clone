@@ -74,7 +74,7 @@ void Object::update()
 
 void Object::draw()
 {
-    m_sprite.draw(GameConfig::cellSize);
+    m_sprite.draw(GameConfig::cellSize, GameConfig::cellSize);
 }
 
 void Object::move(Direction dir)

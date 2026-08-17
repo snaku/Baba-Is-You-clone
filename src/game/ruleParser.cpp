@@ -71,11 +71,6 @@ void RuleParser::parseFromNoun(Object& nounText)
     createRule(subjects.value(), predicate, negate, possessivePredicate);
 
     parseANDOperatorForPredicate(subjects.value(), *predicateText, possessivePredicate);
-
-    if (possessivePredicate)
-    {
-        std::println("POSSESSIVE PREDICATE !");
-    }
 }
 
 std::optional<std::vector<ObjectId>> RuleParser::parseANDOperatorForNouns(Object& baseNounText, Object*& lastTextNoun)
