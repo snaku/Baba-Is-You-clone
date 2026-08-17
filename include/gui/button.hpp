@@ -5,8 +5,12 @@
 // SDL2
 #include <SDL2/SDL.h>
 
+// std
+#include <cstdint>
+#include <functional>
+
 class Renderer;
-class textureManager;
+class TextureManager;
 class Input;
 
 enum class ButtonId
@@ -25,6 +29,10 @@ public:
 
     void update(const Input& input);
     void draw();
+
+    using PressedCallback = std::function<void(Button&)>;
+
+    void setPressedCallback(PressedCallback callback) { m_pressedCallback = std::move(callback); }
 
     bool isHovered() const { return m_hovered; }
     bool isPressed() const { return m_pressed; }
@@ -48,4 +56,14 @@ private:
     bool m_hovered = false;
     bool m_pressed = false;
     bool m_held = false;
+
+    PressedCallback m_pressedCallback;
+
+    static constexpr float s_animPressRatio = 1.07f;
+    static constexpr float s_animShrinkRate = 0.7f;
+    static constexpr float s_animGrowthRate = 1.4f;
+
+    static constexpr uint8_t s_hoverBrightness = 185;
+    static constexpr uint8_t s_baseBrightness = 255;
+    static constexpr uint8_t s_brightnessChangeRate = 255;
 };

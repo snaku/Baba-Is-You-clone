@@ -43,8 +43,8 @@ public:
 
     using Callback = std::function<void(Object&)>;
 
-    void setAddCallback(Callback addCallback) { m_addCallback = addCallback; }
-    void setRemoveCallback(Callback removeCallback) { m_removeCallback = removeCallback; }
+    void setAddCallback(Callback addCallback) { m_addCallback = std::move(addCallback); }
+    void setRemoveCallback(Callback removeCallback) { m_removeCallback = std::move(removeCallback); }
 
     std::span<const std::unique_ptr<Object>> getObjects() const { return m_objects; }
 

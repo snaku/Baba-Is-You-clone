@@ -8,7 +8,6 @@
 #include <utility>
 #include <algorithm>
 #include <cmath>
-#include <print>
 
 static const std::array<SpriteInfo, std::to_underlying(ButtonId::MAX)> s_spriteInfos =
 {
@@ -41,6 +40,13 @@ void Button::update(const Input& input)
 
     handleHoverAnimation();
     handleHeldAnimation();
+
+    if (m_pressed &&
+        m_pressedCallback != nullptr)
+    {
+        m_pressedCallback(*this);
+        m_pressed = false;
+    }
 }
 
 void Button::draw()
@@ -59,18 +65,20 @@ bool Button::checkHover(SDL_FPoint mousePos) const
 void Button::handleHoverAnimation()
 {
     SDL_Color col = m_sprite.getColor();
-    uint8_t delta = 0;
+    uint8_t brightness = 0;
 
     if (m_hovered)
     {
-        delta = (uint8_t)std::max(col.r - 255 * Time::deltaTime(), 185.0f);
+        brightness = (uint8_t)std::max(col.r - s_brightnessChangeRate * Time::deltaTime(),
+                                       (float)s_hoverBrightness);
     }
     else
     {
-        delta = (uint8_t)std::min(col.r + 255 * Time::deltaTime(), 255.0f);
+        brightness = (uint8_t)std::min(col.r + s_brightnessChangeRate * Time::deltaTime(),
+                                       (float)s_baseBrightness);
     }
 
-    col.r = col.g = col.b = delta;
+    col.r = col.g = col.b = brightness;
 
     m_sprite.setColor(col);
 }
@@ -79,14 +87,16 @@ void Button::handleHeldAnimation()
 {
     if (m_held)
     {
-        const float minWidth = m_originalWidth / 1.07f;
-        const float minHeight = m_originalHeight / 1.07f;
+        const float minWidth = m_originalWidth / s_animPressRatio;
+        const float minHeight = m_originalHeight / s_animPressRatio;
 
         if (m_width > minWidth ||
             m_height > minHeight)
         {
-            m_width = std::max(m_width * std::pow(0.7f, Time::deltaTime()), minWidth);
-            m_height = std::max(m_height * std::pow(0.7f, Time::deltaTime()), minHeight);
+            m_width = std::max(m_width * std::pow(s_animShrinkRate, Time::deltaTime()),
+                               minWidth);
+            m_height = std::max(m_height * std::pow(s_animShrinkRate, Time::deltaTime()),
+                                minHeight);
         }
     }
     else
@@ -94,8 +104,10 @@ void Button::handleHeldAnimation()
         if (m_width < m_originalWidth ||
             m_height < m_originalHeight)
         {
-            m_width = std::min(m_width * std::pow(1.4f, Time::deltaTime()), m_originalWidth);
-            m_height = std::min(m_height * std::pow(1.4f, Time::deltaTime()), m_originalHeight);
+            m_width = std::min(m_width * std::pow(s_animGrowthRate, Time::deltaTime()),
+                               m_originalWidth);
+            m_height = std::min(m_height * std::pow(s_animGrowthRate, Time::deltaTime()),
+                                m_originalHeight);
         }
     }
 }
