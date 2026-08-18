@@ -52,6 +52,7 @@ private:
     float m_height;
     float m_originalWidth;
     float m_originalHeight;
+    SDL_FPoint m_center;
 
     bool m_hovered = false;
     bool m_pressed = false;
