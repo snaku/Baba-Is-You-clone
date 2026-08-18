@@ -5,19 +5,24 @@
 // std
 #include <string>
 #include <memory>
+#include <array>
+#include <utility>
 
 class Window;
 class Renderer;
 class TextureManager;
 class Level;
 class Fade;
+class Menu;
 
 enum class GameState
 {
     IDLE,
     MAIN_MENU,
     PLAYING,
-    PAUSE
+    PAUSE,
+
+    MAX
 };
 
 class Game
@@ -30,9 +35,18 @@ public:
     bool update();
 
 private:
+    void changeState(GameState state);
+
+    void initStateIdle();
     bool updateStateIdle();
+
+    void initStateMainMenu();
     bool updateStateMainMenu();
+
+    void initStatePlaying();
     bool updateStatePlaying();
+
+    void initStatePause();
     bool updateStatePause();
 
     GameState m_state = GameState::IDLE;
@@ -45,5 +59,25 @@ private:
 
     std::unique_ptr<Level> m_level;
 
+    std::unique_ptr<Menu> m_mainMenu;
+
     bool m_isRunning = false;
+
+    using InitStateCallback = void (Game::*)();
+    static constexpr std::array<InitStateCallback, std::to_underlying(GameState::MAX)> s_initStateFuncTable =
+    {
+        &Game::initStateIdle,
+        &Game::initStateMainMenu,
+        &Game::initStatePlaying,
+        &Game::initStatePause
+    };
+
+    using UpdateStateCallback = bool (Game::*)();
+    static constexpr std::array<UpdateStateCallback, std::to_underlying(GameState::MAX)> s_updateStateFuncTable =
+    {
+        &Game::updateStateIdle,
+        &Game::updateStateMainMenu,
+        &Game::updateStatePlaying,
+        &Game::updateStatePause
+    };
 };
