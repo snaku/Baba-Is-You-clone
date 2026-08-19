@@ -1,5 +1,7 @@
 #pragma once
 
+#include "gui/button.hpp"
+
 #include "renderer/sprite.hpp"
 
 // SDL2
@@ -12,8 +14,6 @@
 class Renderer;
 class TextureManager;
 class Input;
-
-class Button;
 
 class CheckBox
 {
@@ -29,7 +29,7 @@ public:
     void setDeactivateCallback(Callback deactivateCallback) { m_deactivateCallback = std::move(deactivateCallback); }
 
 private:
-    std::unique_ptr<Button> m_button;
+    Button m_button;
     Sprite m_checkMarkSprite;
     float m_checkMarkWidth;
     float m_checkMarkHeight;

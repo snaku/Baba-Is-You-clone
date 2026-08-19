@@ -14,6 +14,7 @@ class TextureManager;
 class Level;
 class Fade;
 class MenuManager;
+class MainMenu;
 
 enum class GameState
 {
@@ -36,6 +37,7 @@ public:
 
 private:
     void changeState(GameState state);
+    void resumeState();
 
     void initStateIdle();
     bool updateStateIdle();
@@ -50,6 +52,7 @@ private:
     bool updateStatePause();
 
     GameState m_state = GameState::IDLE;
+    GameState m_oldState = GameState::IDLE;
 
     std::unique_ptr<Window> m_window;
     std::unique_ptr<Renderer> m_renderer;
@@ -60,6 +63,7 @@ private:
     std::unique_ptr<Level> m_level;
 
     std::unique_ptr<MenuManager> m_menuMng;
+    std::unique_ptr<MainMenu> m_mainMenu;
 
     bool m_isRunning = false;
 

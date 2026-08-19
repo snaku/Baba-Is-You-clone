@@ -52,6 +52,8 @@ public:
         return ref;
     }
 
+    Button* findButton(const std::string& name);
+
     template<typename FnActivate, typename FnDeactivate>
     CheckBox& addCheckBox(const std::string& name,
                           SDL_FPoint pos,

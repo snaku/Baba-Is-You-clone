@@ -1,5 +1,6 @@
 #include "game/game.hpp"
 #include "game/level.hpp"
+#include "game/mainMenu.hpp"
 #include "game/config.hpp"
 
 #include "window/window.hpp"
@@ -12,8 +13,8 @@
 #include "time/time.hpp"
 
 #include "gui/menuManager.hpp"
-#include "gui/menu.hpp"
 
+// SDL2
 #include <SDL2/SDL.h>
 
 // std
@@ -77,8 +78,14 @@ void Game::changeState(GameState state)
         return;
     }
 
+    m_oldState = m_state;
     m_state = state;
     std::invoke(s_initStateFuncTable[std::to_underlying(state)], this);
+}
+
+void Game::resumeState()
+{
+    std::swap(m_state, m_oldState);
 }
 
 void Game::initStateIdle()
@@ -93,39 +100,33 @@ bool Game::updateStateIdle()
 
 void Game::initStateMainMenu()
 {
-    constexpr float playBtnWidth = 160.0f;
-    constexpr float playBtnHeight = 80.0f;
-    SDL_FPoint playBtnPos =
-    {
-        (GameConfig::windowWidth - playBtnWidth) / 2.0f,
-        (GameConfig::windowHeight - playBtnHeight) * 0.3f
-    };
+    m_mainMenu = std::make_unique<MainMenu>(*m_menuMng);
+    m_mainMenu->init(GameConfig::windowWidth, GameConfig::windowHeight);
 
-    Menu& mainMenu = m_menuMng->addMenu("main");
+    m_mainMenu->setPlayButtonCallback(
+        [this](const Button& _)
+        {
+            changeState(GameState::PLAYING);
+        }
+    );
 
-    Button& playBtn = mainMenu.addButton("play",
-                                         ButtonId::PLAY,
-                                         playBtnPos,
-                                         playBtnWidth,
-                                         playBtnHeight,
-                                         [this](const Button& btn)
-                                         {
-                                             changeState(GameState::PLAYING);
-                                         });
+    m_mainMenu->setQuitButtonCallback(
+        [this](const Button& _)
+        {
+            m_isRunning = false;
+        }
+    );
 
-    playBtn.setPressDelay(0.25f);
-
-    m_menuMng->setActive("main");
+    m_renderer->setClearColor({0, 0, 0, 255});
 }
 
 bool Game::updateStateMainMenu()
 {
-    m_menuMng->update(m_input);
+    m_mainMenu->update(m_input);
 
-    m_renderer->setClearColor({0, 0, 0, 255});
     m_renderer->clear();
 
-    m_menuMng->draw();
+    m_mainMenu->draw();
 
     m_renderer->draw();
 
@@ -136,6 +137,8 @@ void Game::initStatePlaying()
 {
     m_level = std::make_unique<Level>(*m_renderer, *m_textureMng, m_input, *m_fade);
     m_level->load();
+
+    m_renderer->setClearColor({30, 15, 8, 255});
 }
 
 bool Game::updateStatePlaying()
@@ -143,7 +146,6 @@ bool Game::updateStatePlaying()
     m_level->update();
     m_fade->update();
 
-    m_renderer->setClearColor({30, 15, 8, 255});
     m_renderer->clear();
 
     m_level->draw();

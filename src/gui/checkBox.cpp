@@ -6,12 +6,12 @@ CheckBox::CheckBox(Renderer& renderer,
                    SDL_FPoint pos,
                    float width,
                    float height)
-    : m_button(std::make_unique<Button>(renderer, textureMng, ButtonId::CHECK_BOX, pos, width, height)),
+    : m_button(renderer, textureMng, ButtonId::CHECK_BOX, pos, width, height),
       m_checkMarkSprite(renderer, textureMng, SpriteInfo{"assets/check_mark.png", {255, 255, 255, 255}}, pos),
 	  m_checkMarkWidth(width * 0.95f),
 	  m_checkMarkHeight(height * 0.95f)
 {
-	m_button->setPressedCallback(
+	m_button.setPressedCallback(
 		[this](const Button& btn)
 		{
 			m_activated ^= true;
@@ -31,12 +31,12 @@ CheckBox::CheckBox(Renderer& renderer,
 
 void CheckBox::update(const Input& input)
 {
-	m_button->update(input);
+	m_button.update(input);
 }
 
 void CheckBox::draw()
 {
-	m_button->draw();
+	m_button.draw();
 
 	if (m_activated)
 	{

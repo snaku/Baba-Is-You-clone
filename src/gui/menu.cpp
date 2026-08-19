@@ -31,3 +31,14 @@ void Menu::draw()
 		checkBox->draw();
 	}
 }
+
+Button* Menu::findButton(const std::string& name)
+{
+	auto it = m_buttons.find(name);
+	if (it == m_buttons.end())
+	{
+		return nullptr;
+	}
+
+	return it->second.get();
+}
