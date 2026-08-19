@@ -12,7 +12,9 @@
 static const std::array<SpriteInfo, std::to_underlying(ButtonId::MAX)> s_spriteInfos =
 {
     SpriteInfo{"NONE", {0, 0, 0, 0}},
-    SpriteInfo{"assets/btn_play.png", {255, 255, 255, 255}}
+
+    SpriteInfo{"assets/btn_play.png", {255, 255, 255, 255}},
+    SpriteInfo{"assets/btn_check_box.png", {255, 255, 255, 255}},
 };
 
 Button::Button(Renderer& renderer,

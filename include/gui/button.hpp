@@ -18,6 +18,7 @@ enum class ButtonId
     NONE,
 
     PLAY,
+    CHECK_BOX,
 
     MAX
 };

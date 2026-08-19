@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gui/button.hpp"
+#include "gui/checkBox.hpp"
 
 // SDL2
 #include <SDL2/SDL.h>
@@ -51,9 +52,40 @@ public:
         return ref;
     }
 
+    template<typename FnActivate, typename FnDeactivate>
+    CheckBox& addCheckBox(const std::string& name,
+                          SDL_FPoint pos,
+                          float width,
+                          float height,
+                          FnActivate&& activateCallback,
+                          FnDeactivate&& deactivateCallback)
+    {
+        static_assert(std::is_invocable_v<FnActivate&, CheckBox&>, "Menu::addCheckBox (ACTIVATE)");
+        static_assert(std::is_invocable_v<FnDeactivate&, CheckBox&>, "Menu::addCheckBox (DEACTIVATE)");
+
+        auto it = m_checkBoxes.find(name);
+        if (it != m_checkBoxes.end())
+        {
+            std::println("CheckBox '{}' already exists.", name);
+            return *it->second;
+        }
+
+        auto checkBox = std::make_unique<CheckBox>(m_renderer, m_textureMng, pos, width, height);
+        
+        checkBox->setActivateCallback(std::forward<FnActivate>(activateCallback));
+        checkBox->setDeactivateCallback(std::forward<FnDeactivate>(deactivateCallback));
+
+        CheckBox& ref = *checkBox;
+
+        m_checkBoxes.emplace(name, std::move(checkBox));
+
+        return ref;
+    }
+
 private:
     Renderer& m_renderer;
     TextureManager& m_textureMng;
 
     std::unordered_map<std::string, std::unique_ptr<Button>> m_buttons;
+    std::unordered_map<std::string, std::unique_ptr<CheckBox>> m_checkBoxes;
 };

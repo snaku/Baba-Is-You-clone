@@ -12,6 +12,11 @@ void Menu::update(const Input& input)
 	{
 		btn->update(input);
 	}
+
+	for (const auto& [_, checkBox] : m_checkBoxes)
+	{
+		checkBox->update(input);
+	}
 }
     
 void Menu::draw()
@@ -19,5 +24,10 @@ void Menu::draw()
 	for (const auto& [_, btn] : m_buttons)
 	{
 		btn->draw();
+	}
+
+	for (const auto& [_, checkBox] : m_checkBoxes)
+	{
+		checkBox->draw();
 	}
 }
