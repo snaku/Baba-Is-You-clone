@@ -37,7 +37,7 @@ public:
         auto it = m_buttons.find(name);
         if (it != m_buttons.end())
         {
-            std::println("Button '{}' already exist.", name);
+            std::println("Button '{}' already exists.", name);
             return *it->second;
         }
 

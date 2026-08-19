@@ -42,7 +42,16 @@ void Button::update(const Input& input)
 {
     m_hovered = checkHover(input.getMousePos());
     m_held = m_hovered && input.isMouseButtonDown(SDL_BUTTON_LEFT);
-    m_pressed = m_hovered && input.isMouseButtonReleased(SDL_BUTTON_LEFT);
+
+    if (m_pressed &&
+        m_pressDelay != 0.0f)
+    {
+        m_pressTimer += Time::deltaTime();
+    }
+    else
+    {
+        m_pressed = m_hovered && input.isMouseButtonReleased(SDL_BUTTON_LEFT);
+    }
 
     handleHoverAnimation();
     handleHeldAnimation();
@@ -50,8 +59,14 @@ void Button::update(const Input& input)
     if (m_pressed &&
         m_pressedCallback != nullptr)
     {
+        if (m_pressTimer < m_pressDelay)
+        {
+            return;
+        }
+
         m_pressedCallback(*this);
         m_pressed = false;
+        m_pressTimer = 0.0f;
     }
 }
 

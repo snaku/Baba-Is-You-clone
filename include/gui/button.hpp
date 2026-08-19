@@ -34,6 +34,8 @@ public:
 
     void setPressedCallback(PressedCallback callback) { m_pressedCallback = std::move(callback); }
 
+    void setPressDelay(float delay) { m_pressDelay = delay; }
+
     bool isHovered() const { return m_hovered; }
     bool isPressed() const { return m_pressed; }
 
@@ -59,6 +61,8 @@ private:
     bool m_held = false;
 
     PressedCallback m_pressedCallback;
+    float m_pressDelay = 0.0f;
+    float m_pressTimer = 0.0f;
 
     static constexpr float s_animPressRatio = 1.07f;
     static constexpr float s_animShrinkRate = 0.7f;
