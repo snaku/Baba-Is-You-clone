@@ -13,7 +13,7 @@ class Renderer;
 class TextureManager;
 class Level;
 class Fade;
-class Menu;
+class MenuManager;
 
 enum class GameState
 {
@@ -59,7 +59,7 @@ private:
 
     std::unique_ptr<Level> m_level;
 
-    std::unique_ptr<Menu> m_mainMenu;
+    std::unique_ptr<MenuManager> m_menuMng;
 
     bool m_isRunning = false;
 

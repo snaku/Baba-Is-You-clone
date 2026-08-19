@@ -11,6 +11,7 @@
 
 #include "time/time.hpp"
 
+#include "gui/menuManager.hpp"
 #include "gui/menu.hpp"
 
 #include <SDL2/SDL.h>
@@ -60,6 +61,8 @@ bool Game::start()
 
     m_fade = std::make_unique<Fade>(*m_renderer);
 
+    m_menuMng = std::make_unique<MenuManager>(*m_renderer, *m_textureMng);
+
     changeState(GameState::MAIN_MENU);
 
     m_isRunning = true;
@@ -98,27 +101,31 @@ void Game::initStateMainMenu()
         (GameConfig::windowHeight - playBtnHeight) * 0.3f
     };
 
-    m_mainMenu = std::make_unique<Menu>(*m_renderer, *m_textureMng);
+    Menu& mainMenu = m_menuMng->addMenu("main");
 
-    m_mainMenu->addButton("play",
-                          ButtonId::PLAY,
-                          playBtnPos,
-                          playBtnWidth,
-                          playBtnHeight,
-                          [this](const Button& btn)
-                          {
-                               changeState(GameState::PLAYING);
-                          });
+    Button& playBtn = mainMenu.addButton("play",
+                                         ButtonId::PLAY,
+                                         playBtnPos,
+                                         playBtnWidth,
+                                         playBtnHeight,
+                                         [this](const Button& btn)
+                                         {
+                                             changeState(GameState::PLAYING);
+                                         });
+
+    playBtn.setPressDelay(0.25f);
+
+    m_menuMng->setActive("main");
 }
 
 bool Game::updateStateMainMenu()
 {
-    m_mainMenu->update(m_input);
+    m_menuMng->update(m_input);
 
     m_renderer->setClearColor({0, 0, 0, 255});
     m_renderer->clear();
 
-    m_mainMenu->draw();
+    m_menuMng->draw();
 
     m_renderer->draw();
 
