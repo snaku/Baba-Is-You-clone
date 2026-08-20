@@ -36,6 +36,8 @@ public:
     bool update();
 
 private:
+    bool init();
+
     void changeState(GameState state);
     void resumeState();
 

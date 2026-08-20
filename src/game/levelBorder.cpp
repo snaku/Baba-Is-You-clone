@@ -1,5 +1,6 @@
 #include "game/levelBorder.hpp"
 #include "game/config.hpp"
+#include "game/gridConfig.hpp"
 
 #include "renderer/renderer.hpp"
 
@@ -12,11 +13,11 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
 {
     m_levelArea = 
     {
-        GameConfig::gridOffset.x,
-        GameConfig::gridOffset.y,
+        GridConfig::offset.x,
+        GridConfig::offset.y,
 
-        (int)(gridWidth * GameConfig::cellSize),
-        (int)(gridHeight * GameConfig::cellSize)
+        (int)(gridWidth * GridConfig::cellSize),
+        (int)(gridHeight * GridConfig::cellSize)
     };
 
     m_sides[std::to_underlying(LevelBorderSide::TOP)] =

@@ -1,19 +1,19 @@
 #include "game/cell.hpp"
-#include "game/config.hpp"
+#include "game/gridConfig.hpp"
 
 bool Cell::isValidPos() const
 {
     return x >= 0 && y >= 0 &&
-           x < GameConfig::gridWidth &&
-           y < GameConfig::gridHeight;
+           x < GridConfig::width &&
+           y < GridConfig::height;
 }
 
 SDL_FPoint Cell::toFPoint() const
 {
     SDL_FPoint point =
     {
-        (float)(GameConfig::gridOffset.x + x * GameConfig::cellSize),
-        (float)(GameConfig::gridOffset.y + y * GameConfig::cellSize)
+        (float)(GridConfig::offset.x + x * GridConfig::cellSize),
+        (float)(GridConfig::offset.y + y * GridConfig::cellSize)
     };
 
     return point;

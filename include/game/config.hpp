@@ -1,5 +1,6 @@
 #pragma once
 
+// SDL2
 #include <SDL2/SDL.h>
 
 // std
@@ -10,10 +11,4 @@ namespace GameConfig
     constexpr std::string_view name = "Baba Is You";
     constexpr uint32_t windowWidth = 1280;
     constexpr uint32_t windowHeight = 720;
-
-    inline uint32_t cellSize = 24;
-
-    inline uint32_t gridWidth = windowWidth / cellSize;
-    inline uint32_t gridHeight = windowHeight / cellSize;
-    inline SDL_Point gridOffset {0, 0};
 }

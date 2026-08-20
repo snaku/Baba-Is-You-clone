@@ -37,11 +37,26 @@ bool Game::start()
         return false;
     }
 
+    if (!init())
+    {
+        return false;
+    }
+
+    m_isRunning = true;
+
+    changeState(GameState::MAIN_MENU);
+
+    return true;
+}
+
+bool Game::init()
+{
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         std::cerr << "Error while trying to initialize SDL." << std::endl;
         return false;
     }
+
     if (!m_window->init())
     {
         std::cerr << "Error while trying to initialize the window." << std::endl;
@@ -49,24 +64,17 @@ bool Game::start()
     }
 
     m_renderer = std::make_unique<Renderer>(*m_window);
-
     if (!m_renderer->init())
     {
         std::cerr << "Error while trying to initialize the renderer." << std::endl;
         return false;
     }
 
-    m_textureMng = std::make_unique<TextureManager>(*m_renderer);
-
     Time::init();
 
+    m_textureMng = std::make_unique<TextureManager>(*m_renderer);
     m_fade = std::make_unique<Fade>(*m_renderer);
-
     m_menuMng = std::make_unique<MenuManager>(*m_renderer, *m_textureMng);
-
-    changeState(GameState::MAIN_MENU);
-
-    m_isRunning = true;
 
     return true;
 }

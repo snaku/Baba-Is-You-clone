@@ -1,5 +1,6 @@
 #include "game/level.hpp"
 #include "game/config.hpp"
+#include "game/gridConfig.hpp"
 #include "game/utils.hpp"
 
 #include "input/input.hpp"
@@ -23,7 +24,7 @@ Level::Level(Renderer& renderer,
       m_objectMng(renderer, textureMng),
       m_transition(*this, fade),
       m_border(renderer),
-      m_grid(GameConfig::gridWidth, GameConfig::gridHeight),
+      m_grid(GridConfig::width, GridConfig::height),
       m_ruleSystem(m_objectMng, m_grid),
       m_undoSystem(m_objectMng),
       m_movementSystem(m_objectMng, m_grid, m_ruleSystem)
@@ -75,15 +76,15 @@ void Level::load()
 
 void Level::initFromDef(const LevelDefinition& def)
 {
-    GameConfig::gridWidth = def.width;
-    GameConfig::gridHeight = def.height;
-    GameConfig::cellSize = std::min(GameConfig::windowWidth / def.width, GameConfig::windowHeight / def.height);
+    GridConfig::width = def.width;
+    GridConfig::height = def.height;
+    GridConfig::cellSize = std::min(GameConfig::windowWidth / def.width, GameConfig::windowHeight / def.height);
 
-    GameConfig::gridOffset.x = (GameConfig::windowWidth - GameConfig::gridWidth * GameConfig::cellSize) / 2;
-    GameConfig::gridOffset.y = (GameConfig::windowHeight - GameConfig::gridHeight * GameConfig::cellSize) / 2;
+    GridConfig::offset.x = (GameConfig::windowWidth - GridConfig::height * GridConfig::cellSize) / 2;
+    GridConfig::offset.y = (GameConfig::windowHeight - GridConfig::height * GridConfig::cellSize) / 2;
 
-    m_grid.resize(GameConfig::gridWidth, GameConfig::gridHeight);
-    m_border.resize(GameConfig::gridWidth, GameConfig::gridHeight);
+    m_grid.resize(GridConfig::width, GridConfig::height);
+    m_border.resize(GridConfig::width, GridConfig::height);
 
     for (const auto& data : def.objects)
     {

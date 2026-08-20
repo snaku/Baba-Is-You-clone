@@ -1,6 +1,6 @@
 #include "game/object.hpp"
 #include "game/objectUtils.hpp"
-#include "game/config.hpp"
+#include "game/gridConfig.hpp"
 #include "game/utils.hpp"
 
 #include "time/time.hpp"
@@ -74,7 +74,7 @@ void Object::update()
 
 void Object::draw()
 {
-    m_sprite.draw(GameConfig::cellSize, GameConfig::cellSize);
+    m_sprite.draw(GridConfig::cellSize, GridConfig::cellSize);
 }
 
 void Object::move(Direction dir)
