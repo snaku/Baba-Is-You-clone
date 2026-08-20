@@ -21,12 +21,30 @@ bool Window::init()
                                 SDL_WINDOWPOS_UNDEFINED,
                                 m_width,
                                 m_height,
-                                0);
+                                SDL_WINDOW_RESIZABLE);
 
     if (m_window == nullptr)
     {
         return false;
     }
+
+    return true;
+}
+
+bool Window::checkResize()
+{
+    int width;
+    int height;
+    SDL_GetWindowSize(m_window, &width, &height);
+
+    if ((uint32_t)width == m_width &&
+        (uint32_t)height == m_height)
+    {
+        return false;
+    }
+
+    m_width = width;
+    m_height = height;
 
     return true;
 }

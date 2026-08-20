@@ -108,8 +108,8 @@ bool Game::updateStateIdle()
 
 void Game::initStateMainMenu()
 {
-    m_mainMenu = std::make_unique<MainMenu>(*m_menuMng);
-    m_mainMenu->init(GameConfig::windowWidth, GameConfig::windowHeight);
+    m_mainMenu = std::make_unique<MainMenu>(*m_renderer, *m_menuMng);
+    m_mainMenu->init();
 
     m_mainMenu->setPlayButtonCallback(
         [this](const Button& _)
@@ -182,6 +182,8 @@ bool Game::update()
     {
         return false;
     }
+
+    m_renderer->checkResize();
 
     m_input.update();
     if (m_input.quitRequested())

@@ -6,15 +6,16 @@
 #include <utility>
 #include <type_traits>
 
+class Renderer;
 class Input;
 class MenuManager;
 
 class MainMenu
 {
 public:
-    explicit MainMenu(MenuManager& menuMng);
+    MainMenu(Renderer& renderer, MenuManager& menuMng);
 
-    void init(uint32_t windowWidth, uint32_t windowHeight);
+    void init();
     void update(const Input& input);
     void draw();
 
@@ -48,6 +49,7 @@ private:
         btn->setPressedCallback(std::forward<Fn>(pressedCallback));
     }
 
+    Renderer& m_renderer;
     MenuManager& m_menuMng;
     Menu& m_menu;
 

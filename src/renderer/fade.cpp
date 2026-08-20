@@ -61,8 +61,8 @@ void Fade::draw()
     {
         0,
         0,
-        GameConfig::windowWidth,
-        GameConfig::windowHeight
+        (int)m_renderer.getWidth(),
+        (int)m_renderer.getHeight()
     };
 
     SDL_Renderer* renderer = m_renderer.getSDLRenderer();

@@ -32,6 +32,8 @@ public:
     void update(const Input& input);
     void draw();
 
+    void applyOffset(SDL_FPoint delta);
+
     using PressedCallback = std::function<void(Button&)>;
 
     void setPressedCallback(PressedCallback callback) { m_pressedCallback = std::move(callback); }
@@ -57,6 +59,7 @@ private:
     float m_originalWidth;
     float m_originalHeight;
     SDL_FPoint m_center;
+    SDL_FPoint m_originalCenter;
 
     bool m_hovered = false;
     bool m_pressed = false;

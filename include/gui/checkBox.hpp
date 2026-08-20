@@ -23,6 +23,8 @@ public:
     void update(const Input& input);
     void draw();
 
+    void applyOffset(SDL_FPoint delta);
+
     using Callback = std::function<void(CheckBox&)>;
 
     void setActivateCallback(Callback activeCallback) { m_activateCallback = std::move(activeCallback); }
@@ -33,6 +35,7 @@ private:
     Sprite m_checkMarkSprite;
     float m_checkMarkWidth;
     float m_checkMarkHeight;
+    SDL_FPoint m_originalCheckMarkPos;
 
     Callback m_activateCallback;
     Callback m_deactivateCallback;

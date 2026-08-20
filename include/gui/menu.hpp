@@ -85,9 +85,14 @@ public:
     }
 
 private:
+    void resize(uint32_t windowWidth, uint32_t windowHeight);
+
     Renderer& m_renderer;
     TextureManager& m_textureMng;
 
     std::unordered_map<std::string, std::unique_ptr<Button>> m_buttons;
     std::unordered_map<std::string, std::unique_ptr<CheckBox>> m_checkBoxes;
+
+    uint32_t m_originalWindowWidth = 0;
+    uint32_t m_originalWindowHeight = 0;
 };

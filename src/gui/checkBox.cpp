@@ -9,7 +9,8 @@ CheckBox::CheckBox(Renderer& renderer,
     : m_button(renderer, textureMng, ButtonId::CHECK_BOX, pos, width, height),
       m_checkMarkSprite(renderer, textureMng, SpriteInfo{"assets/check_mark.png", {255, 255, 255, 255}}, pos),
 	  m_checkMarkWidth(width * 0.95f),
-	  m_checkMarkHeight(height * 0.95f)
+	  m_checkMarkHeight(height * 0.95f),
+	  m_originalCheckMarkPos(pos)
 {
 	m_button.setPressedCallback(
 		[this](const Button& btn)
@@ -42,4 +43,17 @@ void CheckBox::draw()
 	{
 		m_checkMarkSprite.draw(m_checkMarkWidth, m_checkMarkHeight);
 	}
+}
+
+void CheckBox::applyOffset(SDL_FPoint delta)
+{
+	m_button.applyOffset(delta);
+
+	SDL_FPoint checkMarkPos = SDL_FPoint
+	{
+		m_originalCheckMarkPos.x + delta.x,
+		m_originalCheckMarkPos.y + delta.y
+	};
+
+	m_checkMarkSprite.setPos(checkMarkPos);
 }

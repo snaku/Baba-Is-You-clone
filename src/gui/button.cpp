@@ -39,6 +39,8 @@ Button::Button(Renderer& renderer,
         m_pos.x + m_originalWidth * 0.5f,
         m_pos.y + m_originalHeight * 0.5f
     };
+
+    m_originalCenter = m_center;
 }
 
 void Button::update(const Input& input)
@@ -76,6 +78,17 @@ void Button::update(const Input& input)
 void Button::draw()
 {
     m_sprite.draw(m_width, m_height);
+}
+
+void Button::applyOffset(SDL_FPoint delta)
+{
+    m_center.x = m_originalCenter.x + delta.x;
+    m_center.y = m_originalCenter.y + delta.y;
+
+    m_pos.x = m_center.x - m_width * 0.5f;
+    m_pos.y = m_center.y - m_height * 0.5f;
+
+    m_sprite.setPos(m_pos);
 }
 
 bool Button::checkHover(SDL_FPoint mousePos) const

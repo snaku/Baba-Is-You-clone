@@ -64,12 +64,7 @@ Object::~Object() noexcept = default;
 
 void Object::update()
 {
-    if (m_dirty)
-    {
-        m_sprite.setPos(m_cell.toFPoint());
-
-        m_dirty = false;
-    }
+    m_sprite.setPos(m_cell.toFPoint());
 }
 
 void Object::draw()
@@ -132,7 +127,6 @@ void Object::setCell(Cell cell)
     }
 
     m_cell = cell;
-    m_dirty = true;
 }
 
 const SpriteInfo& Object::getSpriteInfo(ObjectId id) const

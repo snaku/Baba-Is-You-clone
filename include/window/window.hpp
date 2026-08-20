@@ -13,8 +13,11 @@ public:
     ~Window() noexcept;
 
     bool init();
+    bool checkResize();
 
     SDL_Window* getSDLWindow() const { return m_window; }
+    uint32_t getWidth() const { return m_width; }
+    uint32_t getHeight() const { return m_height; }
 private:
     std::string m_name = "Undefined";
     uint32_t m_width = 1280;

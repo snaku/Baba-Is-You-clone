@@ -74,17 +74,23 @@ void Level::load()
     initFromDef(def);
 }
 
+void Level::resize(uint32_t windowWidth, uint32_t windowHeight)
+{
+    GridConfig::cellSize = std::min(windowWidth / GridConfig::width,
+                                    windowHeight / GridConfig::height);
+    GridConfig::offset.x = (windowWidth - GridConfig::width * GridConfig::cellSize) / 2;
+    GridConfig::offset.y = (windowHeight - GridConfig::height * GridConfig::cellSize) / 2;
+
+    m_border.resize(windowWidth, windowHeight, GridConfig::width, GridConfig::height);
+}
+
 void Level::initFromDef(const LevelDefinition& def)
 {
     GridConfig::width = def.width;
     GridConfig::height = def.height;
-    GridConfig::cellSize = std::min(GameConfig::windowWidth / def.width, GameConfig::windowHeight / def.height);
-
-    GridConfig::offset.x = (GameConfig::windowWidth - GridConfig::height * GridConfig::cellSize) / 2;
-    GridConfig::offset.y = (GameConfig::windowHeight - GridConfig::height * GridConfig::cellSize) / 2;
-
     m_grid.resize(GridConfig::width, GridConfig::height);
-    m_border.resize(GridConfig::width, GridConfig::height);
+
+    resize(m_renderer.getWidth(), m_renderer.getHeight());
 
     for (const auto& data : def.objects)
     {
@@ -226,6 +232,11 @@ void Level::updateStateDefeat()
 
 void Level::update()
 {
+    if (m_renderer.wasResized())
+    {
+        resize(m_renderer.getWidth(), m_renderer.getHeight());
+    }
+
     switch (m_state)
     {
         case LevelState::IDLE:    updateStateIdle();    break;

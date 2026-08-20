@@ -48,6 +48,7 @@ public:
     void allowReload() { m_canReload = true; }
 
 private:
+    void resize(uint32_t windowWidth, uint32_t windowHeight);
     void initFromDef(const LevelDefinition& def);
 
     void buildYouObjects();

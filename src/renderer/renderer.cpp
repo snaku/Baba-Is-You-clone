@@ -29,6 +29,10 @@ bool Renderer::init()
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
 
     m_clearCol = {0, 0, 0, 255};
+
+    m_width = m_window.getWidth();
+    m_height = m_window.getHeight();
+
     return true;
 }
 
@@ -64,4 +68,23 @@ void Renderer::clear()
 {
     SDL_SetRenderDrawColor(m_renderer, m_clearCol.r, m_clearCol.g, m_clearCol.b, m_clearCol.a);
     SDL_RenderClear(m_renderer);
+}
+
+void Renderer::resize(uint32_t width, uint32_t height)
+{
+    m_width = width;
+    m_height = height;
+
+    m_wasResized = true;
+}
+
+void Renderer::checkResize()
+{
+    if (!m_window.checkResize())
+    {
+        m_wasResized = false;
+        return;
+    }
+
+    resize(m_window.getWidth(), m_window.getHeight());
 }

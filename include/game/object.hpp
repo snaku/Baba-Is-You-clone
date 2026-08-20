@@ -142,6 +142,5 @@ private:
     Cell m_cell;
     Direction m_dir;
     float m_angle = 0.0f;
-    bool m_dirty = false;
     bool m_kill = false;
 };

@@ -9,7 +9,10 @@ LevelBorder::LevelBorder(Renderer& renderer)
 {
 }
 
-void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
+void LevelBorder::resize(uint32_t windowWidth,
+                         uint32_t windowHeight,
+                         uint32_t gridWidth,
+                         uint32_t gridHeight)
 {
     m_levelArea = 
     {
@@ -25,7 +28,7 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
         0,
         0,
 
-        (int)GameConfig::windowWidth,
+        (int)windowWidth,
         m_levelArea.y
     };
 
@@ -34,8 +37,8 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
         0,
         m_levelArea.y + m_levelArea.h,
 
-        (int)GameConfig::windowWidth,
-        (int)(GameConfig::windowHeight - (m_levelArea.y + m_levelArea.h))
+        (int)windowWidth,
+        (int)(windowHeight - (m_levelArea.y + m_levelArea.h))
     };
 
     m_sides[std::to_underlying(LevelBorderSide::LEFT)] = 
@@ -52,7 +55,7 @@ void LevelBorder::resize(uint32_t gridWidth, uint32_t gridHeight)
         m_levelArea.x + m_levelArea.w,
         m_levelArea.y,
 
-        (int)(GameConfig::windowWidth - (m_levelArea.x + m_levelArea.w)),
+        (int)(windowWidth - (m_levelArea.x + m_levelArea.w)),
         m_levelArea.h
     };
 }

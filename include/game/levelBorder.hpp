@@ -24,7 +24,7 @@ class LevelBorder
 public:
     explicit LevelBorder(Renderer& renderer);
 
-    void resize(uint32_t gridWidth, uint32_t gridHeight);
+    void resize(uint32_t windowWidth, uint32_t windowHeight, uint32_t gridWidth, uint32_t gridHeight);
     void draw();
 
 private:
