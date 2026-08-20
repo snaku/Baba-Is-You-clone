@@ -4,11 +4,22 @@ void Input::update()
 {
     SDL_Event event;
 
+    m_keyJustDown.clear();
+    m_keyReleased.clear();
+
     while (SDL_PollEvent(&event))
     {
-        if (event.type == SDL_QUIT)
+        switch (event.type)
         {
-            m_quitRequested = true;
+            case SDL_QUIT:  m_quitRequested = true; break;
+
+            case SDL_KEYUP: m_keyReleased.insert(event.key.keysym.scancode); break;
+            case SDL_KEYDOWN:
+                if (!event.key.repeat)
+                {
+                    m_keyJustDown.insert(event.key.keysym.scancode);
+                }
+                break;
         }
     }
 
@@ -27,6 +38,36 @@ void Input::update()
     }
 
     m_mousePos = SDL_FPoint{(float)mousePos.x, (float)mousePos.y};
+}
+
+bool Input::isKeyDown(SDL_Scancode key) const
+{
+    if (key >= SDL_NUM_SCANCODES)
+    {
+        return false;
+    }
+
+    return m_keyboardState[key];
+}
+
+bool Input::isKeyJustDown(SDL_Scancode key) const
+{
+    if (key >= SDL_NUM_SCANCODES)
+    {
+        return false;
+    }
+
+    return m_keyJustDown.contains(key);
+}
+
+bool Input::isKeyReleased(SDL_Scancode key) const
+{
+    if (key >= SDL_NUM_SCANCODES)
+    {
+        return false;
+    }
+
+    return m_keyReleased.contains(key);
 }
 
 bool Input::isMouseButtonDown(uint8_t button) const
