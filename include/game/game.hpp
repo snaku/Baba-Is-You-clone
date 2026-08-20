@@ -15,6 +15,7 @@ class Level;
 class Fade;
 class MenuManager;
 class MainMenu;
+class PauseMenu;
 
 enum class GameState
 {
@@ -66,6 +67,7 @@ private:
 
     std::unique_ptr<MenuManager> m_menuMng;
     std::unique_ptr<MainMenu> m_mainMenu;
+    std::unique_ptr<PauseMenu> m_pauseMenu;
 
     bool m_isRunning = false;
 

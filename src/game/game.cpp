@@ -1,6 +1,7 @@
 #include "game/game.hpp"
 #include "game/level.hpp"
 #include "game/mainMenu.hpp"
+#include "game/pauseMenu.hpp"
 #include "game/config.hpp"
 
 #include "window/window.hpp"
@@ -151,6 +152,13 @@ void Game::initStatePlaying()
 
 bool Game::updateStatePlaying()
 {
+    if (m_input.isKeyJustDown(SDL_SCANCODE_ESCAPE))
+    {
+        m_pauseMenu.reset();
+        changeState(GameState::PAUSE);
+        return true;
+    }
+
     m_level->update();
     m_fade->update();
 
@@ -166,12 +174,36 @@ bool Game::updateStatePlaying()
 
 void Game::initStatePause()
 {
-    // TODO
+    m_pauseMenu = std::make_unique<PauseMenu>(*m_renderer, *m_menuMng);
+    m_pauseMenu->init();
+
+    m_pauseMenu->setExitButtonCallback(
+        [this](const Button& _)
+        {
+            m_level.reset();
+            m_mainMenu.reset();
+            changeState(GameState::MAIN_MENU);
+        }
+    );
+
+    m_renderer->setClearColor({0, 0, 255, 255});
 }
 
 bool Game::updateStatePause()
 {
-    // TODO
+    if (m_input.isKeyJustDown(SDL_SCANCODE_ESCAPE))
+    {
+        resumeState();
+        return true;
+    }
+
+    m_pauseMenu->update(m_input);
+
+    m_renderer->clear();
+
+    m_pauseMenu->draw();
+
+    m_renderer->draw();
 
     return true;
 }

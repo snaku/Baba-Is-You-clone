@@ -1,21 +1,19 @@
 #include "game/mainMenu.hpp"
-#include "gui/menuManager.hpp"
+#include "gui/menu.hpp"
 
 #include "renderer/renderer.hpp"
 
 // SDL2
 #include <SDL2/SDL.h>
 
-MainMenu::MainMenu(Renderer& renderer, MenuManager& menuMng)
-    : m_renderer(renderer),
-      m_menuMng(menuMng),
-      m_menu(m_menuMng.addMenu("main"))
+MainMenu::MainMenu(Renderer& renderer, MenuManager& menuMng) 
+    : BaseMenu(renderer, menuMng, "main")
 {
 }
 
 void MainMenu::init()
 {
-    m_menuMng.setActive("main");
+    setActive();
 
     const SDL_FPoint playBtnPos =
     {
@@ -47,14 +45,4 @@ void MainMenu::init()
                                        [](const Button& _)
                                        {
                                        });
-}
-
-void MainMenu::update(const Input& input)
-{
-    m_menuMng.update(input);
-}
-
-void MainMenu::draw()
-{
-    m_menuMng.draw();
 }
