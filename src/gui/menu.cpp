@@ -26,9 +26,21 @@ void Menu::update(const Input& input)
     
 void Menu::draw()
 {
-	if (m_background != nullptr)
+	if (m_backgroundSpr != nullptr)
 	{
-		m_background->draw(m_renderer.getWidth(), m_renderer.getHeight());
+		m_backgroundSpr->draw(m_renderer.getWidth(), m_renderer.getHeight());
+	}
+	else if (m_backgroundCol.has_value())
+	{
+		SDL_Rect rect = SDL_Rect
+		{
+			0,
+			0,
+			(int)m_renderer.getWidth(),
+			(int)m_renderer.getHeight()
+		};
+
+		m_renderer.drawRect(rect, m_backgroundCol.value());
 	}
 
 	for (const auto& [_, btn] : m_buttons)
@@ -77,14 +89,22 @@ void Menu::resize(uint32_t windowWidth, uint32_t windowHeight)
 
 void Menu::setBackground(const std::filesystem::path& path, SDL_Color col)
 {
-	if (m_background != nullptr)
+	if (m_backgroundSpr != nullptr)
 	{
-		m_background->reload(SpriteInfo{path, col});
+		m_backgroundSpr->reload(SpriteInfo{path, col});
 		return;
 	}
 
-	m_background = std::make_unique<Sprite>(m_renderer,
+	m_backgroundCol.reset();
+
+	m_backgroundSpr = std::make_unique<Sprite>(m_renderer,
 											m_textureMng,
 											SpriteInfo{path, col},
 											SDL_FPoint{0.0f, 0.0f});
+}
+
+void Menu::setBackground(SDL_Color col)
+{
+	m_backgroundSpr.reset();
+	m_backgroundCol = col;
 }

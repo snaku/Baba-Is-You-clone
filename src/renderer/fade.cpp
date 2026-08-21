@@ -65,11 +65,7 @@ void Fade::draw()
         (int)m_renderer.getHeight()
     };
 
-    SDL_Renderer* renderer = m_renderer.getSDLRenderer();
-
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     m_renderer.drawRect(rect, m_col);
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 }
 
 void Fade::start()

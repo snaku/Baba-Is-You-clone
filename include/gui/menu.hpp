@@ -13,6 +13,7 @@
 #include <type_traits>
 #include <print>
 #include <filesystem>
+#include <optional>
 
 class Renderer;
 class TextureManager;
@@ -87,7 +88,9 @@ public:
     }
 
     void resize(uint32_t windowWidth, uint32_t windowHeight);
+
     void setBackground(const std::filesystem::path& path, SDL_Color col);
+    void setBackground(SDL_Color col);
 
 private:
     Renderer& m_renderer;
@@ -96,7 +99,8 @@ private:
     std::unordered_map<std::string, std::unique_ptr<Button>> m_buttons;
     std::unordered_map<std::string, std::unique_ptr<CheckBox>> m_checkBoxes;
 
-    std::unique_ptr<Sprite> m_background;
+    std::unique_ptr<Sprite> m_backgroundSpr;
+    std::optional<SDL_Color> m_backgroundCol;
 
     uint32_t m_originalWindowWidth = 0;
     uint32_t m_originalWindowHeight = 0;

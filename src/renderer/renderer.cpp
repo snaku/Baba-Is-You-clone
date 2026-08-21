@@ -43,8 +43,12 @@ void Renderer::draw()
 
 void Renderer::drawRect(const SDL_Rect& rect, SDL_Color col)
 {
+    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+
     SDL_SetRenderDrawColor(m_renderer, col.r, col.g, col.b, col.a);
     SDL_RenderFillRect(m_renderer, &rect);
+
+    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_NONE);
 }
 
 void Renderer::drawTexture(SDL_Texture& texture,

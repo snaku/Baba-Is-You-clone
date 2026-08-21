@@ -11,6 +11,8 @@ void PauseMenu::init()
 {
     setActive();
 
+    m_menu.setBackground({0, 0, 0, 160});
+
     const SDL_FPoint playBtnPos =
     {
         (m_renderer.getWidth() - 120.0f) / 2.0f,
