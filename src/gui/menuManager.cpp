@@ -1,6 +1,10 @@
 #include "gui/menuManager.hpp"
 #include "gui/menu.hpp"
 
+#include "renderer/renderer.hpp"
+
+#include "time/time.hpp"
+
 // std
 #include <print>
 
@@ -18,6 +22,8 @@ void MenuManager::update(const Input& input)
     }
 
     m_activeMenu->update(input);
+
+    checkInactiveMenusRemoval();
 }
 
 void MenuManager::draw()
@@ -28,6 +34,28 @@ void MenuManager::draw()
     }
 
     m_activeMenu->draw();
+}
+
+void MenuManager::checkInactiveMenusRemoval()
+{
+    m_inactiveMenuRemovalTimer += Time::deltaTime();
+    if (m_inactiveMenuRemovalTimer < s_inactiveMenuRemovalInterval)
+    {
+        return;
+    }
+
+    for (auto it = m_menus.begin(); it != m_menus.end();)
+    {
+        if (it->first == m_activeMenuName)
+        {
+            it++;
+            continue;
+        }
+
+        it = m_menus.erase(it);
+    }
+
+    m_inactiveMenuRemovalTimer = 0.0f;
 }
 
 Menu& MenuManager::addMenu(const std::string& name)
@@ -48,6 +76,12 @@ Menu& MenuManager::addMenu(const std::string& name)
     return ref;
 }
 
+void MenuManager::removeMenu(const std::string& name)
+{
+    setInactive(name); // if it's the active menu
+    m_menus.erase(name);
+}
+
 void MenuManager::setActive(const std::string& name)
 {
     auto it = m_menus.find(name);
@@ -57,4 +91,18 @@ void MenuManager::setActive(const std::string& name)
     }
 
     m_activeMenu = it->second.get();
+    m_activeMenuName = it->first;
+
+    m_activeMenu->resize(m_renderer.getWidth(), m_renderer.getHeight());
+}
+
+void MenuManager::setInactive(const std::string& name)
+{
+    if (name != m_activeMenuName)
+    {
+        return;
+    }
+
+    m_activeMenu = nullptr;
+    m_activeMenuName = std::nullopt;
 }

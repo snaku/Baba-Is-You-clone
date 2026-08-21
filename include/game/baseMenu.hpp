@@ -15,7 +15,7 @@ class BaseMenu
 {
 public:
     BaseMenu(Renderer& renderer, MenuManager& menuMng, const std::string& menuName);
-    virtual ~BaseMenu() = default;
+    virtual ~BaseMenu();
 
     virtual void init() = 0;
     virtual void update(const Input& input);
@@ -23,6 +23,7 @@ public:
 
 protected:
     void setActive();
+    void setInactive();
 
     template<typename Fn>
     void setButtonCallback(Button* btn, Fn&& pressedCallback)

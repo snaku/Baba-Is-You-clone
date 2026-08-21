@@ -10,6 +10,11 @@ BaseMenu::BaseMenu(Renderer& renderer, MenuManager& menuMng, const std::string& 
 {
 }
 
+BaseMenu::~BaseMenu()
+{
+    setInactive();
+}
+
 void BaseMenu::update(const Input& input)
 {
     m_menuMng.update(input);
@@ -23,4 +28,9 @@ void BaseMenu::draw()
 void BaseMenu::setActive()
 {
     m_menuMng.setActive(m_name);
+}
+
+void BaseMenu::setInactive()
+{
+    m_menuMng.setInactive(m_name);
 }
