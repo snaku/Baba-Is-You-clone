@@ -74,16 +74,6 @@ void Level::load()
     initFromDef(def);
 }
 
-void Level::resize(uint32_t windowWidth, uint32_t windowHeight)
-{
-    GridConfig::cellSize = std::min(windowWidth / GridConfig::width,
-                                    windowHeight / GridConfig::height);
-    GridConfig::offset.x = (windowWidth - GridConfig::width * GridConfig::cellSize) / 2;
-    GridConfig::offset.y = (windowHeight - GridConfig::height * GridConfig::cellSize) / 2;
-
-    m_border.resize(windowWidth, windowHeight, GridConfig::width, GridConfig::height);
-}
-
 void Level::initFromDef(const LevelDefinition& def)
 {
     GridConfig::width = def.width;
@@ -232,11 +222,6 @@ void Level::updateStateDefeat()
 
 void Level::update()
 {
-    if (m_renderer.wasResized())
-    {
-        resize(m_renderer.getWidth(), m_renderer.getHeight());
-    }
-
     switch (m_state)
     {
         case LevelState::IDLE:    updateStateIdle();    break;
@@ -258,6 +243,23 @@ void Level::draw()
     );
 
     m_border.draw();
+}
+
+void Level::resize(uint32_t windowWidth, uint32_t windowHeight)
+{
+    GridConfig::cellSize = std::min(windowWidth / GridConfig::width,
+                                    windowHeight / GridConfig::height);
+    GridConfig::offset.x = (windowWidth - GridConfig::width * GridConfig::cellSize) / 2;
+    GridConfig::offset.y = (windowHeight - GridConfig::height * GridConfig::cellSize) / 2;
+
+    m_border.resize(windowWidth, windowHeight, GridConfig::width, GridConfig::height);
+
+    m_objectMng.forEach(
+        [](Object& object)
+        {
+            object.syncPos();
+        }
+    );
 }
 
 LevelSituation Level::findSituation()

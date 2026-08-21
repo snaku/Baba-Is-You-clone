@@ -13,11 +13,6 @@ Menu::Menu(Renderer& renderer, TextureManager& textureMng)
 
 void Menu::update(const Input& input)
 {
-	if (m_renderer.wasResized())
-	{
-		resize(m_renderer.getWidth(), m_renderer.getHeight());
-	}
-
 	for (const auto& [_, btn] : m_buttons)
 	{
 		btn->update(input);

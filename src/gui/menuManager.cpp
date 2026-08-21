@@ -21,6 +21,11 @@ void MenuManager::update(const Input& input)
         return;
     }
 
+    if (m_renderer.wasResized())
+	{
+		m_activeMenu->resize(m_renderer.getWidth(), m_renderer.getHeight());
+	}
+
     m_activeMenu->update(input);
 
     checkInactiveMenusRemoval();
@@ -38,6 +43,12 @@ void MenuManager::draw()
 
 void MenuManager::checkInactiveMenusRemoval()
 {
+    if (m_menus.empty())
+    {
+        m_inactiveMenuRemovalTimer = 0.0f;
+        return;
+    }
+
     m_inactiveMenuRemovalTimer += Time::deltaTime();
     if (m_inactiveMenuRemovalTimer < s_inactiveMenuRemovalInterval)
     {

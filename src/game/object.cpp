@@ -64,12 +64,17 @@ Object::~Object() noexcept = default;
 
 void Object::update()
 {
-    m_sprite.setPos(m_cell.toFPoint());
+    syncPos();
 }
 
 void Object::draw()
 {
     m_sprite.draw(GridConfig::cellSize, GridConfig::cellSize);
+}
+
+void Object::syncPos()
+{
+    m_sprite.setPos(m_cell.toFPoint());
 }
 
 void Object::move(Direction dir)

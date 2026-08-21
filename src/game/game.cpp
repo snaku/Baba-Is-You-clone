@@ -159,6 +159,11 @@ bool Game::updateStatePlaying()
         return true;
     }
 
+    if (m_renderer->wasResized())
+    {
+        m_level->resize(m_renderer->getWidth(), m_renderer->getHeight());
+    }
+
     m_level->update();
     m_fade->update();
 
@@ -185,8 +190,6 @@ void Game::initStatePause()
             changeState(GameState::MAIN_MENU);
         }
     );
-
-    m_renderer->setClearColor({0, 0, 255, 255});
 }
 
 bool Game::updateStatePause()
@@ -197,10 +200,22 @@ bool Game::updateStatePause()
         return true;
     }
 
+    if (m_renderer->wasResized())
+    {
+        m_level->resize(m_renderer->getWidth(), m_renderer->getHeight());
+    }
+
     m_pauseMenu->update(m_input);
+
+    // if exit button was pressed
+    if (m_state != GameState::PAUSE)
+    {
+        return true;
+    }
 
     m_renderer->clear();
 
+    m_level->draw();
     m_pauseMenu->draw();
 
     m_renderer->draw();

@@ -101,6 +101,8 @@ public:
     void update();
     void draw();
 
+    void syncPos();
+
     bool isEntity() const { return m_type == ObjectType::ENTITY; }
     bool isText() const { return m_type == ObjectType::TEXT; }
 
