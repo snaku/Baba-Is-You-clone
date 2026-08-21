@@ -15,6 +15,8 @@ void MainMenu::init()
 {
     setActive();
 
+    m_menu.setBackground("assets/bg_main_menu.png", {255, 255, 255, 255});
+
     const SDL_FPoint playBtnPos =
     {
         (m_renderer.getWidth() - s_btnsWidth) / 2.0f,

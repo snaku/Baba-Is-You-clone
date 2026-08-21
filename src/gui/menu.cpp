@@ -1,6 +1,7 @@
 #include "gui/menu.hpp"
 
 #include "renderer/renderer.hpp"
+#include "renderer/sprite.hpp"
 
 Menu::Menu(Renderer& renderer, TextureManager& textureMng)
     : m_renderer(renderer),
@@ -30,6 +31,11 @@ void Menu::update(const Input& input)
     
 void Menu::draw()
 {
+	if (m_background != nullptr)
+	{
+		m_background->draw(m_renderer.getWidth(), m_renderer.getHeight());
+	}
+
 	for (const auto& [_, btn] : m_buttons)
 	{
 		btn->draw();
@@ -72,4 +78,18 @@ void Menu::resize(uint32_t windowWidth, uint32_t windowHeight)
     {
         checkBox->applyOffset(delta);
     }
+}
+
+void Menu::setBackground(const std::filesystem::path& path, SDL_Color col)
+{
+	if (m_background != nullptr)
+	{
+		m_background->reload(SpriteInfo{path, col});
+		return;
+	}
+
+	m_background = std::make_unique<Sprite>(m_renderer,
+											m_textureMng,
+											SpriteInfo{path, col},
+											SDL_FPoint{0.0f, 0.0f});
 }
