@@ -18,7 +18,7 @@ public:
     template<typename Fn>
     void setExitButtonCallback(Fn&& pressedCallback)
     {
-        static_assert(std::is_invocable_v<Fn&, Button&>, "PauseMenu::setExitButtonCallback");
+        static_assert(std::is_invocable_r_v<void, Fn&, Button&>, "PauseMenu::setExitButtonCallback");
 
         setButtonCallback(m_menu.findButton("exit"), std::forward<Fn>(pressedCallback));
     }
@@ -26,7 +26,7 @@ public:
     template<typename Fn>
     void setResumeButtonCallback(Fn&& pressedCallback)
     {
-        static_assert(std::is_invocable_v<Fn&, Button&>, "PauseMenu::setResumeButtonCallback");
+        static_assert(std::is_invocable_r_v<void, Fn&, Button&>, "PauseMenu::setResumeButtonCallback");
 
         setButtonCallback(m_menu.findButton("resume"), std::forward<Fn>(pressedCallback));
     }

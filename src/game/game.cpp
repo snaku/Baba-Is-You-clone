@@ -112,6 +112,19 @@ void Game::initStateMainMenu()
     m_mainMenu = std::make_unique<MainMenu>(*m_renderer, *m_menuMng);
     m_mainMenu->init();
 
+    m_mainMenu->setContinueButtonBlockCallback(
+        []()
+        {
+            // TODO: once SaveSystem is done,
+            // check if a save exist
+            return true;
+        }
+    );
+
+    // TODO: once SaveSystem is done,
+    // set the press callback of continue button
+    // and load the save
+
     m_mainMenu->setPlayButtonCallback(
         [this](const Button& _)
         {

@@ -28,7 +28,7 @@ protected:
     template<typename Fn>
     void setButtonCallback(Button* btn, Fn&& pressedCallback)
     {
-        static_assert(std::is_invocable_v<Fn&, Button&>, "BaseMenu::setButtonCallback");
+        static_assert(std::is_invocable_r_v<void, Fn&, Button&>, "BaseMenu::setButtonCallback");
 
         if (btn == nullptr)
         {
@@ -36,6 +36,19 @@ protected:
         }
 
         btn->setPressedCallback(std::forward<Fn>(pressedCallback));
+    }
+
+    template<typename Fn>
+    void setButtonBlockCallback(Button* btn, Fn&& blockCallback)
+    {
+        static_assert(std::is_invocable_r_v<bool, Fn&>, "BaseMenu::setButtonBlockCallback");
+
+        if (btn == nullptr)
+        {
+            return;
+        }
+
+        btn->setBlockCallback(std::forward<Fn>(blockCallback));
     }
 
     Renderer& m_renderer;

@@ -20,9 +20,17 @@ public:
     void init() override;
 
     template<typename Fn>
+    void setContinueButtonBlockCallback(Fn&& blockCallback)
+    {
+        static_assert(std::is_invocable_r_v<bool, Fn&>, "MainMenu::setContinueButtonBlockCallback");
+
+        setButtonBlockCallback(m_menu.findButton("continue"), std::forward<Fn>(blockCallback));
+    }
+
+    template<typename Fn>
     void setPlayButtonCallback(Fn&& pressedCallback)
     {
-        static_assert(std::is_invocable_v<Fn&, Button&>, "MainMenu::setPlayButtonCallback");
+        static_assert(std::is_invocable_r_v<void, Fn&, Button&>, "MainMenu::setPlayButtonCallback");
 
         setButtonCallback(m_menu.findButton("play"), std::forward<Fn>(pressedCallback));
     }
@@ -30,7 +38,7 @@ public:
     template<typename Fn>
     void setQuitButtonCallback(Fn&& pressedCallback)
     {
-        static_assert(std::is_invocable_v<Fn&, Button&>, "MainMenu::setQuitButtonCallback");
+        static_assert(std::is_invocable_r_v<void, Fn&, Button&>, "MainMenu::setQuitButtonCallback");
 
         setButtonCallback(m_menu.findButton("quit"), std::forward<Fn>(pressedCallback));
     }

@@ -21,7 +21,7 @@ public:
     template<typename Fn>
     void forEach(Fn&& fn)
     {
-        static_assert(std::is_invocable_v<Fn&, Object&>, "ObjectManager::forEach");
+        static_assert(std::is_invocable_r_v<void, Fn&, Object&>, "ObjectManager::forEach");
 
         for (auto& object : m_objects)
         {

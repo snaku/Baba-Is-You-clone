@@ -36,7 +36,7 @@ public:
                       float height,
                       Fn&& pressedCallback)
     {
-        static_assert(std::is_invocable_v<Fn&, Button&>, "Menu::addButton");
+        static_assert(std::is_invocable_r_v<void, Fn&, Button&>, "Menu::addButton");
 
         auto it = m_buttons.find(name);
         if (it != m_buttons.end())
@@ -65,8 +65,8 @@ public:
                           FnActivate&& activateCallback,
                           FnDeactivate&& deactivateCallback)
     {
-        static_assert(std::is_invocable_v<FnActivate&, CheckBox&>, "Menu::addCheckBox (ACTIVATE)");
-        static_assert(std::is_invocable_v<FnDeactivate&, CheckBox&>, "Menu::addCheckBox (DEACTIVATE)");
+        static_assert(std::is_invocable_r_v<void, FnActivate&, CheckBox&>, "Menu::addCheckBox (ACTIVATE)");
+        static_assert(std::is_invocable_r_v<void, FnDeactivate&, CheckBox&>, "Menu::addCheckBox (DEACTIVATE)");
 
         auto it = m_checkBoxes.find(name);
         if (it != m_checkBoxes.end())
