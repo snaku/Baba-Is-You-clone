@@ -190,6 +190,13 @@ void Game::initStatePause()
             changeState(GameState::MAIN_MENU);
         }
     );
+
+    m_pauseMenu->setResumeButtonCallback(
+        [this](const Button& _)
+        {
+            resumeState();
+        }
+    );
 }
 
 bool Game::updateStatePause()

@@ -22,4 +22,12 @@ public:
 
         setButtonCallback(m_menu.findButton("exit"), std::forward<Fn>(pressedCallback));
     }
+
+    template<typename Fn>
+    void setResumeButtonCallback(Fn&& pressedCallback)
+    {
+        static_assert(std::is_invocable_v<Fn&, Button&>, "PauseMenu::setResumeButtonCallback");
+
+        setButtonCallback(m_menu.findButton("resume"), std::forward<Fn>(pressedCallback));
+    }
 };
