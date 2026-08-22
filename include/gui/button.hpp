@@ -37,16 +37,23 @@ public:
     using PressedCallback = std::function<void(Button&)>;
 
     void setPressedCallback(PressedCallback callback) { m_pressedCallback = std::move(callback); }
-
     void setPressDelay(float delay) { m_pressDelay = delay; }
+
+    using BlockCallback = std::function<bool()>;
+
+    void setBlockCallback(BlockCallback callback) { m_blockCallback = std::move(callback); }
 
     bool isHovered() const { return m_hovered; }
     bool isPressed() const { return m_pressed; }
 
 private:
     bool checkHover(SDL_FPoint mousePos) const;
+    bool checkHeld(const Input& input) const;
+    bool checkPress(const Input& input);
     void handleHoverAnimation();
     void handleHeldAnimation();
+    void handlePress();
+    bool handleBlock();
     const SpriteInfo& getSpriteInfo(ButtonId id) const;
 
     Sprite m_sprite;
@@ -64,10 +71,13 @@ private:
     bool m_hovered = false;
     bool m_pressed = false;
     bool m_held = false;
+    bool m_blocked = false;
 
     PressedCallback m_pressedCallback;
     float m_pressDelay = 0.0f;
     float m_pressTimer = 0.0f;
+
+    BlockCallback m_blockCallback;
 
     static constexpr float s_animPressRatio = 1.07f;
     static constexpr float s_animShrinkRate = 0.7f;

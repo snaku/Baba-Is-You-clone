@@ -98,9 +98,9 @@ void Menu::setBackground(const std::filesystem::path& path, SDL_Color col)
 	m_backgroundCol.reset();
 
 	m_backgroundSpr = std::make_unique<Sprite>(m_renderer,
-											m_textureMng,
-											SpriteInfo{path, col},
-											SDL_FPoint{0.0f, 0.0f});
+											   m_textureMng,
+											   SpriteInfo{path, col},
+											   SDL_FPoint{0.0f, 0.0f});
 }
 
 void Menu::setBackground(SDL_Color col)

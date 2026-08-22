@@ -45,34 +45,19 @@ Button::Button(Renderer& renderer,
 
 void Button::update(const Input& input)
 {
-    m_hovered = checkHover(input.getMousePos());
-    m_held = m_hovered && input.isMouseButtonDown(SDL_BUTTON_LEFT);
+    if (handleBlock())
+    {
+        return;
+    }
 
-    if (m_pressed &&
-        m_pressDelay != 0.0f)
-    {
-        m_pressTimer += Time::deltaTime();
-    }
-    else
-    {
-        m_pressed = m_hovered && input.isMouseButtonReleased(SDL_BUTTON_LEFT);
-    }
+    m_hovered = checkHover(input.getMousePos());
+    m_held = checkHeld(input);
+    m_pressed = checkPress(input);
 
     handleHoverAnimation();
     handleHeldAnimation();
 
-    if (m_pressed &&
-        m_pressedCallback != nullptr)
-    {
-        if (m_pressTimer < m_pressDelay)
-        {
-            return;
-        }
-
-        m_pressedCallback(*this);
-        m_pressed = false;
-        m_pressTimer = 0.0f;
-    }
+    handlePress();
 }
 
 void Button::draw()
@@ -97,6 +82,23 @@ bool Button::checkHover(SDL_FPoint mousePos) const
            mousePos.x <= m_pos.x + m_width &&
            mousePos.y >= m_pos.y &&
            mousePos.y <= m_pos.y + m_height;
+}
+
+bool Button::checkHeld(const Input& input) const
+{
+    return m_hovered && input.isMouseButtonDown(SDL_BUTTON_LEFT);
+}
+
+bool Button::checkPress(const Input& input)
+{
+    if (m_pressed &&
+        m_pressDelay != 0.0f)
+    {
+        m_pressTimer += Time::deltaTime();
+        return true;
+    }
+
+    return m_hovered && input.isMouseButtonReleased(SDL_BUTTON_LEFT);
 }
 
 void Button::handleHoverAnimation()
@@ -152,6 +154,44 @@ void Button::handleHeldAnimation()
     m_pos.y = m_center.y - m_height * 0.5f;
 
     m_sprite.setPos(m_pos);
+}
+
+void Button::handlePress()
+{
+    if (!m_pressed)
+    {
+        return;
+    }
+
+    if (m_pressTimer < m_pressDelay)
+    {
+        return;
+    }
+    
+    if (m_pressedCallback != nullptr)
+    {
+        m_pressedCallback(*this);
+    }
+
+    m_pressed = false;
+    m_pressTimer = 0.0f;
+}
+
+bool Button::handleBlock()
+{
+    if (m_blockCallback == nullptr)
+    {
+        return false;
+    }
+
+    if (!m_blockCallback())
+    {
+        m_sprite.setColor(getSpriteInfo(m_id).col);
+        return false;
+    }
+
+    m_sprite.setColor({128, 128, 128, 255});
+    return true;
 }
 
 const SpriteInfo& Button::getSpriteInfo(ButtonId id) const
