@@ -8,6 +8,24 @@
 #include <algorithm>
 #include <print>
 
+void SaveSystem::save(uint32_t levelId)
+{
+    if (hasData())
+    {
+        std::println("Overwriting old save file");
+    }
+
+    if (!std::filesystem::exists(getDirectory()))
+    {
+        std::filesystem::create_directory(getDirectory());
+    }
+
+    std::ofstream file(getPath());
+    
+    file << "level ";
+    file << levelId;
+}
+
 Save SaveSystem::load()
 {
     if (!hasData())
@@ -58,10 +76,15 @@ bool SaveSystem::hasData()
     return std::filesystem::is_regular_file(getPath());
 }
 
-std::filesystem::path SaveSystem::getPath()
+std::filesystem::path SaveSystem::getDirectory()
 {
     std::filesystem::path localAppData = std::getenv("LOCALAPPDATA");
 
+    return localAppData / "BabaIsYouClone";
+}
+
+std::filesystem::path SaveSystem::getPath()
+{
     // path should be "C:/Users/../AppData/Local/BabaIsYouClone/save.txt"
-    return localAppData / "BabaIsYouClone" / "save.txt";
+    return getDirectory() / "save.txt";
 }

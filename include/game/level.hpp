@@ -49,6 +49,12 @@ public:
     bool reloadRequested() const { return m_reloadRequested; }
     void allowReload() { m_canReload = true; }
 
+    using WinCallback = std::function<void(Level&)>;
+
+    void setWinCallback(WinCallback callback) { m_winCallback = std::move(callback); }
+
+    uint32_t getId() const { return m_id; }
+
 private:
     void initFromDef(const LevelDefinition& def);
 
@@ -88,6 +94,8 @@ private:
     float m_reloadTimer = 0.0f;
     bool m_reloadRequested = false;
     bool m_canReload = false;
+
+    WinCallback m_winCallback;
 
     static constexpr float s_reloadDelay = 1.0f;
 };

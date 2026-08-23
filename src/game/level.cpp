@@ -150,6 +150,11 @@ void Level::reload()
     if (m_state == LevelState::WIN)
     {
         load(m_id + 1);
+        
+        if (m_winCallback != nullptr)
+        {
+            m_winCallback(*this);
+        }
     }
     else
     {

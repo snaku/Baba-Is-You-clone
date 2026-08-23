@@ -13,9 +13,11 @@ struct Save
 class SaveSystem
 {
 public:
+    static void save(uint32_t levelId);
     static Save load();
     static bool hasData();
 
 private:
+    static std::filesystem::path getDirectory();
     static std::filesystem::path getPath();
 };

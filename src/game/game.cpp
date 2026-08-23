@@ -23,6 +23,8 @@
 #include <iostream>
 #include <functional>
 
+// TODO: refactor
+
 Game::Game(std::string_view windowName, int windowWidth, int windowHeight)
 {
     m_window = std::make_unique<Window>(std::string(windowName), windowWidth, windowHeight);
@@ -166,7 +168,7 @@ void Game::initStatePlaying()
     switch (m_playMode)
     {
         case PlayMode::NEWGAME:
-            // TODO: create a new save file or overwrite
+            SaveSystem::save(0); // overwrites if a save already exists
             m_level->load(0);
             break;
 
@@ -182,6 +184,13 @@ void Game::initStatePlaying()
                 return;
             }
     }
+
+    m_level->setWinCallback(
+        [](Level& level)
+        {
+            SaveSystem::save(level.getId());
+        }
+    );
 
     m_renderer->setClearColor({30, 15, 8, 255});
 }
