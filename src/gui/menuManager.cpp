@@ -104,6 +104,7 @@ void MenuManager::setActive(const std::string& name)
     m_activeMenu = it->second.get();
     m_activeMenuName = it->first;
 
+    m_activeMenu->resetButtons();
     m_activeMenu->resize(m_renderer.getWidth(), m_renderer.getHeight());
 }
 

@@ -76,6 +76,13 @@ void Button::applyOffset(SDL_FPoint delta)
     m_sprite.setPos(m_pos);
 }
 
+void Button::reset()
+{
+    m_width = m_originalWidth;
+    m_height = m_originalHeight;
+    m_sprite.setColor(getSpriteInfo(m_id).col);
+}
+
 bool Button::checkHover(SDL_FPoint mousePos) const
 {
     return mousePos.x >= m_pos.x &&
@@ -116,6 +123,8 @@ void Button::handleHoverAnimation()
         brightness = (uint8_t)std::min(col.r + s_brightnessChangeRate * Time::deltaTime(),
                                        (float)s_baseBrightness);
     }
+
+    m_playingHoverAnim = brightness != s_baseBrightness;
 
     col.r = col.g = col.b = brightness;
 
@@ -186,7 +195,12 @@ bool Button::handleBlock()
 
     if (!m_blockCallback())
     {
-        m_sprite.setColor(getSpriteInfo(m_id).col);
+        // hover animation has priority
+        if (!m_playingHoverAnim)
+        {
+            m_sprite.setColor(getSpriteInfo(m_id).col);
+        }
+
         return false;
     }
 

@@ -108,3 +108,11 @@ void Menu::setBackground(SDL_Color col)
 	m_backgroundSpr.reset();
 	m_backgroundCol = col;
 }
+
+void Menu::resetButtons()
+{
+	for (auto& [_, button] : m_buttons)
+	{
+		button->reset();
+	}
+}

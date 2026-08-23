@@ -34,6 +34,8 @@ public:
 
     void applyOffset(SDL_FPoint delta);
 
+    void reset();
+
     using PressedCallback = std::function<void(Button&)>;
 
     void setPressedCallback(PressedCallback callback) { m_pressedCallback = std::move(callback); }
@@ -72,6 +74,8 @@ private:
     bool m_pressed = false;
     bool m_held = false;
     bool m_blocked = false;
+
+    bool m_playingHoverAnim = false;
 
     PressedCallback m_pressedCallback;
     float m_pressDelay = 0.0f;

@@ -92,6 +92,8 @@ public:
     void setBackground(const std::filesystem::path& path, SDL_Color col);
     void setBackground(SDL_Color col);
 
+    void resetButtons();
+
 private:
     Renderer& m_renderer;
     TextureManager& m_textureMng;
