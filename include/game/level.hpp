@@ -54,6 +54,8 @@ private:
 
     void buildYouObjects();
 
+    void clear();
+
     void checkReload();
     void reload();
     void clearReloadState();

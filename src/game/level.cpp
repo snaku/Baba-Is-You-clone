@@ -110,6 +110,14 @@ void Level::buildYouObjects()
     );
 }
 
+void Level::clear()
+{
+    m_ruleSystem.clear();
+    m_grid.clearObjects();
+    m_objectMng.clear();
+    m_undoSystem.clear();
+}
+
 void Level::checkReload()
 {
     m_reloadTimer += Time::deltaTime();
@@ -125,6 +133,7 @@ void Level::checkReload()
         return;
     }
 
+    // wait for LevelTransition fade out to be done
     if (m_canReload)
     {
         reload();
@@ -136,12 +145,16 @@ void Level::reload()
 {
     std::println("Reloading level");
 
-    m_ruleSystem.clear();
-    m_grid.clearObjects();
-    m_objectMng.clear();
-    m_undoSystem.clear();
+    clear();
 
-    load(m_id);
+    if (m_state == LevelState::WIN)
+    {
+        load(m_id + 1);
+    }
+    else
+    {
+        load(m_id);
+    }
 }
 
 void Level::clearReloadState()
@@ -301,7 +314,9 @@ void Level::checkSituations()
 {
     switch (findSituation())
     {
-        case LevelSituation::NONE: return;
+        // unintentional, but when DEFEAT, fade out will be black
+        // and the fade in will be white
+        case LevelSituation::NONE: m_transition.setColor(255, 255, 255); return;
 
         case LevelSituation::WIN:
             std::println("WIN !");
