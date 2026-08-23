@@ -17,11 +17,6 @@ void Menu::update(const Input& input)
 	{
 		btn->update(input);
 	}
-
-	for (const auto& [_, checkBox] : m_checkBoxes)
-	{
-		checkBox->update(input);
-	}
 }
     
 void Menu::draw()
@@ -46,11 +41,6 @@ void Menu::draw()
 	for (const auto& [_, btn] : m_buttons)
 	{
 		btn->draw();
-	}
-
-	for (const auto& [_, checkBox] : m_checkBoxes)
-	{
-		checkBox->draw();
 	}
 }
 
@@ -79,11 +69,6 @@ void Menu::resize(uint32_t windowWidth, uint32_t windowHeight)
 	for (auto& [_, btn] : m_buttons)
     {
         btn->applyOffset(delta);
-    }
-
-    for (auto& [_, checkBox] : m_checkBoxes)
-    {
-        checkBox->applyOffset(delta);
     }
 }
 

@@ -68,11 +68,11 @@ public:
         static_assert(std::is_invocable_r_v<void, FnActivate&, CheckBox&>, "Menu::addCheckBox (ACTIVATE)");
         static_assert(std::is_invocable_r_v<void, FnDeactivate&, CheckBox&>, "Menu::addCheckBox (DEACTIVATE)");
 
-        auto it = m_checkBoxes.find(name);
-        if (it != m_checkBoxes.end())
+        auto it = m_buttons.find(name);
+        if (it != m_buttons.end())
         {
             std::println("CheckBox '{}' already exists.", name);
-            return *it->second;
+            return *dynamic_cast<CheckBox*>(*it->second);
         }
 
         auto checkBox = std::make_unique<CheckBox>(m_renderer, m_textureMng, pos, width, height);
@@ -82,7 +82,7 @@ public:
 
         CheckBox& ref = *checkBox;
 
-        m_checkBoxes.emplace(name, std::move(checkBox));
+        m_buttons.emplace(name, std::move(checkBox));
 
         return ref;
     }
@@ -99,7 +99,6 @@ private:
     TextureManager& m_textureMng;
 
     std::unordered_map<std::string, std::unique_ptr<Button>> m_buttons;
-    std::unordered_map<std::string, std::unique_ptr<CheckBox>> m_checkBoxes;
 
     std::unique_ptr<Sprite> m_backgroundSpr;
     std::optional<SDL_Color> m_backgroundCol;

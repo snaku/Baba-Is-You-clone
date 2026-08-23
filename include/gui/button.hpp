@@ -28,11 +28,12 @@ class Button
 {
 public:
     Button(Renderer& renderer, TextureManager& textureMng, ButtonId id, SDL_FPoint pos, float width, float height);
+    virtual ~Button() noexcept = default;
 
-    void update(const Input& input);
-    void draw();
+    virtual void update(const Input& input);
+    virtual void draw();
 
-    void applyOffset(SDL_FPoint delta);
+    virtual void applyOffset(SDL_FPoint delta);
 
     void reset();
 

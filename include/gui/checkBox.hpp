@@ -13,17 +13,15 @@
 
 class Renderer;
 class TextureManager;
-class Input;
 
-class CheckBox
+class CheckBox : public Button
 {
 public:
     CheckBox(Renderer& renderer, TextureManager& textureMng, SDL_FPoint pos, float width, float height);
 
-    void update(const Input& input);
-    void draw();
+    void draw() override;
 
-    void applyOffset(SDL_FPoint delta);
+    void applyOffset(SDL_FPoint delta) override;
 
     using Callback = std::function<void(CheckBox&)>;
 
@@ -31,7 +29,6 @@ public:
     void setDeactivateCallback(Callback deactivateCallback) { m_deactivateCallback = std::move(deactivateCallback); }
 
 private:
-    Button m_button;
     Sprite m_checkMarkSprite;
     float m_checkMarkWidth;
     float m_checkMarkHeight;
