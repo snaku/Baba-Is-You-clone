@@ -27,6 +27,14 @@ enum class GameState
     MAX
 };
 
+enum class PlayMode
+{
+    NONE,
+
+    NEWGAME,
+    CONTINUE
+};
+
 class Game
 {
 public:
@@ -70,6 +78,8 @@ private:
     std::unique_ptr<PauseMenu> m_pauseMenu;
 
     bool m_isRunning = false;
+
+    PlayMode m_playMode = PlayMode::NONE;
 
     using InitStateCallback = void (Game::*)();
     static constexpr std::array<InitStateCallback, std::to_underlying(GameState::MAX)> s_initStateFuncTable =

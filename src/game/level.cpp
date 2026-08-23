@@ -55,14 +55,9 @@ Level::Level(Renderer& renderer,
 }
 Level::~Level() noexcept = default;
 
-void Level::load()
+void Level::load(uint32_t id)
 {
-    if (m_state == LevelState::WIN)
-    {
-        m_id++;
-    }
-
-    std::string fileName = std::format("level_{}.txt", m_id);
+    std::string fileName = std::format("level_{}.txt", id);
 
     LevelDefinition def = LevelLoader::read(fileName);
     if (!def.isValid)
@@ -72,6 +67,8 @@ void Level::load()
     }
 
     initFromDef(def);
+
+    m_id = id;
 }
 
 void Level::initFromDef(const LevelDefinition& def)
@@ -144,7 +141,7 @@ void Level::reload()
     m_objectMng.clear();
     m_undoSystem.clear();
 
-    load();
+    load(m_id);
 }
 
 void Level::clearReloadState()

@@ -28,6 +28,14 @@ public:
     }
 
     template<typename Fn>
+    void setContinueButtonCallback(Fn&& pressedCallback)
+    {
+        static_assert(std::is_invocable_r_v<void, Fn&, Button&>, "MainMenu::setContinueButtonCallback");
+
+        setButtonCallback(m_menu.findButton("continue"), std::forward<Fn>(pressedCallback));
+    }
+
+    template<typename Fn>
     void setPlayButtonCallback(Fn&& pressedCallback)
     {
         static_assert(std::is_invocable_r_v<void, Fn&, Button&>, "MainMenu::setPlayButtonCallback");

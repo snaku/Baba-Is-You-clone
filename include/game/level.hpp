@@ -40,7 +40,7 @@ public:
     Level(Renderer& renderer, TextureManager& textureMng, const Input& input, Fade& fade);
     ~Level() noexcept;
 
-    void load();
+    void load(uint32_t id);
     void update();
     void draw();
 

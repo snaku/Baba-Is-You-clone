@@ -3,6 +3,7 @@
 #include "game/mainMenu.hpp"
 #include "game/pauseMenu.hpp"
 #include "game/config.hpp"
+#include "game/saveSystem.hpp"
 
 #include "window/window.hpp"
 
@@ -115,19 +116,22 @@ void Game::initStateMainMenu()
     m_mainMenu->setContinueButtonBlockCallback(
         []()
         {
-            // TODO: once SaveSystem is done,
-            // check if a save exist
-            return true;
+            return !SaveSystem::hasData(); // blocks if no save data, hence i use '!'
         }
     );
 
-    // TODO: once SaveSystem is done,
-    // set the press callback of continue button
-    // and load the save
+    m_mainMenu->setContinueButtonCallback(
+        [this](const Button& _)
+        {
+            m_playMode = PlayMode::CONTINUE;
+            changeState(GameState::PLAYING);
+        }
+    );
 
     m_mainMenu->setPlayButtonCallback(
         [this](const Button& _)
         {
+            m_playMode = PlayMode::NEWGAME;
             changeState(GameState::PLAYING);
         }
     );
@@ -158,7 +162,26 @@ bool Game::updateStateMainMenu()
 void Game::initStatePlaying()
 {
     m_level = std::make_unique<Level>(*m_renderer, *m_textureMng, m_input, *m_fade);
-    m_level->load();
+    
+    switch (m_playMode)
+    {
+        case PlayMode::NEWGAME:
+            // TODO: create a new save file or overwrite
+            m_level->load(0);
+            break;
+
+        case PlayMode::CONTINUE:
+            Save save = SaveSystem::load();
+            if (save.levelId.has_value())
+            {
+                m_level->load(save.levelId.value());
+            }
+            else
+            {
+                changeState(GameState::IDLE);
+                return;
+            }
+    }
 
     m_renderer->setClearColor({30, 15, 8, 255});
 }
@@ -207,7 +230,7 @@ void Game::initStatePause()
     m_pauseMenu->setResumeButtonCallback(
         [this](const Button& _)
         {
-            resumeState();
+            resumeState(); // resume GameState::PLAYING since we come from it
         }
     );
 }
