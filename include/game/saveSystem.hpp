@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <cstdint>
 #include <optional>
+#include <string_view>
 
 struct Save
 {
@@ -20,4 +21,7 @@ public:
 private:
     static std::filesystem::path getDirectory();
     static std::filesystem::path getPath();
+
+    static constexpr std::string_view s_dirName = "Baba_Is_You_Clone";
+    static constexpr std::string_view s_fileName = "save.txt";
 };

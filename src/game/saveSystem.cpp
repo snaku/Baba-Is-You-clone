@@ -15,13 +15,18 @@ void SaveSystem::save(uint32_t levelId)
         std::println("Overwriting old save file");
     }
 
-    if (!std::filesystem::exists(getDirectory()))
+    std::filesystem::path dir = getDirectory();
+    if (!std::filesystem::exists(dir))
     {
-        std::filesystem::create_directory(getDirectory());
+        std::filesystem::create_directory(dir);
     }
 
     std::ofstream file(getPath());
-    
+    if (!file.is_open())
+    {
+        return;
+    }
+
     file << "level ";
     file << levelId;
 }
@@ -80,11 +85,11 @@ std::filesystem::path SaveSystem::getDirectory()
 {
     std::filesystem::path localAppData = std::getenv("LOCALAPPDATA");
 
-    return localAppData / "BabaIsYouClone";
+    return localAppData / s_dirName;
 }
 
 std::filesystem::path SaveSystem::getPath()
 {
-    // path should be "C:/Users/../AppData/Local/BabaIsYouClone/save.txt"
-    return getDirectory() / "save.txt";
+    // path should be "C:/Users/../AppData/Local/Baba_Is_You_Clone/save.txt"
+    return getDirectory() / s_fileName;
 }
