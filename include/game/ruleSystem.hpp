@@ -24,12 +24,29 @@ public:
     void eraseObjectWithTransformation(std::size_t uid);
 
     void addBehavior(ObjectId id, BehaviorType behavior);
-    void clearBehaviors(ObjectId id);
-    bool hasBehavior(ObjectId id, BehaviorType behavior);
+    bool hasBehavior(ObjectId id, BehaviorType behavior) const;
 
     void requestDirty() { m_dirty = true; }
 
 private:
+    template<typename T>
+    requires (std::is_scoped_enum_v<T> &&
+              requires { T::MAX; }
+    )
+    using RuleBitsetMap = std::unordered_map<ObjectId, std::bitset<std::to_underlying(T::MAX)>>;
+
+    template<typename T>
+    bool bitsetMapContains(const RuleBitsetMap<T>& bitsetMap, ObjectId subject, T value) const
+    {
+        auto it = bitsetMap.find(subject);
+        if (it == bitsetMap.end())
+        {
+            return false;
+        }
+
+        return it->second.test(std::to_underlying(value));
+    }
+
     void applyPredicate(ObjectId subject, BehaviorType behavior, bool _);
     void applyPredicate(ObjectId subject, ObjectId newId, bool possessive);
 
@@ -47,12 +64,13 @@ private:
     ObjectManager& m_objectMng;
     RuleParser m_parser;
     std::vector<Rule> m_rules;
-    std::unordered_map<ObjectId, std::bitset<std::to_underlying(BehaviorType::MAX)>> m_behaviors;
+
+    RuleBitsetMap<BehaviorType> m_behaviors;
     std::unordered_map<std::size_t, ObjectId> m_objectsWithTransformation;
 
-    std::unordered_map<ObjectId, std::bitset<std::to_underlying(BehaviorType::MAX)>> m_negatedBehaviors;
-    std::unordered_map<ObjectId, std::bitset<std::to_underlying(ObjectId::MAX)>> m_negatedObjectsTransformation;
-    std::unordered_map<ObjectId, std::bitset<std::to_underlying(ObjectId::MAX)>> m_negatedObjectsPossession;
+    RuleBitsetMap<BehaviorType> m_negatedBehaviors;
+    RuleBitsetMap<ObjectId> m_negatedObjectsTransformation;
+    RuleBitsetMap<ObjectId> m_negatedObjectsPossession;
 
     bool m_dirty = false;
 };

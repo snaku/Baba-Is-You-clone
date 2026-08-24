@@ -47,21 +47,9 @@ void RuleSystem::addBehavior(ObjectId id, BehaviorType behavior)
     m_behaviors[id].set(std::to_underlying(behavior));
 }
 
-void RuleSystem::clearBehaviors(ObjectId id)
+bool RuleSystem::hasBehavior(ObjectId id, BehaviorType behavior) const
 {
-    m_behaviors[id].reset();
-}
-
-bool RuleSystem::hasBehavior(ObjectId id, BehaviorType behavior)
-{
-    auto it = m_behaviors.find(id);
-
-    if (it == m_behaviors.end())
-    {
-        return false;
-    }
-
-    return it->second.test(std::to_underlying(behavior));
+    return bitsetMapContains(m_behaviors, id, behavior);
 }
 
 void RuleSystem::addToTransformationQueue(ObjectId id, ObjectId newId)
@@ -115,14 +103,10 @@ void RuleSystem::revertObjectsTransformation()
 
 void RuleSystem::applyPredicate(ObjectId subject, BehaviorType behavior, bool _)
 {
-    auto it = m_negatedBehaviors.find(subject);
-    if (it != m_negatedBehaviors.end())
+    if (bitsetMapContains(m_negatedBehaviors, subject, behavior))
     {
-        if (it->second.test(std::to_underlying(behavior)))
-        {
-            std::println("REFUSE TO ADD BEHAVIOR ! NEGATED");
-            return;
-        }
+        std::println("REFUSE TO ADD BEHAVIOR ! NEGATED");
+        return;
     }
 
     addBehavior(subject, behavior);
@@ -135,28 +119,20 @@ void RuleSystem::applyPredicate(ObjectId subject, ObjectId newId, bool possessiv
 
     if (!possessive)
     {
-        auto it = m_negatedObjectsTransformation.find(subject);
-        if (it != m_negatedObjectsTransformation.end())
+        if (bitsetMapContains(m_negatedObjectsTransformation, subject, newId))
         {
-            if (it->second.test(std::to_underlying(newId)))
-            {
-                std::println("REFUSE TO TRANSFORM OBJECT ! NEGATED");
-                return;
-            }
+            std::println("REFUSE TO TRANSFORM OBJECT ! NEGATED");
+            return;
         }
 
         addToTransformationQueue(subject, newId);
         return;
     }
 
-    auto it = m_negatedObjectsPossession.find(subject);
-    if (it != m_negatedObjectsPossession.end())
+    if (bitsetMapContains(m_negatedObjectsPossession, subject, newId))
     {
-        if (it->second.test(std::to_underlying(newId)))
-        {
-            std::println("REFUSE TO ADD OBJECT POSSESSION ! NEGATED");
-            return;
-        }
+        std::println("REFUSE TO ADD OBJECT POSSESSION ! NEGATED");
+        return;
     }
 
     m_objectMng.forEach(
@@ -229,6 +205,7 @@ void RuleSystem::applyRules()
     m_behaviors.clear();
     m_negatedBehaviors.clear();
     m_negatedObjectsTransformation.clear();
+    m_negatedObjectsPossession.clear();
 
     revertObjectsTransformation();
 
