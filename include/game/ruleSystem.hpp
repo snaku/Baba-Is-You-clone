@@ -7,6 +7,7 @@
 // std
 #include <unordered_map>
 #include <bitset>
+#include <utility>
 
 class Grid;
 class ObjectManager;
@@ -31,7 +32,12 @@ public:
 private:
     void applyPredicate(ObjectId subject, BehaviorType behavior, bool _);
     void applyPredicate(ObjectId subject, ObjectId newId, bool possessive);
+
+    void applyNegatedPredicate(ObjectId subject, BehaviorType behavior, bool _);
+    void applyNegatedPredicate(ObjectId subject, ObjectId newId, bool possessive);
+
     void applyRule(const Rule& rule);
+    void applyNegatedRule(const Rule& rule);
     void applyRules();
 
     void addToTransformationQueue(ObjectId id, ObjectId newId);
@@ -41,8 +47,12 @@ private:
     ObjectManager& m_objectMng;
     RuleParser m_parser;
     std::vector<Rule> m_rules;
-    std::unordered_map<ObjectId, std::bitset<(std::size_t)BehaviorType::MAX>> m_behaviors;
+    std::unordered_map<ObjectId, std::bitset<std::to_underlying(BehaviorType::MAX)>> m_behaviors;
     std::unordered_map<std::size_t, ObjectId> m_objectsWithTransformation;
+
+    std::unordered_map<ObjectId, std::bitset<std::to_underlying(BehaviorType::MAX)>> m_negatedBehaviors;
+    std::unordered_map<ObjectId, std::bitset<std::to_underlying(ObjectId::MAX)>> m_negatedObjectsTransformation;
+    std::unordered_map<ObjectId, std::bitset<std::to_underlying(ObjectId::MAX)>> m_negatedObjectsPossession;
 
     bool m_dirty = false;
 };
