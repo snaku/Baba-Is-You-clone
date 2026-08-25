@@ -41,9 +41,15 @@ Level::Level(Renderer& renderer,
         {
             // for a valid rule with the HAS operator
             // TODO: find a better way to do this
-            if (object.getPossessedId() != ObjectId::NONE)
+            std::span<const ObjectId> possessions = object.getPossessionIds();
+            for (const auto& possession : possessions)
             {
-                m_objectMng.addObject(object.getPossessedId(), object.getCell());
+                if (possession == ObjectId::NONE)
+                {
+                    continue;
+                }
+
+                m_objectMng.addObject(possession, object.getCell());
                 m_ruleSystem.requestDirty();
             }
 

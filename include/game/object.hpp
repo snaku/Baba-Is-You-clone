@@ -10,7 +10,7 @@
 #include <memory>
 #include <string_view>
 #include <vector>
-#include <bitset>
+#include <span>
 
 class Renderer;
 class TextureManager;
@@ -118,9 +118,9 @@ public:
     void requestKill() { m_kill = true; }
     bool shouldGetKilled() const { return m_kill; }
 
-    void setPossessedId(ObjectId id) { m_possessedId = id; }
+    void addPossession(ObjectId id) { m_possessionIds.push_back(id); }
 
-    ObjectId getPossessedId() const { return m_possessedId; }
+    std::span<const ObjectId> getPossessionIds() const { return m_possessionIds; }
     ObjectId getId() const { return m_id; }
     ObjectType getType() const { return m_type; }
     TextType getTextType() const { return m_textType; }
@@ -140,7 +140,7 @@ private:
     ObjectType m_oldType = ObjectType::NONE;
     TextType m_textType = TextType::NONE;
     TextType m_oldTextType = TextType::NONE;
-    ObjectId m_possessedId = ObjectId::NONE;
+    std::vector<ObjectId> m_possessionIds;
     Cell m_cell;
     Direction m_dir;
     float m_angle = 0.0f;

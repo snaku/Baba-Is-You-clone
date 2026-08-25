@@ -140,7 +140,7 @@ void RuleSystem::applyPredicate(ObjectId subject, ObjectId newId, bool possessiv
         {
             if (object.getId() == subject)
             {
-                object.setPossessedId(newId);
+                object.addPossession(newId);
             }
         }
     );
