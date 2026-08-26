@@ -20,6 +20,11 @@ bool LevelEditor::update(const Input& input)
     if (newMouseCell.isValidPos())
     {
         m_mouseCell = newMouseCell;
+
+        if (input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
+        {
+            m_objectMng.addObject(ObjectId::BABA, m_mouseCell); // test
+        }
     }
 
     return m_continueUpdate;
@@ -38,8 +43,8 @@ void LevelEditor::drawCellHighlight()
         (int)m_mouseCell.toFPoint().x,
         (int)m_mouseCell.toFPoint().y,
 
-        GridConfig::cellSize,
-        GridConfig::cellSize
+        (int)GridConfig::cellSize,
+        (int)GridConfig::cellSize
     };
 
     m_renderer.drawRect(rect, {255, 255, 255, 128});
@@ -74,4 +79,29 @@ void LevelEditor::drawGrid()
                             0.0f,
                             {255, 255, 255, 255});
     }
+}
+
+LevelDefinition LevelEditor::createDef()
+{
+    LevelDefinition def{};
+
+    def.width = GridConfig::width;
+    def.height = GridConfig::height;
+
+    m_objectMng.forEach(
+        [&](const Object& object)
+        {
+            LevelObjectData data =
+            {
+                object.getId(),
+                object.getCell()
+            };
+
+            def.objects.push_back(data);
+        }
+    );
+
+    def.isValid = true;
+
+    return def;
 }

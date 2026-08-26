@@ -184,6 +184,7 @@ void Level::updateStatePlaying()
 {
     if (m_input.isKeyJustDown(SDL_SCANCODE_TAB))
     {
+        reload();
         m_state = LevelState::EDITOR;
         return;
     }
@@ -252,6 +253,8 @@ void Level::updateStateEditor()
 {
     if (m_input.isKeyJustDown(SDL_SCANCODE_TAB))
     {
+        std::string fileName = std::format("level_{}.txt", m_id);
+        LevelFile::write(fileName, m_editor.createDef());
         m_state = LevelState::PLAYING;
         return;
     }

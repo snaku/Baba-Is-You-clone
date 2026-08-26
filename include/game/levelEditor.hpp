@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/levelFile.hpp"
 #include "game/cell.hpp"
 
 class Renderer;
@@ -13,6 +14,8 @@ public:
 
     bool update(const Input& input);
     void draw();
+
+    LevelDefinition createDef();
 
 private:
     void drawCellHighlight();
