@@ -18,6 +18,7 @@ public:
     bool isKeyReleased(SDL_Scancode key) const;
 
     bool isMouseButtonDown(uint8_t button) const;
+    bool isMouseButtonJustDown(uint8_t button) const;
     bool isMouseButtonReleased(uint8_t button) const;
 
     SDL_FPoint getMousePos() const { return m_mousePos; }
@@ -34,5 +35,6 @@ private:
 
     static constexpr std::size_t s_mouseButtonCount = 6; 
     std::array<bool, s_mouseButtonCount> m_mouseDown;
+    std::array<bool, s_mouseButtonCount> m_mouseJustDown;
     std::array<bool, s_mouseButtonCount> m_mouseReleased;
 };

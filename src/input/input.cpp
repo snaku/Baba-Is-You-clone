@@ -35,6 +35,7 @@ void Input::update()
 
         m_mouseDown[i] = (mouseState & SDL_BUTTON(i)) != 0;
         m_mouseReleased[i] = downLastFrame && !m_mouseDown[i];
+        m_mouseJustDown[i] = !downLastFrame && m_mouseDown[i];
     }
 
     m_mousePos = SDL_FPoint{(float)mousePos.x, (float)mousePos.y};
@@ -79,6 +80,17 @@ bool Input::isMouseButtonDown(uint8_t button) const
     }
 
     return m_mouseDown[button];
+}
+
+bool Input::isMouseButtonJustDown(uint8_t button) const
+{
+    if (button < SDL_BUTTON_LEFT ||
+        button >= s_mouseButtonCount)
+    {
+        return false;
+    }
+
+    return m_mouseJustDown[button];
 }
 
 bool Input::isMouseButtonReleased(uint8_t button) const

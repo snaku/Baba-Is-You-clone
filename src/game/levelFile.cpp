@@ -110,7 +110,7 @@ bool LevelFile::write(const std::filesystem::path& path, const LevelDefinition& 
 
     file << "# METADATA\n";
     file << "width " << def.width << '\n';
-    file << "height " << def.height << '\n\n';
+    file << "height " << def.height << "\n\n";
 
     file << "# OBJECTS\n";
     for (const auto& data : def.objects)
