@@ -8,6 +8,12 @@ bool Cell::isValidPos() const
            y < GridConfig::height;
 }
 
+void Cell::fromFPoint(const SDL_FPoint& point)
+{
+    x = (int)((point.x - GridConfig::offset.x) / GridConfig::cellSize);
+    y = (int)((point.y - GridConfig::offset.y) / GridConfig::cellSize);
+}
+
 SDL_FPoint Cell::toFPoint() const
 {
     SDL_FPoint point =

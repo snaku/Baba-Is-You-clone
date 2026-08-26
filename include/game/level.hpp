@@ -6,6 +6,7 @@
 #include "game/levelTransition.hpp"
 #include "game/levelFile.hpp"
 #include "game/levelBorder.hpp"
+#include "game/levelEditor.hpp"
 #include "game/ruleSystem.hpp"
 #include "game/movementSystem.hpp"
 #include "game/undoSystem.hpp"
@@ -23,7 +24,8 @@ enum class LevelState
     IDLE,
     PLAYING,
     WIN,
-    DEFEAT
+    DEFEAT,
+    EDITOR
 };
 
 enum class LevelSituation
@@ -70,6 +72,7 @@ private:
     void updateStatePlaying();
     void updateStateWin();
     void updateStateDefeat();
+    void updateStateEditor();
 
     LevelSituation findSituation();
     void checkSituations();
@@ -82,6 +85,7 @@ private:
     ObjectManager m_objectMng;
     LevelTransition m_transition;
     LevelBorder m_border;
+    LevelEditor m_editor;
     MovementSystem m_movementSystem;
     RuleSystem m_ruleSystem;
     UndoSystem m_undoSystem;
@@ -96,6 +100,8 @@ private:
     bool m_canReload = false;
 
     WinCallback m_winCallback;
+
+    bool m_useEditor = false;
 
     static constexpr float s_reloadDelay = 1.0f;
 };

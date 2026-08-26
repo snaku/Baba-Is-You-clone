@@ -1,5 +1,6 @@
 #pragma once
 
+// SDL2
 #include <SDL2/SDL.h>
 
 struct Cell
@@ -8,6 +9,7 @@ struct Cell
     int y;
 
     bool isValidPos() const;
+    void fromFPoint(const SDL_FPoint& point);
     SDL_FPoint toFPoint() const;
 
     bool operator==(Cell other) const

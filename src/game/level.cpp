@@ -27,6 +27,7 @@ Level::Level(Renderer& renderer,
       m_grid(GridConfig::width, GridConfig::height),
       m_ruleSystem(m_objectMng, m_grid),
       m_undoSystem(m_objectMng),
+      m_editor(renderer, m_objectMng),
       m_movementSystem(m_objectMng, m_grid, m_ruleSystem)
 {
     m_objectMng.setAddCallback(
@@ -181,6 +182,12 @@ void Level::updateStateIdle()
 
 void Level::updateStatePlaying()
 {
+    if (m_input.isKeyJustDown(SDL_SCANCODE_TAB))
+    {
+        m_state = LevelState::EDITOR;
+        return;
+    }
+
     checkReload();
     checkUndo();
 
@@ -241,6 +248,20 @@ void Level::updateStateDefeat()
     checkReload();
 }
 
+void Level::updateStateEditor()
+{
+    if (m_input.isKeyJustDown(SDL_SCANCODE_TAB))
+    {
+        m_state = LevelState::PLAYING;
+        return;
+    }
+
+    if (!m_editor.update(m_input))
+    {
+        m_state = LevelState::PLAYING;
+    }
+}
+
 void Level::update()
 {
     switch (m_state)
@@ -249,6 +270,7 @@ void Level::update()
         case LevelState::PLAYING: updateStatePlaying(); break;
         case LevelState::WIN:     updateStateWin();     break;
         case LevelState::DEFEAT:  updateStateDefeat();  break;
+        case LevelState::EDITOR:  updateStateEditor();  break;
     }
 
     m_transition.update();
@@ -264,6 +286,11 @@ void Level::draw()
     );
 
     m_border.draw();
+
+    if (m_state == LevelState::EDITOR)
+    {
+        m_editor.draw();
+    }
 }
 
 void Level::resize(uint32_t windowWidth, uint32_t windowHeight)

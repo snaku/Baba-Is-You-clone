@@ -1,7 +1,12 @@
 #include "renderer/renderer.hpp"
 #include "window/window.hpp"
 
+// SDL2
 #include <SDL2/SDL_image.h>
+
+// std
+#include <cmath>
+#include <numbers>
 
 Renderer::Renderer(Window& window) : m_window(window)
 {
@@ -33,6 +38,8 @@ bool Renderer::init()
     m_width = m_window.getWidth();
     m_height = m_window.getHeight();
 
+    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+
     return true;
 }
 
@@ -43,12 +50,26 @@ void Renderer::draw()
 
 void Renderer::drawRect(const SDL_Rect& rect, SDL_Color col)
 {
-    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
-
     SDL_SetRenderDrawColor(m_renderer, col.r, col.g, col.b, col.a);
     SDL_RenderFillRect(m_renderer, &rect);
+}
 
-    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_NONE);
+void Renderer::drawLine(SDL_FPoint start,
+                        float length,
+                        float angle,
+                        SDL_Color col)
+{
+    constexpr float toRad = std::numbers::pi_v<float> / 180.0f;
+    float rad = angle * toRad;
+
+    SDL_FPoint end = SDL_FPoint
+    {
+        start.x + std::cos(rad) * length,
+        start.y + std::sin(rad) * length
+    };
+
+    SDL_SetRenderDrawColor(m_renderer, col.r, col.g, col.b, col.a);
+    SDL_RenderDrawLineF(m_renderer, start.x, start.y, end.x, end.y);
 }
 
 void Renderer::drawTexture(SDL_Texture& texture,
@@ -58,7 +79,6 @@ void Renderer::drawTexture(SDL_Texture& texture,
                            SDL_Color col)
 {
     SDL_SetTextureColorMod(&texture, col.r, col.g, col.b);
-
     SDL_RenderCopyExF(m_renderer,
                       &texture,
                       nullptr,

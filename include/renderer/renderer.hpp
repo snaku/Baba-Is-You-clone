@@ -16,6 +16,7 @@ public:
     void draw();
 
     void drawRect(const SDL_Rect& rect, SDL_Color col);
+    void drawLine(SDL_FPoint start, float length, float angle, SDL_Color col);
     void drawTexture(SDL_Texture& texture, const SDL_FRect& rect, SDL_RendererFlip flip, float angle, SDL_Color col);
 
     void clear();
