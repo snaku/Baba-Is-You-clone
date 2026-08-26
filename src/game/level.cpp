@@ -65,7 +65,7 @@ void Level::load(uint32_t id)
 {
     std::string fileName = std::format("level_{}.txt", id);
 
-    LevelDefinition def = LevelLoader::read(fileName);
+    LevelDefinition def = LevelFile::read(fileName);
     if (!def.isValid)
     {
         m_state = LevelState::IDLE;

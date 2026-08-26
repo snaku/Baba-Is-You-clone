@@ -20,10 +20,11 @@ struct LevelDefinition
     uint32_t height = 0;
 };
 
-class LevelLoader
+class LevelFile
 {
 public:
     static LevelDefinition read(const std::filesystem::path& path);
+    static bool write(const std::filesystem::path& path, const LevelDefinition& def);
 
 private:
     static bool tryParseMetadata(LevelDefinition& def, std::stringstream& stream, const std::string& name);

@@ -39,12 +39,8 @@ private:
     bool bitsetMapContains(const RuleBitsetMap<T>& bitsetMap, ObjectId subject, T value) const
     {
         auto it = bitsetMap.find(subject);
-        if (it == bitsetMap.end())
-        {
-            return false;
-        }
-
-        return it->second.test(std::to_underlying(value));
+        return it != bitsetMap.end() &&
+               it->second.test(std::to_underlying(value));
     }
 
     void applyPredicate(ObjectId subject, BehaviorType behavior, bool _);

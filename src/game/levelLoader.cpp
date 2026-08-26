@@ -6,7 +6,7 @@
 #include <print>
 #include <algorithm>
 
-LevelDefinition LevelLoader::read(const std::filesystem::path& path)
+LevelDefinition LevelFile::read(const std::filesystem::path& path)
 {
     if (!std::filesystem::exists(path) ||
         path.extension() != ".txt")
@@ -69,9 +69,9 @@ LevelDefinition LevelLoader::read(const std::filesystem::path& path)
     return def;
 }
 
-bool LevelLoader::tryParseMetadata(LevelDefinition& def,
-                                   std::stringstream& stream,
-                                   const std::string& name)
+bool LevelFile::tryParseMetadata(LevelDefinition& def,
+                                 std::stringstream& stream,
+                                 const std::string& name)
 {
     if (def.width == 0 &&
         name == "width")
@@ -87,4 +87,50 @@ bool LevelLoader::tryParseMetadata(LevelDefinition& def,
     }
 
     return false;
+}
+
+bool LevelFile::write(const std::filesystem::path& path, const LevelDefinition& def)
+{
+    if (!def.isValid ||
+        path.extension() != ".txt")
+    {
+        return false;
+    }
+
+    if (std::filesystem::exists(path))
+    {
+        std::println("Overwriting existing level file: {}", path.string());
+    }
+
+    std::ofstream file(path);
+    if (!file.is_open())
+    {
+        return false;
+    }
+
+    file << "# METADATA\n";
+    file << "width " << def.width << '\n';
+    file << "height " << def.height << '\n\n';
+
+    file << "# OBJECTS\n";
+    for (const auto& data : def.objects)
+    {
+        if (data.id == ObjectId::NONE ||
+            !data.cell.isValidPos())
+        {
+            continue;
+        }
+
+        std::string_view name = ObjectUtils::idToString(data.id);
+        if (name.empty())
+        {
+            continue;
+        }
+
+        file << name << ' ' << data.cell.x << ' ' << data.cell.y << '\n';
+    }
+
+    std::println("Level created: {}", path.string());
+
+    return true;
 }

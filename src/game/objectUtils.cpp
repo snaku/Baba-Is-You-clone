@@ -139,4 +139,17 @@ ObjectId stringToId(const std::string& name)
     return it->second;
 }
 
+std::string_view idToString(ObjectId id)
+{
+    for (const auto& [name, value] : s_nameIdMap)
+    {
+        if (value == id)
+        {
+            return name;
+        }
+    }
+
+    return "";
+}
+
 }

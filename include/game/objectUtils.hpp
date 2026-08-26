@@ -4,6 +4,7 @@
 
 // std
 #include <string>
+#include <string_view>
 
 namespace ObjectUtils
 {
@@ -13,5 +14,6 @@ BehaviorType textIdToBehavior(ObjectId textId);
 ObjectType idToType(ObjectId id);
 TextType textIdToTextType(ObjectId textId);
 ObjectId stringToId(const std::string& name);
+std::string_view idToString(ObjectId id);
 
 }
