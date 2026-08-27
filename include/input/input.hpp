@@ -23,6 +23,8 @@ public:
 
     SDL_FPoint getMousePos() const { return m_mousePos; }
     bool quitRequested() const { return m_quitRequested; }
+    bool scrolledUp() const { return m_scrolledUp; }
+    bool scrolledDown() const { return m_scrolledDown; }
 
 private:
     bool m_quitRequested = false;
@@ -37,4 +39,7 @@ private:
     std::array<bool, s_mouseButtonCount> m_mouseDown;
     std::array<bool, s_mouseButtonCount> m_mouseJustDown;
     std::array<bool, s_mouseButtonCount> m_mouseReleased;
+
+    bool m_scrolledUp = false;
+    bool m_scrolledDown = false;
 };

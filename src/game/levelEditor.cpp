@@ -1,14 +1,16 @@
 #include "game/levelEditor.hpp"
 #include "game/level.hpp"
+#include "game/grid.hpp"
 #include "game/gridConfig.hpp"
 
 #include "renderer/renderer.hpp"
 
 #include "input/input.hpp"
 
-LevelEditor::LevelEditor(Renderer& renderer, ObjectManager& objectMng)
+LevelEditor::LevelEditor(Renderer& renderer, ObjectManager& objectMng, Grid& grid)
     : m_renderer(renderer),
-      m_objectMng(objectMng)
+      m_objectMng(objectMng),
+      m_grid(grid)
 {
 }
 
@@ -21,13 +23,56 @@ bool LevelEditor::update(const Input& input)
     {
         m_mouseCell = newMouseCell;
 
-        if (input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
+        handleInput(input);
+    }
+
+    return m_continueUpdate; // for the future when the editor will have a menu and a quit button
+}
+
+void LevelEditor::handleInput(const Input& input)
+{
+    if (input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
+    {
+        m_objectMng.addObject(m_currObjectId, m_mouseCell);
+    }
+    else if (input.isMouseButtonJustDown(SDL_BUTTON_RIGHT))
+    {
+        auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+        if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
         {
-            m_objectMng.addObject(ObjectId::BABA, m_mouseCell); // test
+            for (auto* object : objects)
+            {
+                m_objectMng.removeObject(*object);
+            }
+        }
+        else
+        {
+            if (!objects.empty())
+            {
+                m_objectMng.removeObject(*objects.back());
+            }
         }
     }
 
-    return m_continueUpdate;
+    int id = (int)m_currObjectId;
+    if (input.scrolledUp())
+    {
+        id = (id + 1) % (int)ObjectId::MAX;
+        if (id == (int)ObjectId::NONE)
+        {
+            id = (int)ObjectId::NONE + 1;
+        }
+    }
+    else if (input.scrolledDown())
+    {
+        id = (id - 1) % (int)ObjectId::MAX;
+        if (id == (int)ObjectId::NONE)
+        {
+            id = (int)ObjectId::MAX - 1;
+        }
+    }
+
+    m_currObjectId = (ObjectId)id;
 }
 
 void LevelEditor::draw()

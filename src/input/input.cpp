@@ -6,6 +6,8 @@ void Input::update()
 
     m_keyJustDown.clear();
     m_keyReleased.clear();
+    m_scrolledDown = false;
+    m_scrolledUp = false;
 
     while (SDL_PollEvent(&event))
     {
@@ -19,6 +21,11 @@ void Input::update()
                 {
                     m_keyJustDown.insert(event.key.keysym.scancode);
                 }
+                break;
+
+            case SDL_MOUSEWHEEL:
+                m_scrolledDown = event.wheel.y < 0;
+                m_scrolledUp = event.wheel.y > 0;
                 break;
         }
     }
