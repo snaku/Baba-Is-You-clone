@@ -129,7 +129,6 @@ public:
     Direction getDir() const { return m_dir; }
 
 private:
-    const SpriteInfo& getSpriteInfo(ObjectId id) const;
 
     TextureManager& m_textureMng;
     Sprite m_sprite;

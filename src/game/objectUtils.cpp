@@ -2,9 +2,37 @@
 
 // std
 #include <unordered_map>
+#include <utility>
 
 namespace ObjectUtils
 {
+
+static const std::array<SpriteInfo, std::to_underlying(ObjectId::MAX)> s_spriteInfos =
+{
+    SpriteInfo{"NONE", {0, 0, 0, 0}},                             // ObjectId::NONE
+
+    SpriteInfo{"assets/baba_0_1.png", {255, 255, 255, 255}},      // ObjectId::BABA
+    SpriteInfo{"assets/wall_0_1.png", {41, 49, 65, 255}},         // ObjectId::WALL
+    SpriteInfo{"assets/water_0_1.png", {255, 255, 255, 255}},     // ObjectId::WATER
+    SpriteInfo{"assets/flag_0_1.png", {237, 226, 133, 255}},      // ObjectId::FLAG
+    SpriteInfo{"assets/rock_0_1.png", {194, 158, 70, 255}},       // ObjectId::ROCK
+
+    SpriteInfo{"assets/text_baba_0_1.png", {217, 57, 106, 255}},  // ObjectId::TEXT_BABA
+    SpriteInfo{"assets/text_water_0_1.png", {95, 157, 209, 255}}, // ObjectId::TEXT_WATER
+    SpriteInfo{"assets/text_is_0_1.png", {255, 255, 255, 255}},   // ObjectId::TEXT_IS
+    SpriteInfo{"assets/text_has_0_1.png", {255, 255, 255, 255}},  // ObjectId::TEXT_HAS
+    SpriteInfo{"assets/text_and_0_1.png", {255, 255, 255, 255}},  // ObjectId::TEXT_AND
+    SpriteInfo{"assets/text_not_0_1.png", {229, 83, 59, 255}},    // ObjectId::TEXT_NOT
+    SpriteInfo{"assets/text_you_0_1.png", {217, 57, 106, 255}},   // ObjectId::TEXT_YOU
+    SpriteInfo{"assets/text_win_0_1.png", {237, 226, 133, 255}},  // ObjectId::TEXT_WIN
+    SpriteInfo{"assets/text_defeat_0_1.png", {130, 38, 28, 255}}, // ObjectId::TEXT_DEFEAT
+    SpriteInfo{"assets/text_sink_0_1.png", {95, 157, 209, 255}},  // ObjectId::TEXT_SINK
+    SpriteInfo{"assets/text_stop_0_1.png", {27, 92, 28, 255}},    // ObjectId::TEXT_STOP
+    SpriteInfo{"assets/text_push_0_1.png", {144, 103, 62, 255}},  // ObjectId::TEXT_PUSH
+    SpriteInfo{"assets/text_flag_0_1.png", {237, 226, 133, 255}}, // ObjectId::TEXT_FLAG
+    SpriteInfo{"assets/text_rock_0_1.png", {144, 103, 62, 255}},  // ObjectId::TEXT_ROCK
+    SpriteInfo{"assets/text_wall_0_1.png", {115, 115, 115, 255}}, // ObjectId::TEXT_WALL
+};
 
 static const std::unordered_map<std::string, ObjectId> s_nameIdMap = 
 {
@@ -150,6 +178,11 @@ std::string_view idToString(ObjectId id)
     }
 
     return "";
+}
+
+const SpriteInfo& getSpriteInfo(ObjectId id)
+{
+    return s_spriteInfos.at(std::to_underlying(id));
 }
 
 }

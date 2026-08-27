@@ -27,7 +27,7 @@ Level::Level(Renderer& renderer,
       m_grid(GridConfig::width, GridConfig::height),
       m_ruleSystem(m_objectMng, m_grid),
       m_undoSystem(m_objectMng),
-      m_editor(renderer, m_objectMng, m_grid),
+      m_editor(renderer, textureMng, m_objectMng, m_grid),
       m_movementSystem(m_objectMng, m_grid, m_ruleSystem)
 {
     m_objectMng.setAddCallback(

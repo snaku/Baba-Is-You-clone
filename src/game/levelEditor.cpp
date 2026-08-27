@@ -1,5 +1,6 @@
 #include "game/levelEditor.hpp"
 #include "game/level.hpp"
+#include "game/objectUtils.hpp"
 #include "game/grid.hpp"
 #include "game/gridConfig.hpp"
 
@@ -7,11 +8,15 @@
 
 #include "input/input.hpp"
 
-LevelEditor::LevelEditor(Renderer& renderer, ObjectManager& objectMng, Grid& grid)
+LevelEditor::LevelEditor(Renderer& renderer, TextureManager& textureMng, ObjectManager& objectMng, Grid& grid)
     : m_renderer(renderer),
       m_objectMng(objectMng),
-      m_grid(grid)
+      m_grid(grid),
+      m_objectPreviewSpr(renderer, textureMng, ObjectUtils::getSpriteInfo(m_currObjectId), SDL_FPoint{0.0f, 0.0f})
 {
+    SDL_Color previewCol = m_objectPreviewSpr.getColor();
+    previewCol.a = s_objectPreviewAlpha;
+    m_objectPreviewSpr.setColor(previewCol);
 }
 
 bool LevelEditor::update(const Input& input)
@@ -22,6 +27,8 @@ bool LevelEditor::update(const Input& input)
     if (newMouseCell.isValidPos())
     {
         m_mouseCell = newMouseCell;
+
+        m_objectPreviewSpr.setPos(m_mouseCell.toFPoint());
 
         handleInput(input);
     }
@@ -72,27 +79,42 @@ void LevelEditor::handleInput(const Input& input)
         }
     }
 
-    m_currObjectId = (ObjectId)id;
+    if (id != (int)m_currObjectId)
+    {
+        m_currObjectId = (ObjectId)id;
+
+        SpriteInfo previewSprInfo = ObjectUtils::getSpriteInfo(m_currObjectId);
+        previewSprInfo.col.a = s_objectPreviewAlpha;
+        m_objectPreviewSpr.reload(previewSprInfo);
+    }
 }
 
 void LevelEditor::draw()
 {
+    drawObjectPreview();
     drawCellHighlight();
     drawGrid();
 }
 
+void LevelEditor::drawObjectPreview()
+{
+    m_objectPreviewSpr.draw(GridConfig::cellSize, GridConfig::cellSize);
+}
+
 void LevelEditor::drawCellHighlight()
 {
+    SDL_FPoint mousePos = m_mouseCell.toFPoint();
+
     SDL_Rect rect = SDL_Rect
     {
-        (int)m_mouseCell.toFPoint().x,
-        (int)m_mouseCell.toFPoint().y,
+        (int)mousePos.x,
+        (int)mousePos.y,
 
         (int)GridConfig::cellSize,
         (int)GridConfig::cellSize
     };
 
-    m_renderer.drawRect(rect, {255, 255, 255, 128});
+    m_renderer.drawRect(rect, s_cellHighlightCol);
 }
 
 void LevelEditor::drawGrid()

@@ -79,6 +79,7 @@ void Renderer::drawTexture(SDL_Texture& texture,
                            SDL_Color col)
 {
     SDL_SetTextureColorMod(&texture, col.r, col.g, col.b);
+    SDL_SetTextureAlphaMod(&texture, col.a);
     SDL_RenderCopyExF(m_renderer,
                       &texture,
                       nullptr,
