@@ -1,6 +1,9 @@
 #include "game/cell.hpp"
 #include "game/gridConfig.hpp"
 
+// std
+#include <cmath>
+
 bool Cell::isValidPos() const
 {
     return x >= 0 && y >= 0 &&
@@ -10,8 +13,8 @@ bool Cell::isValidPos() const
 
 void Cell::fromFPoint(const SDL_FPoint& point)
 {
-    x = (int)((point.x - GridConfig::offset.x) / GridConfig::cellSize);
-    y = (int)((point.y - GridConfig::offset.y) / GridConfig::cellSize);
+    x = (int)std::floor((point.x - GridConfig::offset.x) / GridConfig::cellSize);
+    y = (int)std::floor((point.y - GridConfig::offset.y) / GridConfig::cellSize);
 }
 
 SDL_FPoint Cell::toFPoint() const

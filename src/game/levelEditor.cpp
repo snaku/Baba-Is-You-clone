@@ -91,9 +91,9 @@ void LevelEditor::handleInput(const Input& input)
 
 void LevelEditor::draw()
 {
+    drawGrid();
     drawObjectPreview();
     drawCellHighlight();
-    drawGrid();
 }
 
 void LevelEditor::drawObjectPreview()
