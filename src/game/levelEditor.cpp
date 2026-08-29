@@ -71,18 +71,34 @@ void LevelEditor::handleInput(const Input& input)
     int id = (int)m_currentObjectId;
     if (input.scrolledUp())
     {
-        id = (id + 1) % (int)ObjectId::MAX;
-        if (id == (int)ObjectId::NONE)
+        if (input.isKeyDown(SDL_SCANCODE_LCTRL))
         {
-            id = (int)ObjectId::NONE + 1;
+            GridConfig::width++;
+            GridConfig::height++;
+        }
+        else
+        {
+            id = (id + 1) % (int)ObjectId::MAX;
+            if (id == (int)ObjectId::NONE)
+            {
+                id = (int)ObjectId::NONE + 1;
+            }
         }
     }
     else if (input.scrolledDown())
     {
-        id = (id - 1) % (int)ObjectId::MAX;
-        if (id == (int)ObjectId::NONE)
+        if (input.isKeyDown(SDL_SCANCODE_LCTRL))
         {
-            id = (int)ObjectId::MAX - 1;
+            GridConfig::width--;
+            GridConfig::height--;
+        }
+        else
+        {
+            id = (id - 1) % (int)ObjectId::MAX;
+            if (id == (int)ObjectId::NONE)
+            {
+                id = (int)ObjectId::MAX - 1;
+            }
         }
     }
 

@@ -74,6 +74,8 @@ private:
     void updateStateDefeat();
     void updateStateEditor();
 
+    void resizeGrid();
+
     LevelSituation findSituation();
     void checkSituations();
 
@@ -101,7 +103,8 @@ private:
 
     WinCallback m_winCallback;
 
-    bool m_useEditor = false;
+    uint32_t m_currentGridWidth = 0;
+    uint32_t m_currentGridHeight = 0;
 
     static constexpr float s_reloadDelay = 1.0f;
 };

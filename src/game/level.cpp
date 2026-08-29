@@ -65,7 +65,6 @@ Level::~Level() noexcept = default;
 void Level::load(uint32_t id)
 {
     std::string fileName = std::format("level_{}.txt", id);
-
     LevelDefinition def = LevelFile::read(fileName);
     if (!def.isValid)
     {
@@ -80,10 +79,11 @@ void Level::load(uint32_t id)
 
 void Level::initFromDef(const LevelDefinition& def)
 {
+    clear();
+
     GridConfig::width = def.width;
     GridConfig::height = def.height;
-    m_grid.resize(GridConfig::width, GridConfig::height);
-
+    resizeGrid();
     resize(m_renderer.getWidth(), m_renderer.getHeight());
 
     for (const auto& data : def.objects)
@@ -97,8 +97,8 @@ void Level::initFromDef(const LevelDefinition& def)
     }
 
     m_undoSystem.snap();
-
     m_ruleSystem.requestDirty();
+
     m_state = LevelState::PLAYING;
 }
 
@@ -151,8 +151,6 @@ void Level::checkReload()
 void Level::reload()
 {
     std::println("Reloading level");
-
-    clear();
 
     if (m_state == LevelState::WIN)
     {
@@ -254,14 +252,25 @@ void Level::updateStateEditor()
     if (m_input.isKeyJustDown(SDL_SCANCODE_TAB))
     {
         std::string fileName = std::format("level_{}.txt", m_id);
-        LevelFile::write(fileName, m_editor.createDef());
-        m_state = LevelState::PLAYING;
+        LevelDefinition def = m_editor.createDef();
+
+        LevelFile::write(fileName, def);
+
+        initFromDef(def); // load from the definition and switch to PLAYING state
         return;
     }
 
     if (!m_editor.update(m_input))
     {
         m_state = LevelState::PLAYING;
+        return;
+    }
+
+    if (m_currentGridWidth != GridConfig::width ||
+        m_currentGridHeight != GridConfig::height)
+    {
+        resizeGrid();
+        resize(m_renderer.getWidth(), m_renderer.getHeight());
     }
 }
 
@@ -311,6 +320,13 @@ void Level::resize(uint32_t windowWidth, uint32_t windowHeight)
             object.syncPos();
         }
     );
+}
+
+void Level::resizeGrid()
+{
+    m_currentGridWidth = GridConfig::width;
+    m_currentGridHeight = GridConfig::height;
+    m_grid.resize(GridConfig::width, GridConfig::height);
 }
 
 LevelSituation Level::findSituation()
