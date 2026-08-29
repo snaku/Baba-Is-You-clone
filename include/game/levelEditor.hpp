@@ -41,7 +41,7 @@ private:
 
     Cell m_mouseCell;
 
-    ObjectId m_currObjectId = ObjectId::BABA;
+    ObjectId m_currentObjectId = ObjectId::BABA;
     Sprite m_objectPreviewSpr;
 
     bool m_continueUpdate = true;

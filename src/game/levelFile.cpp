@@ -47,7 +47,7 @@ LevelDefinition LevelFile::read(const std::filesystem::path& path)
             continue;
         }
 
-        Cell cell = {0, 0};
+        Cell cell;
 
         stream >> cell.x >> cell.y;
 

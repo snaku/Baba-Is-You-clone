@@ -113,7 +113,6 @@ public:
     void changeBack();
 
     void setCell(Cell cell);
-    bool isAt(Cell cell) const { return m_cell == cell; }
 
     void requestKill() { m_kill = true; }
     bool shouldGetKilled() const { return m_kill; }

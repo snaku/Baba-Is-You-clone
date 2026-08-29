@@ -8,11 +8,17 @@
 
 #include "input/input.hpp"
 
-LevelEditor::LevelEditor(Renderer& renderer, TextureManager& textureMng, ObjectManager& objectMng, Grid& grid)
+LevelEditor::LevelEditor(Renderer& renderer,
+                         TextureManager& textureMng,
+                         ObjectManager& objectMng,
+                         Grid& grid)
     : m_renderer(renderer),
       m_objectMng(objectMng),
       m_grid(grid),
-      m_objectPreviewSpr(renderer, textureMng, ObjectUtils::getSpriteInfo(m_currObjectId), SDL_FPoint{0.0f, 0.0f})
+      m_objectPreviewSpr(renderer,
+                         textureMng,
+                         ObjectUtils::getSpriteInfo(m_currentObjectId),
+                         SDL_FPoint{0.0f, 0.0f})
 {
     SDL_Color previewCol = m_objectPreviewSpr.getColor();
     previewCol.a = s_objectPreviewAlpha;
@@ -40,7 +46,7 @@ void LevelEditor::handleInput(const Input& input)
 {
     if (input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
     {
-        m_objectMng.addObject(m_currObjectId, m_mouseCell);
+        m_objectMng.addObject(m_currentObjectId, m_mouseCell);
     }
     else if (input.isMouseButtonJustDown(SDL_BUTTON_RIGHT))
     {
@@ -61,7 +67,7 @@ void LevelEditor::handleInput(const Input& input)
         }
     }
 
-    int id = (int)m_currObjectId;
+    int id = (int)m_currentObjectId;
     if (input.scrolledUp())
     {
         id = (id + 1) % (int)ObjectId::MAX;
@@ -79,11 +85,11 @@ void LevelEditor::handleInput(const Input& input)
         }
     }
 
-    if (id != (int)m_currObjectId)
+    if (id != (int)m_currentObjectId)
     {
-        m_currObjectId = (ObjectId)id;
+        m_currentObjectId = (ObjectId)id;
 
-        SpriteInfo previewSprInfo = ObjectUtils::getSpriteInfo(m_currObjectId);
+        SpriteInfo previewSprInfo = ObjectUtils::getSpriteInfo(m_currentObjectId);
         previewSprInfo.col.a = s_objectPreviewAlpha;
         m_objectPreviewSpr.reload(previewSprInfo);
     }

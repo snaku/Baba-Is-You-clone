@@ -9,7 +9,7 @@
 struct LevelObjectData
 {
     ObjectId id = ObjectId::NONE;
-    Cell cell = {0, 0};
+    Cell cell;
 };
 
 struct LevelDefinition

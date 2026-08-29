@@ -5,8 +5,8 @@
 
 struct Cell
 {
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
 
     bool isValidPos() const;
     void fromFPoint(const SDL_FPoint& point);
@@ -18,6 +18,6 @@ struct Cell
     }
     bool operator!=(Cell other) const
     {
-        return x != other.x && y != other.y;
+        return x != other.x || y != other.y;
     }
 };
