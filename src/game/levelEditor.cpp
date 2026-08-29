@@ -30,7 +30,8 @@ bool LevelEditor::update(const Input& input)
     Cell newMouseCell;
 
     newMouseCell.fromFPoint(input.getMousePos());
-    if (newMouseCell.isValidPos())
+    m_mouseOnGrid = newMouseCell.isValidPos();
+    if (m_mouseOnGrid)
     {
         m_mouseCell = newMouseCell;
 
@@ -98,8 +99,12 @@ void LevelEditor::handleInput(const Input& input)
 void LevelEditor::draw()
 {
     drawGrid();
-    drawObjectPreview();
-    drawCellHighlight();
+
+    if (m_mouseOnGrid)
+    {
+        drawObjectPreview();
+        drawCellHighlight();
+    }
 }
 
 void LevelEditor::drawObjectPreview()
@@ -164,13 +169,7 @@ LevelDefinition LevelEditor::createDef()
     m_objectMng.forEach(
         [&](const Object& object)
         {
-            LevelObjectData data =
-            {
-                object.getId(),
-                object.getCell()
-            };
-
-            def.objects.push_back(data);
+            def.objects.push_back({object.getId(), object.getCell()});
         }
     );
 

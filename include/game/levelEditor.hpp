@@ -40,6 +40,7 @@ private:
     Grid& m_grid;
 
     Cell m_mouseCell;
+    bool m_mouseOnGrid = false;
 
     ObjectId m_currentObjectId = ObjectId::BABA;
     Sprite m_objectPreviewSpr;
