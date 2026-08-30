@@ -45,71 +45,117 @@ bool LevelEditor::update(const Input& input)
 
 void LevelEditor::handleInput(const Input& input)
 {
+    m_action = LevelEditorAction::NONE;
+
+    handleObjectPlacement(input);
+    handleObjectRemoval(input);
+    handleGridResizing(input);
+    handleObjectSelection(input);
+}
+
+void LevelEditor::handleObjectPlacement(const Input& input)
+{
     if (input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
     {
         m_objectMng.addObject(m_currentObjectId, m_mouseCell);
+        m_action = LevelEditorAction::ADD_OBJECT;
     }
-    else if (input.isMouseButtonJustDown(SDL_BUTTON_RIGHT))
+}
+
+void LevelEditor::handleObjectRemoval(const Input& input)
+{
+    if (m_action != LevelEditorAction::NONE ||
+        !input.isMouseButtonJustDown(SDL_BUTTON_RIGHT))
     {
-        auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
-        if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
+        return;
+    }
+
+    auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+    if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
+    {
+        for (auto* object : objects)
         {
-            for (auto* object : objects)
-            {
-                m_objectMng.removeObject(*object);
-            }
+            m_objectMng.removeObject(*object);
         }
-        else
+    }
+    else
+    {
+        if (!objects.empty())
         {
-            if (!objects.empty())
-            {
-                m_objectMng.removeObject(*objects.back());
-            }
+            m_objectMng.removeObject(*objects.back());
         }
+    }
+}
+
+void LevelEditor::handleObjectSelection(const Input& input)
+{
+    if (m_action == LevelEditorAction::RESIZE_GRID)
+    {
+        return;
     }
 
     int id = (int)m_currentObjectId;
     if (input.scrolledUp())
     {
-        if (input.isKeyDown(SDL_SCANCODE_LCTRL))
+        id = (id + 1) % (int)ObjectId::MAX;
+        if (id == (int)ObjectId::NONE)
         {
-            GridConfig::width++;
-            GridConfig::height++;
-        }
-        else
-        {
-            id = (id + 1) % (int)ObjectId::MAX;
-            if (id == (int)ObjectId::NONE)
-            {
-                id = (int)ObjectId::NONE + 1;
-            }
+            id = (int)ObjectId::NONE + 1;
         }
     }
     else if (input.scrolledDown())
     {
-        if (input.isKeyDown(SDL_SCANCODE_LCTRL))
+        id = (id - 1) % (int)ObjectId::MAX;
+        if (id == (int)ObjectId::NONE)
         {
-            GridConfig::width--;
-            GridConfig::height--;
-        }
-        else
-        {
-            id = (id - 1) % (int)ObjectId::MAX;
-            if (id == (int)ObjectId::NONE)
-            {
-                id = (int)ObjectId::MAX - 1;
-            }
+            id = (int)ObjectId::MAX - 1;
         }
     }
 
     if (id != (int)m_currentObjectId)
     {
-        m_currentObjectId = (ObjectId)id;
-
-        SpriteInfo previewSprInfo = ObjectUtils::getSpriteInfo(m_currentObjectId);
-        previewSprInfo.col.a = s_objectPreviewAlpha;
-        m_objectPreviewSpr.reload(previewSprInfo);
+        changeObjectPreview((ObjectId)id);
+        m_action = LevelEditorAction::SELECT_OBJECT;
     }
+}
+
+void LevelEditor::handleGridResizing(const Input& input)
+{
+    if (!input.isKeyDown(SDL_SCANCODE_LCTRL))
+    {
+        return;
+    }
+
+    if (input.scrolledUp())
+    {
+        GridConfig::width++;
+        GridConfig::height++;
+
+        m_action = LevelEditorAction::RESIZE_GRID;
+    }
+    else if (input.scrolledDown())
+    {
+        GridConfig::width = std::max(GridConfig::width - 1, (uint32_t)1);
+        GridConfig::height = std::max(GridConfig::height - 1, (uint32_t)1);
+
+        m_objectMng.removeIf(
+            [](const Object& object)
+            {
+                return !object.getCell().isValidPos();
+            }
+        );
+
+        m_action = LevelEditorAction::RESIZE_GRID;
+    }
+}
+
+void LevelEditor::changeObjectPreview(ObjectId id)
+{
+    SpriteInfo previewSprInfo = ObjectUtils::getSpriteInfo(id);
+    previewSprInfo.col.a = s_objectPreviewAlpha;
+    m_objectPreviewSpr.reload(previewSprInfo);
+
+    m_currentObjectId = id;
 }
 
 void LevelEditor::draw()
@@ -157,7 +203,7 @@ void LevelEditor::drawGrid()
         m_renderer.drawLine(start,
                             (float)GridConfig::height * GridConfig::cellSize,
                             90.0f,
-                            {255, 255, 255, 255});
+                            s_gridCol);
     }
 
     for (uint32_t j = 1; j < GridConfig::height; j++)
@@ -171,7 +217,7 @@ void LevelEditor::drawGrid()
         m_renderer.drawLine(start,
                             (float)GridConfig::width * GridConfig::cellSize,
                             0.0f,
-                            {255, 255, 255, 255});
+                            s_gridCol);
     }
 }
 

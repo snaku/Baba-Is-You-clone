@@ -29,6 +29,22 @@ public:
         }
     }
 
+    template<typename Fn>
+    void removeIf(Fn&& fn)
+    {
+        static_assert(std::is_invocable_r_v<bool, Fn&, Object&>, "ObjectManager::removeIf");
+
+        for (auto& object : m_objects)
+        {
+            if (fn(*object))
+            {
+                addToDestroyQueue(*object);
+            }
+        }
+
+        updateDestroyQueue();
+    }
+
     Object& addObject(ObjectId id, Cell cell);
     Object& addObjectFromUID(std::size_t uid, ObjectId id, Cell cell);
     void removeObject(Object& object);

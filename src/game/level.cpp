@@ -83,7 +83,7 @@ void Level::initFromDef(const LevelDefinition& def)
 
     GridConfig::width = def.width;
     GridConfig::height = def.height;
-    resizeGrid();
+    reloadGrid();
     resize(m_renderer.getWidth(), m_renderer.getHeight());
 
     for (const auto& data : def.objects)
@@ -327,6 +327,13 @@ void Level::resizeGrid()
     m_currentGridWidth = GridConfig::width;
     m_currentGridHeight = GridConfig::height;
     m_grid.resize(GridConfig::width, GridConfig::height);
+}
+
+void Level::reloadGrid()
+{
+    m_currentGridWidth = GridConfig::width;
+    m_currentGridHeight = GridConfig::height;
+    m_grid.reload(GridConfig::width, GridConfig::height);
 }
 
 LevelSituation Level::findSituation()

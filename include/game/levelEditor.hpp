@@ -18,6 +18,16 @@ class TextureManager;
 class ObjectManager;
 class Grid;
 
+enum class LevelEditorAction
+{
+    NONE,
+
+    ADD_OBJECT,
+    REMOVE_OBJECT,
+    SELECT_OBJECT,
+    RESIZE_GRID
+};
+
 class LevelEditor
 {
 public:
@@ -31,6 +41,13 @@ public:
 private:
     void handleInput(const Input& input);
 
+    void handleObjectPlacement(const Input& input);
+    void handleObjectRemoval(const Input& input);
+    void handleObjectSelection(const Input& input);
+    void handleGridResizing(const Input& input);
+
+    void changeObjectPreview(ObjectId id);
+
     void drawObjectPreview();
     void drawCellHighlight();
     void drawGrid();
@@ -38,6 +55,8 @@ private:
     Renderer& m_renderer;
     ObjectManager& m_objectMng;
     Grid& m_grid;
+
+    LevelEditorAction m_action = LevelEditorAction::NONE;
 
     Cell m_mouseCell;
     bool m_mouseOnGrid = false;
@@ -49,4 +68,5 @@ private:
 
     static constexpr uint8_t s_objectPreviewAlpha = 128;
     static constexpr SDL_Color s_cellHighlightCol = SDL_Color{255, 255, 255, 100};
+    static constexpr SDL_Color s_gridCol = SDL_Color{255, 255, 255, 255};
 };

@@ -75,6 +75,7 @@ private:
     void updateStateEditor();
 
     void resizeGrid();
+    void reloadGrid();
 
     LevelSituation findSituation();
     void checkSituations();
