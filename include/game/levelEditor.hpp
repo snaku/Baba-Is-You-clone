@@ -11,6 +11,7 @@
 
 // std
 #include <cstdint>
+#include <vector>
 
 class Renderer;
 class Input;
@@ -25,6 +26,7 @@ enum class LevelEditorAction
     ADD_OBJECT,
     REMOVE_OBJECT,
     SELECT_OBJECT,
+    MOVE_OBJECT,
     RESIZE_GRID
 };
 
@@ -44,6 +46,7 @@ private:
     void handleObjectPlacement(const Input& input);
     void handleObjectRemoval(const Input& input);
     void handleObjectSelection(const Input& input);
+    void handleObjectMove(const Input& input);
     void handleGridResizing(const Input& input);
 
     void changeObjectPreview(ObjectId id);
@@ -63,6 +66,8 @@ private:
 
     ObjectId m_currentObjectId = ObjectId::BABA;
     Sprite m_objectPreviewSpr;
+
+    std::vector<Object*> m_selectedObjects;
 
     bool m_continueUpdate = true;
 

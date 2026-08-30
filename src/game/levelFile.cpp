@@ -9,7 +9,7 @@
 LevelDefinition LevelFile::read(const std::filesystem::path& path)
 {
     if (!std::filesystem::exists(path) ||
-        path.extension() != ".txt")
+        path.extension() != s_extension)
     {
         return {};
     }
@@ -92,7 +92,7 @@ bool LevelFile::tryParseMetadata(LevelDefinition& def,
 bool LevelFile::write(const std::filesystem::path& path, const LevelDefinition& def)
 {
     if (!def.isValid ||
-        path.extension() != ".txt")
+        path.extension() != s_extension)
     {
         return false;
     }

@@ -47,6 +47,7 @@ void LevelEditor::handleInput(const Input& input)
 {
     m_action = LevelEditorAction::NONE;
 
+    handleObjectMove(input);
     handleObjectPlacement(input);
     handleObjectRemoval(input);
     handleGridResizing(input);
@@ -55,11 +56,14 @@ void LevelEditor::handleInput(const Input& input)
 
 void LevelEditor::handleObjectPlacement(const Input& input)
 {
-    if (input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
+    if (m_action == LevelEditorAction::MOVE_OBJECT ||
+        !input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
     {
-        m_objectMng.addObject(m_currentObjectId, m_mouseCell);
-        m_action = LevelEditorAction::ADD_OBJECT;
+        return;
     }
+
+    m_objectMng.addObject(m_currentObjectId, m_mouseCell);
+    m_action = LevelEditorAction::ADD_OBJECT;
 }
 
 void LevelEditor::handleObjectRemoval(const Input& input)
@@ -119,9 +123,50 @@ void LevelEditor::handleObjectSelection(const Input& input)
     }
 }
 
+void LevelEditor::handleObjectMove(const Input& input)
+{
+    if (!input.isKeyDown(SDL_SCANCODE_LCTRL) ||
+        !input.isMouseButtonDown(SDL_BUTTON_LEFT))
+    {
+        m_selectedObjects.clear();
+        return;
+    }
+
+    if (m_selectedObjects.empty())
+    {
+        m_selectedObjects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+    }
+
+    if (!m_selectedObjects.empty())
+    {
+        if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
+        {
+            for (auto* object : m_selectedObjects)
+            {
+                m_grid.removeObjectAt(object->getUID(), object->getCell());
+                object->setCell(m_mouseCell);
+                object->syncPos();
+                m_grid.addObjectAt(object->getUID(), object->getCell());
+            }
+        }
+        else
+        {
+            Object& object = *m_selectedObjects.back();
+
+            m_grid.removeObjectAt(object.getUID(), object.getCell());
+            object.setCell(m_mouseCell);
+            object.syncPos();
+            m_grid.addObjectAt(object.getUID(), object.getCell());
+        }
+
+        m_action = LevelEditorAction::MOVE_OBJECT;
+    }
+}
+
 void LevelEditor::handleGridResizing(const Input& input)
 {
-    if (!input.isKeyDown(SDL_SCANCODE_LCTRL))
+    if (m_action == LevelEditorAction::MOVE_OBJECT ||
+        !input.isKeyDown(SDL_SCANCODE_LCTRL))
     {
         return;
     }

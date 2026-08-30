@@ -5,6 +5,7 @@
 // std
 #include <filesystem>
 #include <sstream>
+#include <string_view>
 
 struct LevelObjectData
 {
@@ -28,4 +29,6 @@ public:
 
 private:
     static bool tryParseMetadata(LevelDefinition& def, std::stringstream& stream, const std::string& name);
+
+    static constexpr std::string_view s_extension = ".txt";
 };
