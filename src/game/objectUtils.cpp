@@ -9,29 +9,89 @@ namespace ObjectUtils
 
 static const std::array<SpriteInfo, std::to_underlying(ObjectId::MAX)> s_spriteInfos =
 {
-    SpriteInfo{"NONE", {0, 0, 0, 0}},                             // ObjectId::NONE
+    SpriteInfo{{"NONE"}, {0, 0, 0, 0}}, // ObjectId::NONE
 
-    SpriteInfo{"assets/baba_0_1.png", {255, 255, 255, 255}},      // ObjectId::BABA
-    SpriteInfo{"assets/wall_0_1.png", {41, 49, 65, 255}},         // ObjectId::WALL
-    SpriteInfo{"assets/water_0_1.png", {255, 255, 255, 255}},     // ObjectId::WATER
-    SpriteInfo{"assets/flag_0_1.png", {237, 226, 133, 255}},      // ObjectId::FLAG
-    SpriteInfo{"assets/rock_0_1.png", {194, 158, 70, 255}},       // ObjectId::ROCK
+    SpriteInfo{{"assets/baba_0_1.png", // ObjectId::BABA
+                "assets/baba_0_2.png",
+                "assets/baba_0_3.png"},
+               {255, 255, 255, 255}},
+    SpriteInfo{{"assets/wall_0_1.png", // ObjectId::WALL
+                "assets/wall_0_2.png",
+                "assets/wall_0_3.png"},
+               {41, 49, 65, 255}},
+    SpriteInfo{{"assets/water_0_1.png", // ObjectId::WATER
+                "assets/water_0_2.png",
+                "assets/water_0_3.png"},
+               {95, 157, 209, 255}},
+    SpriteInfo{{"assets/flag_0_1.png", // ObjectId::FLAG
+                "assets/flag_0_2.png",
+                "assets/flag_0_3.png"},
+               {237, 226, 133, 255}},
+    SpriteInfo{{"assets/rock_0_1.png", // ObjectId::ROCK
+                "assets/rock_0_2.png",
+                "assets/rock_0_3.png"},
+               {194, 158, 70, 255}},
 
-    SpriteInfo{"assets/text_baba_0_1.png", {217, 57, 106, 255}},  // ObjectId::TEXT_BABA
-    SpriteInfo{"assets/text_water_0_1.png", {95, 157, 209, 255}}, // ObjectId::TEXT_WATER
-    SpriteInfo{"assets/text_is_0_1.png", {255, 255, 255, 255}},   // ObjectId::TEXT_IS
-    SpriteInfo{"assets/text_has_0_1.png", {255, 255, 255, 255}},  // ObjectId::TEXT_HAS
-    SpriteInfo{"assets/text_and_0_1.png", {255, 255, 255, 255}},  // ObjectId::TEXT_AND
-    SpriteInfo{"assets/text_not_0_1.png", {229, 83, 59, 255}},    // ObjectId::TEXT_NOT
-    SpriteInfo{"assets/text_you_0_1.png", {217, 57, 106, 255}},   // ObjectId::TEXT_YOU
-    SpriteInfo{"assets/text_win_0_1.png", {237, 226, 133, 255}},  // ObjectId::TEXT_WIN
-    SpriteInfo{"assets/text_defeat_0_1.png", {130, 38, 28, 255}}, // ObjectId::TEXT_DEFEAT
-    SpriteInfo{"assets/text_sink_0_1.png", {95, 157, 209, 255}},  // ObjectId::TEXT_SINK
-    SpriteInfo{"assets/text_stop_0_1.png", {27, 92, 28, 255}},    // ObjectId::TEXT_STOP
-    SpriteInfo{"assets/text_push_0_1.png", {144, 103, 62, 255}},  // ObjectId::TEXT_PUSH
-    SpriteInfo{"assets/text_flag_0_1.png", {237, 226, 133, 255}}, // ObjectId::TEXT_FLAG
-    SpriteInfo{"assets/text_rock_0_1.png", {144, 103, 62, 255}},  // ObjectId::TEXT_ROCK
-    SpriteInfo{"assets/text_wall_0_1.png", {115, 115, 115, 255}}, // ObjectId::TEXT_WALL
+    SpriteInfo{{"assets/text_baba_0_1.png", // ObjectId::TEXT_BABA
+                "assets/text_baba_0_2.png",
+                "assets/text_baba_0_3.png"},
+               {217, 57, 106, 255}},
+    SpriteInfo{{"assets/text_water_0_1.png", // ObjectId::TEXT_WATER
+                "assets/text_water_0_2.png",
+                "assets/text_water_0_3.png"},
+               {95, 157, 209, 255}},
+    SpriteInfo{{"assets/text_is_0_1.png", // ObjectId::TEXT_IS
+                "assets/text_is_0_2.png",
+                "assets/text_is_0_3.png"},
+               {255, 255, 255, 255}},
+    SpriteInfo{{"assets/text_has_0_1.png", // ObjectId::TEXT_HAS
+                "assets/text_has_0_2.png",
+                "assets/text_has_0_3.png"},
+               {255, 255, 255, 255}},
+    SpriteInfo{{"assets/text_and_0_1.png", // ObjectId::TEXT_AND
+                "assets/text_and_0_2.png",
+                "assets/text_and_0_3.png"},
+               {255, 255, 255, 255}},
+    SpriteInfo{{"assets/text_not_0_1.png", // ObjectId::TEXT_NOT
+                "assets/text_not_0_2.png",
+                "assets/text_not_0_3.png"},
+               {229, 83, 59, 255}},
+    SpriteInfo{{"assets/text_you_0_1.png", // ObjectId::TEXT_YOU
+                "assets/text_you_0_2.png",
+                "assets/text_you_0_3.png"},
+               {217, 57, 106, 255}},
+    SpriteInfo{{"assets/text_win_0_1.png", // ObjectId::TEXT_WIN
+                "assets/text_win_0_2.png",
+                "assets/text_win_0_3.png"},
+               {237, 226, 133, 255}},
+    SpriteInfo{{"assets/text_defeat_0_1.png", // ObjectId::TEXT_DEFEAT
+                "assets/text_defeat_0_2.png",
+                "assets/text_defeat_0_3.png"},
+               {130, 38, 28, 255}},
+    SpriteInfo{{"assets/text_sink_0_1.png", // ObjectId::TEXT_SINK
+                "assets/text_sink_0_2.png",
+                "assets/text_sink_0_3.png"},
+               {95, 157, 209, 255}},
+    SpriteInfo{{"assets/text_stop_0_1.png", // ObjectId::TEXT_STOP
+                "assets/text_stop_0_2.png",
+                "assets/text_stop_0_3.png"},
+               {27, 92, 28, 255}},
+    SpriteInfo{{"assets/text_push_0_1.png", // ObjectId::TEXT_PUSH
+                "assets/text_push_0_2.png",
+                "assets/text_push_0_3.png"},
+               {144, 103, 62, 255}},
+    SpriteInfo{{"assets/text_flag_0_1.png", // ObjectId::TEXT_FLAG
+                "assets/text_flag_0_2.png",
+                "assets/text_flag_0_3.png"},
+               {237, 226, 133, 255}},
+    SpriteInfo{{"assets/text_rock_0_1.png", // ObjectId::TEXT_ROCK
+                "assets/text_rock_0_2.png",
+                "assets/text_rock_0_3.png"},
+               {144, 103, 62, 255}},
+    SpriteInfo{{"assets/text_wall_0_1.png", // ObjectId::TEXT_WALL
+                "assets/text_wall_0_2.png",
+                "assets/text_wall_0_3.png"},
+               {115, 115, 115, 255}},
 };
 
 static const std::unordered_map<std::string, ObjectId> s_nameIdMap = 

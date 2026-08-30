@@ -6,7 +6,7 @@ CheckBox::CheckBox(Renderer& renderer,
                    float width,
                    float height)
     : Button(renderer, textureMng, ButtonId::CHECK_BOX, pos, width, height),
-      m_checkMarkSprite(renderer, textureMng, SpriteInfo{"assets/check_mark.png", {255, 255, 255, 255}}, pos),
+      m_checkMarkSprite(renderer, textureMng, SpriteInfo{{"assets/check_mark.png"}, {255, 255, 255, 255}}, pos),
 	  m_checkMarkWidth(width * 0.95f),
 	  m_checkMarkHeight(height * 0.95f),
 	  m_originalCheckMarkPos(pos)

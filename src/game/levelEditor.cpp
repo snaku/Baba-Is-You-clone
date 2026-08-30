@@ -75,6 +75,11 @@ void LevelEditor::handleObjectRemoval(const Input& input)
     }
 
     auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+    if (objects.empty())
+    {
+        return;
+    }
+
     if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
     {
         for (auto* object : objects)
@@ -84,11 +89,10 @@ void LevelEditor::handleObjectRemoval(const Input& input)
     }
     else
     {
-        if (!objects.empty())
-        {
-            m_objectMng.removeObject(*objects.back());
-        }
+        m_objectMng.removeObject(*objects.back());
     }
+
+    m_action = LevelEditorAction::REMOVE_OBJECT;
 }
 
 void LevelEditor::handleObjectSelection(const Input& input)
@@ -137,30 +141,32 @@ void LevelEditor::handleObjectMove(const Input& input)
         m_selectedObjects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
     }
 
-    if (!m_selectedObjects.empty())
+    if (m_selectedObjects.empty())
     {
-        if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
-        {
-            for (auto* object : m_selectedObjects)
-            {
-                m_grid.removeObjectAt(object->getUID(), object->getCell());
-                object->setCell(m_mouseCell);
-                object->syncPos();
-                m_grid.addObjectAt(object->getUID(), object->getCell());
-            }
-        }
-        else
-        {
-            Object& object = *m_selectedObjects.back();
-
-            m_grid.removeObjectAt(object.getUID(), object.getCell());
-            object.setCell(m_mouseCell);
-            object.syncPos();
-            m_grid.addObjectAt(object.getUID(), object.getCell());
-        }
-
-        m_action = LevelEditorAction::MOVE_OBJECT;
+        return;
     }
+
+    if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
+    {
+        for (auto* object : m_selectedObjects)
+        {
+            m_grid.removeObjectAt(object->getUID(), object->getCell());
+            object->setCell(m_mouseCell);
+            object->syncPos();
+            m_grid.addObjectAt(object->getUID(), object->getCell());
+        }
+    }
+    else
+    {
+        Object& object = *m_selectedObjects.back();
+
+        m_grid.removeObjectAt(object.getUID(), object.getCell());
+        object.setCell(m_mouseCell);
+        object.syncPos();
+        m_grid.addObjectAt(object.getUID(), object.getCell());
+    }
+
+    m_action = LevelEditorAction::MOVE_OBJECT;
 }
 
 void LevelEditor::handleGridResizing(const Input& input)

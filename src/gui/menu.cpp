@@ -76,7 +76,7 @@ void Menu::setBackground(const std::filesystem::path& path, SDL_Color col)
 {
 	if (m_backgroundSpr != nullptr)
 	{
-		m_backgroundSpr->reload(SpriteInfo{path, col});
+		m_backgroundSpr->reload(SpriteInfo{{path}, col});
 		return;
 	}
 
@@ -84,7 +84,7 @@ void Menu::setBackground(const std::filesystem::path& path, SDL_Color col)
 
 	m_backgroundSpr = std::make_unique<Sprite>(m_renderer,
 											   m_textureMng,
-											   SpriteInfo{path, col},
+											   SpriteInfo{{path}, col},
 											   SDL_FPoint{0.0f, 0.0f});
 }
 

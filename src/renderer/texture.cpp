@@ -1,6 +1,7 @@
 #include "renderer/texture.hpp"
 #include "renderer/renderer.hpp"
 
+// SDL2
 #include <SDL2/SDL_image.h>
 
 Texture::Texture(Renderer& renderer) : m_renderer(renderer)
