@@ -23,7 +23,7 @@ Sprite::~Sprite() noexcept
 {
 }
 
-void Sprite::draw(float width, float height)
+void Sprite::updateAnim()
 {
     if (m_textureCount == 0)
     {
@@ -36,7 +36,10 @@ void Sprite::draw(float width, float height)
         m_animTimer -= s_animFrameDuration;
         m_currentAnimFrame = (m_currentAnimFrame + 1) % m_textureCount;
     }
+}
 
+void Sprite::draw(float width, float height)
+{
     auto& currentTexture = m_textures[m_currentAnimFrame];
     if (currentTexture != nullptr)
     {

@@ -24,6 +24,7 @@ public:
     Sprite(Renderer& renderer, TextureManager& textureMng, const SpriteInfo& info, const SDL_FPoint& basePos);
     ~Sprite() noexcept;
 
+    void updateAnim();
     void draw(float width, float height);
 
     void reload(const SpriteInfo& info);

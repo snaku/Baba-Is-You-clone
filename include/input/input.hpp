@@ -36,9 +36,9 @@ private:
     SDL_FPoint m_mousePos;
 
     static constexpr std::size_t s_mouseButtonCount = 6; 
-    std::array<bool, s_mouseButtonCount> m_mouseDown;
-    std::array<bool, s_mouseButtonCount> m_mouseJustDown;
-    std::array<bool, s_mouseButtonCount> m_mouseReleased;
+    std::array<bool, s_mouseButtonCount> m_mouseDown{};
+    std::array<bool, s_mouseButtonCount> m_mouseJustDown{};
+    std::array<bool, s_mouseButtonCount> m_mouseReleased{};
 
     bool m_scrolledUp = false;
     bool m_scrolledDown = false;

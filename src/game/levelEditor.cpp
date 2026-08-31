@@ -40,6 +40,8 @@ bool LevelEditor::update(const Input& input)
         handleInput(input);
     }
 
+    m_objectPreviewSpr.updateAnim();
+
     return m_continueUpdate; // for the future when the editor will have a menu and a quit button
 }
 
@@ -152,7 +154,6 @@ void LevelEditor::handleObjectMove(const Input& input)
         {
             m_grid.removeObjectAt(object->getUID(), object->getCell());
             object->setCell(m_mouseCell);
-            object->syncPos();
             m_grid.addObjectAt(object->getUID(), object->getCell());
         }
     }
@@ -162,7 +163,6 @@ void LevelEditor::handleObjectMove(const Input& input)
 
         m_grid.removeObjectAt(object.getUID(), object.getCell());
         object.setCell(m_mouseCell);
-        object.syncPos();
         m_grid.addObjectAt(object.getUID(), object.getCell());
     }
 

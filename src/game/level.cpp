@@ -266,6 +266,13 @@ void Level::updateStateEditor()
         return;
     }
 
+    m_objectMng.forEach(
+        [](Object& object)
+        {
+            object.update();
+        }
+    );
+
     if (m_currentGridWidth != GridConfig::width ||
         m_currentGridHeight != GridConfig::height)
     {

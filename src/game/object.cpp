@@ -37,6 +37,7 @@ Object::~Object() noexcept = default;
 
 void Object::update()
 {
+    m_sprite.updateAnim();
     syncPos();
 }
 
