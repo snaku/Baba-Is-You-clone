@@ -134,23 +134,25 @@ void LevelEditor::handleObjectMove(const Input& input)
     if (!input.isKeyDown(SDL_SCANCODE_LCTRL) ||
         !input.isMouseButtonDown(SDL_BUTTON_LEFT))
     {
-        m_selectedObjects.clear();
+        m_movingObjects.clear();
+        m_movingObjectsBaseCell = {};
         return;
     }
 
-    if (m_selectedObjects.empty())
+    if (m_movingObjects.empty())
     {
-        m_selectedObjects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+        m_movingObjects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+        m_movingObjectsBaseCell = m_mouseCell;
     }
 
-    if (m_selectedObjects.empty())
+    if (m_movingObjects.empty())
     {
         return;
     }
 
     if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
     {
-        for (auto* object : m_selectedObjects)
+        for (auto* object : m_movingObjects)
         {
             m_grid.removeObjectAt(object->getUID(), object->getCell());
             object->setCell(m_mouseCell);
@@ -159,7 +161,7 @@ void LevelEditor::handleObjectMove(const Input& input)
     }
     else
     {
-        Object& object = *m_selectedObjects.back();
+        Object& object = *m_movingObjects.back();
 
         m_grid.removeObjectAt(object.getUID(), object.getCell());
         object.setCell(m_mouseCell);
@@ -218,6 +220,11 @@ void LevelEditor::draw()
         drawObjectPreview();
         drawCellHighlight();
     }
+
+    if (!m_movingObjects.empty())
+    {
+        drawMovingObjectsBaseCellHighlight();
+    }
 }
 
 void LevelEditor::drawObjectPreview()
@@ -270,6 +277,22 @@ void LevelEditor::drawGrid()
                             0.0f,
                             s_gridCol);
     }
+}
+
+void LevelEditor::drawMovingObjectsBaseCellHighlight()
+{
+    SDL_FPoint pos = m_movingObjectsBaseCell.toFPoint();
+
+    SDL_Rect rect = SDL_Rect
+    {
+        (int)pos.x,
+        (int)pos.y,
+
+        (int)GridConfig::cellSize,
+        (int)GridConfig::cellSize
+    };
+
+    m_renderer.drawRect(rect, s_movingObjectsCellHighlightCol);
 }
 
 LevelDefinition LevelEditor::createDef()

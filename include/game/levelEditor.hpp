@@ -54,6 +54,7 @@ private:
     void drawObjectPreview();
     void drawCellHighlight();
     void drawGrid();
+    void drawMovingObjectsBaseCellHighlight();
 
     Renderer& m_renderer;
     ObjectManager& m_objectMng;
@@ -67,11 +68,13 @@ private:
     ObjectId m_currentObjectId = ObjectId::BABA;
     Sprite m_objectPreviewSpr;
 
-    std::vector<Object*> m_selectedObjects;
+    std::vector<Object*> m_movingObjects;
+    Cell m_movingObjectsBaseCell;
 
     bool m_continueUpdate = true;
 
     static constexpr uint8_t s_objectPreviewAlpha = 128;
     static constexpr SDL_Color s_cellHighlightCol = SDL_Color{255, 255, 255, 100};
-    static constexpr SDL_Color s_gridCol = SDL_Color{255, 255, 255, 255};
+    static constexpr SDL_Color s_gridCol = SDL_Color{255, 255, 255, 128};
+    static constexpr SDL_Color s_movingObjectsCellHighlightCol = SDL_Color{0, 128, 0, 160};
 };
