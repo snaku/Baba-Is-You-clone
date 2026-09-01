@@ -2,7 +2,7 @@
 
 #include "gui/menuManager.hpp"
 
-BaseMenu::BaseMenu(Renderer& renderer, MenuManager& menuMng, const std::string& menuName)
+BaseMenu::BaseMenu(Renderer& renderer, MenuManager& menuMng, std::string menuName)
     : m_renderer(renderer),
       m_menu(menuMng.addMenu(menuName)),
       m_name(std::move(menuName)),

@@ -254,7 +254,11 @@ void Level::updateStateEditor()
         std::string fileName = std::format("level_{}.txt", m_id);
         LevelDefinition def = m_editor.createDef();
 
-        LevelFile::write(fileName, def);
+        if (!LevelFile::write(fileName, def))
+        {
+            m_state = LevelState::IDLE;
+            return;
+        }
 
         initFromDef(def); // load from the definition and switch to PLAYING state
         return;

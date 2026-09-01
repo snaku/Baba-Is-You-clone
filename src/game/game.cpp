@@ -31,7 +31,6 @@ Game::Game(std::string_view windowName, int windowWidth, int windowHeight)
 }
 Game::~Game() noexcept
 {
-    SDL_Quit();
 }
 
 bool Game::start()

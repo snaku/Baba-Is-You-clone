@@ -14,7 +14,7 @@ class Menu;
 class BaseMenu
 {
 public:
-    BaseMenu(Renderer& renderer, MenuManager& menuMng, const std::string& menuName);
+    BaseMenu(Renderer& renderer, MenuManager& menuMng, std::string menuName);
     virtual ~BaseMenu();
 
     virtual void init() = 0;
