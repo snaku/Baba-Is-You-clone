@@ -2,13 +2,13 @@
 
 void Input::update()
 {
-    SDL_Event event;
-
+    m_droppedFilePath.clear();
     m_keyJustDown.clear();
     m_keyReleased.clear();
     m_scrolledDown = false;
     m_scrolledUp = false;
 
+    SDL_Event event;
     while (SDL_PollEvent(&event))
     {
         switch (event.type)
@@ -26,6 +26,11 @@ void Input::update()
             case SDL_MOUSEWHEEL:
                 m_scrolledDown = event.wheel.y < 0;
                 m_scrolledUp = event.wheel.y > 0;
+                break;
+
+            case SDL_DROPFILE:
+                m_droppedFilePath = event.drop.file;
+                SDL_free(event.drop.file);
                 break;
         }
     }

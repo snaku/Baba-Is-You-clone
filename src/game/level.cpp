@@ -287,6 +287,23 @@ void Level::updateStateEditor()
 
 void Level::update()
 {
+    const std::filesystem::path& droppedLevelFilePath = m_input.getDroppedFilePath();
+    if (!droppedLevelFilePath.empty())
+    {
+        std::optional<uint32_t> id = LevelFile::getIdOf(droppedLevelFilePath);
+        if (id.has_value())
+        {
+            LevelState savedState = m_state;
+            initFromDef(LevelFile::read(droppedLevelFilePath));
+            if (savedState == LevelState::EDITOR)
+            {
+                m_state = savedState;
+            }
+
+            m_id = id.value();
+        }
+    }
+
     switch (m_state)
     {
         case LevelState::IDLE:    updateStateIdle();    break;

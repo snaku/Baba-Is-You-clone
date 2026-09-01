@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <sstream>
 #include <string_view>
+#include <optional>
 
 struct LevelObjectData
 {
@@ -26,6 +27,8 @@ class LevelFile
 public:
     static LevelDefinition read(const std::filesystem::path& path);
     static bool write(const std::filesystem::path& path, const LevelDefinition& def);
+
+    static std::optional<uint32_t> getIdOf(const std::filesystem::path& path);
 
 private:
     static bool tryParseMetadata(LevelDefinition& def, std::stringstream& stream, const std::string& name);

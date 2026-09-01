@@ -7,6 +7,7 @@
 #include <array>
 #include <vector>
 #include <unordered_set>
+#include <filesystem>
 
 class Input
 {
@@ -26,6 +27,8 @@ public:
     bool scrolledUp() const { return m_scrolledUp; }
     bool scrolledDown() const { return m_scrolledDown; }
 
+    const std::filesystem::path& getDroppedFilePath() const { return m_droppedFilePath; }
+
 private:
     bool m_quitRequested = false;
 
@@ -42,4 +45,6 @@ private:
 
     bool m_scrolledUp = false;
     bool m_scrolledDown = false;
+
+    std::filesystem::path m_droppedFilePath;
 };

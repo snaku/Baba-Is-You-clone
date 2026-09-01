@@ -134,3 +134,16 @@ bool LevelFile::write(const std::filesystem::path& path, const LevelDefinition& 
 
     return true;
 }
+
+std::optional<uint32_t> LevelFile::getIdOf(const std::filesystem::path& path)
+{
+    std::string fileName = path.stem().string();
+    constexpr std::string_view prefix = "level_";
+
+    if (!fileName.starts_with(prefix))
+    {
+        return std::nullopt;
+    }
+
+    return std::stoi(fileName.substr(prefix.size()));
+}
