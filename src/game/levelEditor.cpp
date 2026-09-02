@@ -68,6 +68,8 @@ void LevelEditor::handleObjectPlacement(const Input& input)
 
     m_objectMng.addObject(m_currentObjectId, m_mouseCell);
 
+    m_selectedObjects.clear();
+
     m_action = LevelEditorAction::ADD_OBJECT;
 }
 
@@ -87,6 +89,7 @@ void LevelEditor::handleObjectRemoval(const Input& input)
 
     if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
     {
+        // remove every objects at the cell
         for (auto* object : objects)
         {
             m_objectMng.removeObject(*object);
@@ -94,8 +97,11 @@ void LevelEditor::handleObjectRemoval(const Input& input)
     }
     else
     {
+        // remove the last one placed
         m_objectMng.removeObject(*objects.back());
     }
+
+    m_selectedObjects.clear();
 
     m_action = LevelEditorAction::REMOVE_OBJECT;
 }
@@ -141,7 +147,7 @@ ObjectId LevelEditor::toPrevObject()
 {
     int id = (int)m_currentObjectId;
 
-    id = (id - 1) % (int)ObjectId::MAX;
+    id = (id - 1) % (int)ObjectId::MAX; // it's ok since m_currentObjectId will never be ObjectId::NONE
     if (id == (int)ObjectId::NONE)
     {
         id = (int)ObjectId::MAX - 1;
@@ -169,11 +175,12 @@ void LevelEditor::handleObjectMove(const Input& input)
             return;
         }
 
-        m_movingObjectsBaseCell = m_mouseCell;
+        m_movingObjectsBaseCell = m_mouseCell; // for highlighting the original cell
     }
 
     if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
     {
+        // move every obejcts at the cell 
         for (auto* object : m_movingObjects)
         {
             if (object->getCell() == m_mouseCell)
@@ -186,6 +193,7 @@ void LevelEditor::handleObjectMove(const Input& input)
     }
     else
     {
+        // move the last one placed
         moveObjectToMouse(*m_movingObjects.back());
     }
 
@@ -217,6 +225,8 @@ void LevelEditor::handleGridResizing(const Input& input)
         GridConfig::width++;
         GridConfig::height++;
 
+        m_selectedObjects.clear();
+
         m_action = LevelEditorAction::RESIZE_GRID;
     }
     else if (input.scrolledDown())
@@ -224,12 +234,15 @@ void LevelEditor::handleGridResizing(const Input& input)
         GridConfig::width = std::max(GridConfig::width - 1, (uint32_t)1);
         GridConfig::height = std::max(GridConfig::height - 1, (uint32_t)1);
 
+        // if some objects are outside the new grid
         m_objectMng.removeIf(
             [](const Object& object)
             {
                 return !object.getCell().isValidPos();
             }
         );
+
+        m_selectedObjects.clear();
 
         m_action = LevelEditorAction::RESIZE_GRID;
     }
@@ -295,11 +308,17 @@ void LevelEditor::draw()
         if (m_selecting)
         {
             drawSelectionRect();
-            return;
         }
+        else
+        {
+            drawObjectPreview();
+            drawCellHighlight();
+        }
+    }
 
-        drawObjectPreview();
-        drawCellHighlight();
+    if (!m_selectedObjects.empty())
+    {
+        drawSelectedObjectsCellHighlight();
     }
 
     if (!m_movingObjects.empty())
@@ -374,6 +393,25 @@ void LevelEditor::drawMovingObjectsBaseCellHighlight()
     };
 
     m_renderer.drawRect(rect, s_movingObjectsCellHighlightCol);
+}
+
+void LevelEditor::drawSelectedObjectsCellHighlight()
+{
+    for (auto* object : m_selectedObjects)
+    {
+        SDL_FPoint pos = object->getCell().toFPoint();
+
+        SDL_Rect rect = SDL_Rect
+        {
+            (int)pos.x,
+            (int)pos.y,
+    
+            (int)GridConfig::cellSize,
+            (int)GridConfig::cellSize
+        };
+    
+        m_renderer.drawRect(rect, s_selectedObjectsCellHighlightCol);
+    }
 }
 
 void LevelEditor::drawSelectionRect()
