@@ -11,6 +11,20 @@ bool Cell::isValidPos() const
            y < GridConfig::height;
 }
 
+bool Cell::isInRect(const SDL_Rect& rect) const
+{
+    SDL_Rect cellRect = SDL_Rect
+    {
+        (int)toFPoint().x,
+        (int)toFPoint().y,
+
+        (int)GridConfig::cellSize,
+        (int)GridConfig::cellSize
+    };
+
+    return SDL_HasIntersection(&cellRect, &rect);
+}
+
 void Cell::fromFPoint(const SDL_FPoint& point)
 {
     x = (int)std::floor((point.x - GridConfig::offset.x) / GridConfig::cellSize);

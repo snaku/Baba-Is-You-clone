@@ -47,7 +47,10 @@ private:
     void handleObjectPlacement(const Input& input);
     void handleObjectRemoval(const Input& input);
     void handleObjectChange(const Input& input);
+    ObjectId toNextObject();
+    ObjectId toPrevObject();
     void handleObjectMove(const Input& input);
+    void moveObjectToMouse(Object& object);
     void handleGridResizing(const Input& input);
     void handleSelect(const Input& input);
 
@@ -77,6 +80,7 @@ private:
     SDL_Rect m_selectionRect{};
     SDL_Point m_selectionStart{};
     bool m_selecting = false;
+    std::vector<Object*> m_selectedObjects;
 
     bool m_continueUpdate = true;
 

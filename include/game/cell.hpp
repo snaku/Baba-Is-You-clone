@@ -9,6 +9,8 @@ struct Cell
     int y = 0;
 
     bool isValidPos() const;
+    bool isInRect(const SDL_Rect& rect) const;
+
     void fromFPoint(const SDL_FPoint& point);
     SDL_FPoint toFPoint() const;
 

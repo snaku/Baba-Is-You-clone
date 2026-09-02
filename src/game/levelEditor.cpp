@@ -67,6 +67,7 @@ void LevelEditor::handleObjectPlacement(const Input& input)
     }
 
     m_objectMng.addObject(m_currentObjectId, m_mouseCell);
+
     m_action = LevelEditorAction::ADD_OBJECT;
 }
 
@@ -106,29 +107,47 @@ void LevelEditor::handleObjectChange(const Input& input)
         return;
     }
 
-    int id = (int)m_currentObjectId;
+    ObjectId savedId = m_currentObjectId;
     if (input.scrolledUp())
     {
-        id = (id + 1) % (int)ObjectId::MAX;
-        if (id == (int)ObjectId::NONE)
-        {
-            id = (int)ObjectId::NONE + 1;
-        }
+        m_currentObjectId = toNextObject();
     }
     else if (input.scrolledDown())
     {
-        id = (id - 1) % (int)ObjectId::MAX;
-        if (id == (int)ObjectId::NONE)
-        {
-            id = (int)ObjectId::MAX - 1;
-        }
+        m_currentObjectId = toPrevObject();
     }
 
-    if (id != (int)m_currentObjectId)
+    if (savedId != m_currentObjectId)
     {
-        changeObjectPreview((ObjectId)id);
+        changeObjectPreview(m_currentObjectId);
         m_action = LevelEditorAction::CHANGE_OBJECT;
     }
+}
+
+ObjectId LevelEditor::toNextObject()
+{
+    int id = (int)m_currentObjectId;
+
+    id = (id + 1) % (int)ObjectId::MAX;
+    if (id == (int)ObjectId::NONE)
+    {
+        id = (int)ObjectId::NONE + 1;
+    }
+
+    return (ObjectId)id;
+}
+
+ObjectId LevelEditor::toPrevObject()
+{
+    int id = (int)m_currentObjectId;
+
+    id = (id - 1) % (int)ObjectId::MAX;
+    if (id == (int)ObjectId::NONE)
+    {
+        id = (int)ObjectId::MAX - 1;
+    }
+
+    return (ObjectId)id;
 }
 
 void LevelEditor::handleObjectMove(const Input& input)
@@ -162,24 +181,27 @@ void LevelEditor::handleObjectMove(const Input& input)
                 break;
             }
 
-            m_grid.removeObjectAt(object->getUID(), object->getCell());
-            object->setCell(m_mouseCell);
-            m_grid.addObjectAt(object->getUID(), object->getCell());
+            moveObjectToMouse(*object);
         }
     }
     else
     {
-        Object& object = *m_movingObjects.back();
-
-        if (object.getCell() != m_mouseCell)
-        {
-            m_grid.removeObjectAt(object.getUID(), object.getCell());
-            object.setCell(m_mouseCell);
-            m_grid.addObjectAt(object.getUID(), object.getCell());
-        }
+        moveObjectToMouse(*m_movingObjects.back());
     }
 
     m_action = LevelEditorAction::MOVE_OBJECT;
+}
+
+void LevelEditor::moveObjectToMouse(Object& object)
+{
+    if (object.getCell() == m_mouseCell)
+    {
+        return;
+    }
+
+    m_grid.removeObjectAt(object.getUID(), object.getCell());
+    object.setCell(m_mouseCell);
+    m_grid.addObjectAt(object.getUID(), object.getCell());
 }
 
 void LevelEditor::handleGridResizing(const Input& input)
@@ -242,6 +264,17 @@ void LevelEditor::handleSelect(const Input& input)
     m_selectionRect.w = std::max(m_selectionStart.x, mousePos.x) - m_selectionRect.x;
     m_selectionRect.h = std::max(m_selectionStart.y, mousePos.y) - m_selectionRect.y;
 
+    m_selectedObjects.clear();
+    m_objectMng.forEach(
+        [this](Object& object)
+        {
+            if (object.getCell().isInRect(m_selectionRect))
+            {
+                m_selectedObjects.push_back(&object);
+            }
+        }
+    );
+
     m_selecting = true;
     m_action = LevelEditorAction::SELECT;
 }
@@ -251,8 +284,6 @@ void LevelEditor::changeObjectPreview(ObjectId id)
     SpriteInfo previewSprInfo = ObjectUtils::getSpriteInfo(id);
     previewSprInfo.col.a = s_objectPreviewAlpha;
     m_objectPreviewSpr.reload(previewSprInfo);
-
-    m_currentObjectId = id;
 }
 
 void LevelEditor::draw()
