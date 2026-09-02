@@ -49,16 +49,18 @@ void LevelEditor::handleInput(const Input& input)
 {
     m_action = LevelEditorAction::NONE;
 
+    handleSelect(input);
     handleObjectMove(input);
     handleObjectPlacement(input);
     handleObjectRemoval(input);
     handleGridResizing(input);
-    handleObjectSelection(input);
+    handleObjectChange(input);
 }
 
 void LevelEditor::handleObjectPlacement(const Input& input)
 {
     if (m_action == LevelEditorAction::MOVE_OBJECT ||
+        m_action == LevelEditorAction::SELECT ||
         !input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
     {
         return;
@@ -97,7 +99,7 @@ void LevelEditor::handleObjectRemoval(const Input& input)
     m_action = LevelEditorAction::REMOVE_OBJECT;
 }
 
-void LevelEditor::handleObjectSelection(const Input& input)
+void LevelEditor::handleObjectChange(const Input& input)
 {
     if (m_action == LevelEditorAction::RESIZE_GRID)
     {
@@ -125,13 +127,14 @@ void LevelEditor::handleObjectSelection(const Input& input)
     if (id != (int)m_currentObjectId)
     {
         changeObjectPreview((ObjectId)id);
-        m_action = LevelEditorAction::SELECT_OBJECT;
+        m_action = LevelEditorAction::CHANGE_OBJECT;
     }
 }
 
 void LevelEditor::handleObjectMove(const Input& input)
 {
-    if (!input.isKeyDown(SDL_SCANCODE_LCTRL) ||
+    if (m_action == LevelEditorAction::SELECT ||
+        !input.isKeyDown(SDL_SCANCODE_LCTRL) ||
         !input.isMouseButtonDown(SDL_BUTTON_LEFT))
     {
         m_movingObjects.clear();
@@ -210,6 +213,39 @@ void LevelEditor::handleGridResizing(const Input& input)
     }
 }
 
+void LevelEditor::handleSelect(const Input& input)
+{
+    if (!input.isKeyDown(SDL_SCANCODE_LALT) ||
+        !input.isMouseButtonDown(SDL_BUTTON_LEFT))
+    {
+        m_selecting = false;
+        return;
+    }
+
+    SDL_Point mousePos = SDL_Point
+    {
+        (int)input.getMousePos().x,
+        (int)input.getMousePos().y
+    };
+
+    if (!m_selecting)
+    {
+        m_selectionStart = SDL_Point
+        {
+            mousePos.x,
+            mousePos.y
+        };
+    }
+
+    m_selectionRect.x = std::min(m_selectionStart.x, mousePos.x);
+    m_selectionRect.y = std::min(m_selectionStart.y, mousePos.y);
+    m_selectionRect.w = std::max(m_selectionStart.x, mousePos.x) - m_selectionRect.x;
+    m_selectionRect.h = std::max(m_selectionStart.y, mousePos.y) - m_selectionRect.y;
+
+    m_selecting = true;
+    m_action = LevelEditorAction::SELECT;
+}
+
 void LevelEditor::changeObjectPreview(ObjectId id)
 {
     SpriteInfo previewSprInfo = ObjectUtils::getSpriteInfo(id);
@@ -225,6 +261,12 @@ void LevelEditor::draw()
 
     if (m_mouseOnGrid)
     {
+        if (m_selecting)
+        {
+            drawSelectionRect();
+            return;
+        }
+
         drawObjectPreview();
         drawCellHighlight();
     }
@@ -301,6 +343,11 @@ void LevelEditor::drawMovingObjectsBaseCellHighlight()
     };
 
     m_renderer.drawRect(rect, s_movingObjectsCellHighlightCol);
+}
+
+void LevelEditor::drawSelectionRect()
+{
+    m_renderer.drawRect(m_selectionRect, s_selectionRectCol);
 }
 
 LevelDefinition LevelEditor::createDef()

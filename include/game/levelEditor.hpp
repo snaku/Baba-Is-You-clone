@@ -25,9 +25,10 @@ enum class LevelEditorAction
 
     ADD_OBJECT,
     REMOVE_OBJECT,
-    SELECT_OBJECT,
+    CHANGE_OBJECT,
     MOVE_OBJECT,
-    RESIZE_GRID
+    RESIZE_GRID,
+    SELECT
 };
 
 class LevelEditor
@@ -45,9 +46,10 @@ private:
 
     void handleObjectPlacement(const Input& input);
     void handleObjectRemoval(const Input& input);
-    void handleObjectSelection(const Input& input);
+    void handleObjectChange(const Input& input);
     void handleObjectMove(const Input& input);
     void handleGridResizing(const Input& input);
+    void handleSelect(const Input& input);
 
     void changeObjectPreview(ObjectId id);
 
@@ -55,6 +57,7 @@ private:
     void drawCellHighlight();
     void drawGrid();
     void drawMovingObjectsBaseCellHighlight();
+    void drawSelectionRect();
 
     Renderer& m_renderer;
     ObjectManager& m_objectMng;
@@ -71,10 +74,15 @@ private:
     std::vector<Object*> m_movingObjects;
     Cell m_movingObjectsBaseCell;
 
+    SDL_Rect m_selectionRect{};
+    SDL_Point m_selectionStart{};
+    bool m_selecting = false;
+
     bool m_continueUpdate = true;
 
     static constexpr uint8_t s_objectPreviewAlpha = 128;
     static constexpr SDL_Color s_cellHighlightCol = SDL_Color{255, 255, 255, 100};
     static constexpr SDL_Color s_gridCol = SDL_Color{255, 255, 255, 128};
     static constexpr SDL_Color s_movingObjectsCellHighlightCol = SDL_Color{0, 128, 0, 160};
+    static constexpr SDL_Color s_selectionRectCol = SDL_Color{0, 100, 160, 175};
 };
