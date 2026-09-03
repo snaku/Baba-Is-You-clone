@@ -87,6 +87,7 @@ private:
 
     std::vector<Object*> m_movingObjects;
     Cell m_movingObjectsBaseCell; // for highlighting the original cell
+    bool m_moving = false;
 
     SDL_Rect m_selectionRect{};
     SDL_Point m_selectionStart{};

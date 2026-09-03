@@ -165,6 +165,7 @@ void LevelEditor::handleObjectMove(const Input& input)
     {
         m_movingObjects.clear();
         m_movingObjectsBaseCell = {};
+        m_moving = false;
         return;
     }
 
@@ -172,7 +173,12 @@ void LevelEditor::handleObjectMove(const Input& input)
         tryMoveSelectedObjects() ||
         tryMoveSingleCellObject())
     {
+        m_moving = true;
         m_action = LevelEditorAction::MOVE_OBJECT;
+    }
+    else
+    {
+        m_moving = false;
     }
 }
 
@@ -206,9 +212,23 @@ bool LevelEditor::tryMoveSelectedObjects()
     }
 
     Cell delta = m_mouseCell - m_prevMouseCell;
+    bool canMove = true;
     for (auto* object : m_movingObjects)
     {
-        moveObject(*object, object->getCell() + delta);
+        Cell finalCell = object->getCell() + delta;
+        if (!finalCell.isValidPos())
+        {
+            canMove = false;
+            break;
+        }
+    }
+
+    if (canMove)
+    {
+        for (auto* object : m_movingObjects)
+        {
+            moveObject(*object, object->getCell() + delta);
+        }
     }
 
     return true;
@@ -374,6 +394,10 @@ void LevelEditor::draw()
         {
             drawSelectionRect();
         }
+        else if (m_moving)
+        {
+            drawMovingObjectsBaseCellHighlight();
+        }
         else
         {
             drawObjectPreview();
@@ -384,11 +408,6 @@ void LevelEditor::draw()
     if (!m_selectedObjects.empty())
     {
         drawSelectedObjectsCellHighlight();
-    }
-
-    if (!m_movingObjects.empty())
-    {
-        drawMovingObjectsBaseCellHighlight();
     }
 }
 
