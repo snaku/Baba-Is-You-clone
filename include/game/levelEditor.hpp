@@ -45,13 +45,22 @@ private:
     void handleInput(const Input& input);
 
     void handleObjectPlacement(const Input& input);
+
     void handleObjectRemoval(const Input& input);
+
     void handleObjectChange(const Input& input);
     ObjectId toNextObject();
     ObjectId toPrevObject();
+
     void handleObjectMove(const Input& input);
+    bool tryMoveSelectedObjects();
+    bool tryMoveSingleCellObject();
+    bool tryMoveSingleCellObjects();
+    void moveObject(Object& object, Cell cell);
     void moveObjectToMouse(Object& object);
+
     void handleGridResizing(const Input& input);
+
     void handleSelect(const Input& input);
 
     void changeObjectPreview(ObjectId id);
@@ -70,13 +79,14 @@ private:
     LevelEditorAction m_action = LevelEditorAction::NONE;
 
     Cell m_mouseCell;
+    Cell m_prevMouseCell;
     bool m_mouseOnGrid = false;
 
     ObjectId m_currentObjectId = ObjectId::BABA;
     Sprite m_objectPreviewSpr;
 
     std::vector<Object*> m_movingObjects;
-    Cell m_movingObjectsBaseCell;
+    Cell m_movingObjectsBaseCell; // for highlighting the original cell
 
     SDL_Rect m_selectionRect{};
     SDL_Point m_selectionStart{};

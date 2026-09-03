@@ -22,4 +22,12 @@ struct Cell
     {
         return x != other.x || y != other.y;
     }
+    Cell operator+(Cell other) const
+    {
+        return {x + other.x, y + other.y};
+    }
+    Cell operator-(Cell other) const
+    {
+        return {x - other.x, y - other.y};
+    }
 };

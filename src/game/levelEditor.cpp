@@ -33,6 +33,7 @@ bool LevelEditor::update(const Input& input)
     m_mouseOnGrid = newMouseCell.isValidPos();
     if (m_mouseOnGrid)
     {
+        m_prevMouseCell = m_mouseCell;
         m_mouseCell = newMouseCell;
 
         m_objectPreviewSpr.setPos(m_mouseCell.toFPoint());
@@ -167,37 +168,103 @@ void LevelEditor::handleObjectMove(const Input& input)
         return;
     }
 
+    if ((input.isKeyDown(SDL_SCANCODE_LSHIFT) && tryMoveSingleCellObjects()) ||
+        tryMoveSelectedObjects() ||
+        tryMoveSingleCellObject())
+    {
+        m_action = LevelEditorAction::MOVE_OBJECT;
+    }
+}
+
+bool LevelEditor::tryMoveSelectedObjects()
+{
+    if (m_selectedObjects.empty())
+    {
+        return false;
+    }
+
+    if (m_movingObjects.empty())
+    {
+        m_movingObjects = m_selectedObjects;
+        m_movingObjectsBaseCell = m_mouseCell;
+
+        bool foundObjectInMouseCell = 
+        std::any_of(m_movingObjects.begin(),
+                    m_movingObjects.end(),
+                    [this](Object* object)
+                    {
+                        return object->getCell() == m_mouseCell;
+                    }
+        );
+
+        if (!foundObjectInMouseCell)
+        {
+            m_movingObjects.clear();
+            m_movingObjectsBaseCell = {};
+            return false;
+        }
+    }
+
+    Cell delta = m_mouseCell - m_prevMouseCell;
+    for (auto* object : m_movingObjects)
+    {
+        moveObject(*object, object->getCell() + delta);
+    }
+
+    return true;
+}
+
+bool LevelEditor::tryMoveSingleCellObjects()
+{
     if (m_movingObjects.empty())
     {
         m_movingObjects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
         if (m_movingObjects.empty())
         {
-            return;
+            return false;
         }
 
-        m_movingObjectsBaseCell = m_mouseCell; // for highlighting the original cell
+        m_movingObjectsBaseCell = m_mouseCell;
     }
 
-    if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
+    // move every obejcts at the cell 
+    for (auto* object : m_movingObjects)
     {
-        // move every obejcts at the cell 
-        for (auto* object : m_movingObjects)
+        if (object->getCell() == m_mouseCell)
         {
-            if (object->getCell() == m_mouseCell)
-            {
-                break;
-            }
-
-            moveObjectToMouse(*object);
+            break;
         }
-    }
-    else
-    {
-        // move the last one placed
-        moveObjectToMouse(*m_movingObjects.back());
+
+        moveObjectToMouse(*object);
     }
 
-    m_action = LevelEditorAction::MOVE_OBJECT;
+    return true;
+}
+
+bool LevelEditor::tryMoveSingleCellObject()
+{
+    if (m_movingObjects.empty())
+    {
+        m_movingObjects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+        if (m_movingObjects.empty())
+        {
+            return false;
+        }
+
+        m_movingObjectsBaseCell = m_mouseCell;
+    }
+
+    // move the last one placed
+    moveObjectToMouse(*m_movingObjects.back());
+
+    return true;
+}
+
+void LevelEditor::moveObject(Object& object, Cell cell)
+{
+    m_grid.removeObjectAt(object.getUID(), object.getCell());
+    object.setCell(cell);
+    m_grid.addObjectAt(object.getUID(), object.getCell());
 }
 
 void LevelEditor::moveObjectToMouse(Object& object)
@@ -207,9 +274,7 @@ void LevelEditor::moveObjectToMouse(Object& object)
         return;
     }
 
-    m_grid.removeObjectAt(object.getUID(), object.getCell());
-    object.setCell(m_mouseCell);
-    m_grid.addObjectAt(object.getUID(), object.getCell());
+    moveObject(object, m_mouseCell);
 }
 
 void LevelEditor::handleGridResizing(const Input& input)
