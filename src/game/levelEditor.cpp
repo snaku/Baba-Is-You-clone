@@ -76,35 +76,78 @@ void LevelEditor::handleObjectPlacement(const Input& input)
 
 void LevelEditor::handleObjectRemoval(const Input& input)
 {
-    if (m_action != LevelEditorAction::NONE ||
-        !input.isMouseButtonJustDown(SDL_BUTTON_RIGHT))
+    if (m_action != LevelEditorAction::NONE)
     {
         return;
     }
 
+    bool removed = false;
+    if (input.isKeyJustDown(SDL_SCANCODE_DELETE))
+    {
+        removed = tryRemoveSelectedObjects();
+    }
+    else if (input.isMouseButtonJustDown(SDL_BUTTON_RIGHT))
+    {
+        if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
+        {
+            removed = tryRemoveSingleCellObjects();
+        }
+        else
+        {
+            removed = tryRemoveSingleCellObject();
+        }
+    }
+
+    if (removed)
+    {
+        m_selectedObjects.clear();
+        m_action = LevelEditorAction::REMOVE_OBJECT;
+    }
+}
+
+bool LevelEditor::tryRemoveSingleCellObject()
+{
     auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
     if (objects.empty())
     {
-        return;
+        return false;
     }
 
-    if (input.isKeyDown(SDL_SCANCODE_LSHIFT))
+    // remove the last one placed
+    m_objectMng.removeObject(*objects.back());
+    
+    return true;
+}
+
+bool LevelEditor::tryRemoveSingleCellObjects()
+{
+    auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+    if (objects.empty())
     {
-        // remove every objects at the cell
-        for (auto* object : objects)
-        {
-            m_objectMng.removeObject(*object);
-        }
+        return false;
     }
-    else
+
+    for (auto* object : objects)
     {
-        // remove the last one placed
-        m_objectMng.removeObject(*objects.back());
+        m_objectMng.removeObject(*object);
     }
 
-    m_selectedObjects.clear();
+    return true;
+}
 
-    m_action = LevelEditorAction::REMOVE_OBJECT;
+bool LevelEditor::tryRemoveSelectedObjects()
+{
+    if (m_selectedObjects.empty())
+    {
+        return false;
+    }
+
+    for (auto* object : m_selectedObjects)
+    {
+        m_objectMng.removeObject(*object);
+    }
+
+    return true;
 }
 
 void LevelEditor::handleObjectChange(const Input& input)

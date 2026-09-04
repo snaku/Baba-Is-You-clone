@@ -47,6 +47,9 @@ private:
     void handleObjectPlacement(const Input& input);
 
     void handleObjectRemoval(const Input& input);
+    bool tryRemoveSingleCellObject();
+    bool tryRemoveSingleCellObjects();
+    bool tryRemoveSelectedObjects();
 
     void handleObjectChange(const Input& input);
     ObjectId toNextObject();
