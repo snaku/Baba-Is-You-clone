@@ -70,6 +70,7 @@ private:
 
     void drawObjectPreview();
     void drawCellHighlight();
+    void drawCellHighlightLines();
     void drawGrid();
     void drawMovingObjectsBaseCellHighlight();
     void drawSelectedObjectsCellHighlight();
@@ -101,6 +102,7 @@ private:
 
     static constexpr uint8_t s_objectPreviewAlpha = 128;
     static constexpr SDL_Color s_cellHighlightCol = SDL_Color{255, 255, 255, 100};
+    static constexpr SDL_Color s_cellHighlightLinesCol = SDL_Color{30, 145, 255, 255};
     static constexpr SDL_Color s_gridCol = SDL_Color{255, 255, 255, 128};
     static constexpr SDL_Color s_movingObjectsCellHighlightCol = SDL_Color{0, 128, 0, 160};
     static constexpr SDL_Color s_selectionRectCol = SDL_Color{0, 100, 160, 175};

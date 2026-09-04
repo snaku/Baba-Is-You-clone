@@ -238,13 +238,13 @@ bool LevelEditor::tryMoveSelectedObjects()
         m_movingObjectsBaseCell = m_mouseCell;
 
         bool foundObjectInMouseCell = 
-        std::any_of(m_movingObjects.begin(),
-                    m_movingObjects.end(),
-                    [this](Object* object)
-                    {
-                        return object->getCell() == m_mouseCell;
-                    }
-        );
+            std::any_of(m_movingObjects.begin(),
+                        m_movingObjects.end(),
+                        [this](Object* object)
+                        {
+                            return object->getCell() == m_mouseCell;
+                        }
+            );
 
         if (!foundObjectInMouseCell)
         {
@@ -445,6 +445,7 @@ void LevelEditor::draw()
         {
             drawObjectPreview();
             drawCellHighlight();
+            drawCellHighlightLines();
         }
     }
 
@@ -473,6 +474,37 @@ void LevelEditor::drawCellHighlight()
     };
 
     m_renderer.drawRect(rect, s_cellHighlightCol);
+}
+
+void LevelEditor::drawCellHighlightLines()
+{
+    for (uint32_t i = 0; i < 2; i++)
+    {
+        SDL_FPoint start
+        {
+            (float)i * GridConfig::cellSize + m_mouseCell.toFPoint().x,
+            m_mouseCell.toFPoint().y
+        };
+
+        m_renderer.drawLine(start,
+                            (float)GridConfig::cellSize,
+                            90.0f,
+                            s_cellHighlightLinesCol);
+    }
+
+    for (uint32_t j = 0; j < 2; j++)
+    {
+        SDL_FPoint start
+        {
+            m_mouseCell.toFPoint().x,
+            (float)j * GridConfig::cellSize + m_mouseCell.toFPoint().y
+        };
+
+        m_renderer.drawLine(start,
+                            (float)GridConfig::cellSize,
+                            0.0f,
+                            s_cellHighlightLinesCol);
+    }
 }
 
 void LevelEditor::drawGrid()
