@@ -406,15 +406,23 @@ void LevelEditor::handleSelect(const Input& input)
     m_selectionRect.h = std::max(m_selectionStart.y, mousePos.y) - m_selectionRect.y;
 
     m_selectedObjects.clear();
-    m_objectMng.forEach(
-        [this](Object& object)
-        {
-            if (object.getCell().isInRect(m_selectionRect))
+    if (m_selectionRect.w == 0 &&
+        m_selectionRect.h == 0)
+    {
+        m_selectedObjects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+    }
+    else
+    {
+        m_objectMng.forEach(
+            [this](Object& object)
             {
-                m_selectedObjects.push_back(&object);
+                if (object.getCell().isInRect(m_selectionRect))
+                {
+                    m_selectedObjects.push_back(&object);
+                }
             }
-        }
-    );
+        );
+    }
 
     m_selecting = true;
     m_action = LevelEditorAction::SELECT;
