@@ -234,7 +234,7 @@ bool LevelEditor::tryMoveSelectedObjects()
 
     if (m_movingObjects.empty())
     {
-        m_movingObjects = m_selectedObjects;
+        m_movingObjects.assign(m_selectedObjects.begin(), m_selectedObjects.end());
         m_movingObjectsBaseCell = m_mouseCell;
 
         bool foundObjectInMouseCell = 
@@ -405,20 +405,28 @@ void LevelEditor::handleSelect(const Input& input)
     m_selectionRect.w = std::max(m_selectionStart.x, mousePos.x) - m_selectionRect.x;
     m_selectionRect.h = std::max(m_selectionStart.y, mousePos.y) - m_selectionRect.y;
 
-    m_selectedObjects.clear();
     if (m_selectionRect.w == 0 &&
         m_selectionRect.h == 0)
     {
-        m_selectedObjects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+        auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+        if (objects.empty())
+        {
+            m_selectedObjects.clear();
+        }
+        else
+        {
+            m_selectedObjects.insert(objects.begin(), objects.end());
+        }
     }
     else
     {
+        m_selectedObjects.clear();
         m_objectMng.forEach(
             [this](Object& object)
             {
                 if (object.getCell().isInRect(m_selectionRect))
                 {
-                    m_selectedObjects.push_back(&object);
+                    m_selectedObjects.insert(&object);
                 }
             }
         );

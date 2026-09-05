@@ -12,6 +12,7 @@
 // std
 #include <cstdint>
 #include <vector>
+#include <unordered_set>
 
 class Renderer;
 class Input;
@@ -96,7 +97,7 @@ private:
     SDL_Rect m_selectionRect{};
     SDL_Point m_selectionStart{};
     bool m_selecting = false;
-    std::vector<Object*> m_selectedObjects;
+    std::unordered_set<Object*> m_selectedObjects;
 
     bool m_continueUpdate = true;
 
