@@ -68,6 +68,7 @@ private:
     void handleSelect(const Input& input);
 
     void changeObjectPreview(ObjectId id);
+    void updateCellHighlightCol();
 
     void drawObjectPreview();
     void drawCellHighlight();
@@ -99,10 +100,13 @@ private:
     bool m_selecting = false;
     std::unordered_set<Object*> m_selectedObjects;
 
+    static constexpr SDL_Color s_emptyCellHighlightCol = SDL_Color{255, 255, 255, 100};
+    static constexpr SDL_Color s_objectsCellHighlightCol = SDL_Color{255, 255, 120, 100};
+    SDL_Color m_cellHighlightCol = s_emptyCellHighlightCol;
+
     bool m_continueUpdate = true;
 
     static constexpr uint8_t s_objectPreviewAlpha = 128;
-    static constexpr SDL_Color s_cellHighlightCol = SDL_Color{255, 255, 255, 100};
     static constexpr SDL_Color s_cellHighlightLinesCol = SDL_Color{30, 145, 255, 255};
     static constexpr SDL_Color s_gridCol = SDL_Color{255, 255, 255, 128};
     static constexpr SDL_Color s_movingObjectsCellHighlightCol = SDL_Color{0, 128, 0, 160};

@@ -39,6 +39,8 @@ bool LevelEditor::update(const Input& input)
         m_objectPreviewSpr.setPos(m_mouseCell.toFPoint());
 
         handleInput(input);
+
+        updateCellHighlightCol();
     }
 
     m_objectPreviewSpr.updateAnim();
@@ -443,6 +445,23 @@ void LevelEditor::changeObjectPreview(ObjectId id)
     m_objectPreviewSpr.reload(previewSprInfo);
 }
 
+void LevelEditor::updateCellHighlightCol()
+{
+    if (m_mouseCell == m_prevMouseCell)
+    {
+        return;
+    }
+
+    if (m_grid.getObjectsAt(m_mouseCell).empty())
+    {
+        m_cellHighlightCol = s_emptyCellHighlightCol;
+    }
+    else
+    {
+        m_cellHighlightCol = s_objectsCellHighlightCol;
+    }
+}
+
 void LevelEditor::draw()
 {
     drawGrid();
@@ -489,7 +508,7 @@ void LevelEditor::drawCellHighlight()
         (int)GridConfig::cellSize
     };
 
-    m_renderer.drawRect(rect, s_cellHighlightCol);
+    m_renderer.drawRect(rect, m_cellHighlightCol);
 }
 
 void LevelEditor::drawCellHighlightLines()
