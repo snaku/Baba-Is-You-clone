@@ -160,23 +160,31 @@ void LevelEditor::handleObjectChange(const Input& input)
     }
 
     ObjectId savedId = m_currentObjectId;
+    ObjectId id = ObjectId::NONE;
     if (input.scrolledUp())
     {
-        m_currentObjectId = toNextObject();
+        id = changeToNextObject();
     }
     else if (input.scrolledDown())
     {
-        m_currentObjectId = toPrevObject();
+        id = changeToPrevObject();
+    }
+    else if (input.isMouseButtonJustDown(SDL_BUTTON_MIDDLE))
+    {
+        id = changeToMouseCellObject();
     }
 
-    if (savedId != m_currentObjectId)
+    if (id != savedId &&
+        id != ObjectId::NONE)
     {
+        m_currentObjectId = id;
+
         changeObjectPreview(m_currentObjectId);
         m_action = LevelEditorAction::CHANGE_OBJECT;
     }
 }
 
-ObjectId LevelEditor::toNextObject()
+ObjectId LevelEditor::changeToNextObject()
 {
     int id = (int)m_currentObjectId;
 
@@ -189,7 +197,7 @@ ObjectId LevelEditor::toNextObject()
     return (ObjectId)id;
 }
 
-ObjectId LevelEditor::toPrevObject()
+ObjectId LevelEditor::changeToPrevObject()
 {
     int id = (int)m_currentObjectId;
 
@@ -200,6 +208,17 @@ ObjectId LevelEditor::toPrevObject()
     }
 
     return (ObjectId)id;
+}
+
+ObjectId LevelEditor::changeToMouseCellObject()
+{
+    auto objects = m_objectMng.findFromUIDs(m_grid.getObjectsAt(m_mouseCell));
+    if (objects.empty())
+    {
+        return ObjectId::NONE;
+    }
+
+    return objects.back()->getId();
 }
 
 void LevelEditor::handleObjectMove(const Input& input)

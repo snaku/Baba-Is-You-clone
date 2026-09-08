@@ -53,8 +53,9 @@ private:
     bool tryRemoveSelectedObjects();
 
     void handleObjectChange(const Input& input);
-    ObjectId toNextObject();
-    ObjectId toPrevObject();
+    ObjectId changeToNextObject();
+    ObjectId changeToPrevObject();
+    ObjectId changeToMouseCellObject();
 
     void handleObjectMove(const Input& input);
     bool tryMoveSelectedObjects();
