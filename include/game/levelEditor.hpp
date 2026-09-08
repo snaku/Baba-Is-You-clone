@@ -28,8 +28,9 @@ enum class LevelEditorAction
     REMOVE_OBJECT,
     CHANGE_OBJECT,
     MOVE_OBJECT,
+    SELECT_OBJECT,
+    DUPLICATE_OBJECT,
     RESIZE_GRID,
-    SELECT
 };
 
 class LevelEditor
@@ -66,7 +67,9 @@ private:
 
     void handleGridResizing(const Input& input);
 
-    void handleSelect(const Input& input);
+    void handleObjectSelect(const Input& input);
+
+    void handleObjectDuplication(const Input& input);
 
     void changeObjectPreview(ObjectId id);
     void updateCellHighlightCol();

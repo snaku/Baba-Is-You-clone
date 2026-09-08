@@ -52,7 +52,8 @@ void LevelEditor::handleInput(const Input& input)
 {
     m_action = LevelEditorAction::NONE;
 
-    handleSelect(input);
+    handleObjectSelect(input);
+    handleObjectDuplication(input);
     handleObjectMove(input);
     handleObjectPlacement(input);
     handleObjectRemoval(input);
@@ -63,7 +64,7 @@ void LevelEditor::handleInput(const Input& input)
 void LevelEditor::handleObjectPlacement(const Input& input)
 {
     if (m_action == LevelEditorAction::MOVE_OBJECT ||
-        m_action == LevelEditorAction::SELECT ||
+        m_action == LevelEditorAction::SELECT_OBJECT ||
         !input.isMouseButtonJustDown(SDL_BUTTON_LEFT))
     {
         return;
@@ -223,7 +224,7 @@ ObjectId LevelEditor::changeToMouseCellObject()
 
 void LevelEditor::handleObjectMove(const Input& input)
 {
-    if (m_action == LevelEditorAction::SELECT ||
+    if (m_action == LevelEditorAction::SELECT_OBJECT ||
         !input.isKeyDown(SDL_SCANCODE_LCTRL) ||
         !input.isMouseButtonDown(SDL_BUTTON_LEFT))
     {
@@ -397,7 +398,7 @@ void LevelEditor::handleGridResizing(const Input& input)
     }
 }
 
-void LevelEditor::handleSelect(const Input& input)
+void LevelEditor::handleObjectSelect(const Input& input)
 {
     if (!input.isKeyDown(SDL_SCANCODE_LALT) ||
         !input.isMouseButtonDown(SDL_BUTTON_LEFT))
@@ -454,7 +455,28 @@ void LevelEditor::handleSelect(const Input& input)
     }
 
     m_selecting = true;
-    m_action = LevelEditorAction::SELECT;
+    m_action = LevelEditorAction::SELECT_OBJECT;
+}
+
+void LevelEditor::handleObjectDuplication(const Input& input)
+{
+    if (m_selectedObjects.empty() ||
+        m_selecting)
+    {
+        return;
+    }
+
+    if (!input.isKeyJustDown(SDL_SCANCODE_D))
+    {
+        return;
+    }
+
+    for (auto* object : m_selectedObjects)
+    {
+        m_objectMng.addObject(object->getId(), object->getCell());
+    }
+
+    m_action = LevelEditorAction::DUPLICATE_OBJECT;
 }
 
 void LevelEditor::changeObjectPreview(ObjectId id)
