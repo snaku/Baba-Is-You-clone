@@ -20,6 +20,13 @@ struct LevelDefinition
     std::vector<LevelObjectData> objects;
     uint32_t width = 0;
     uint32_t height = 0;
+
+    void validate()
+    {
+        isValid = !objects.empty() &&
+                  width > 0 &&
+                  height > 0;
+    }
 };
 
 class LevelFile

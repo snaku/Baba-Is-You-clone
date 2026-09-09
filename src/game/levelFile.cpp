@@ -60,9 +60,7 @@ LevelDefinition LevelFile::read(const std::filesystem::path& path)
         def.objects.push_back({id, cell});
     }
 
-    def.isValid = !def.objects.empty() &&
-                  def.width > 0 &&
-                  def.height > 0;
+    def.validate();
 
     std::println("Level loaded: {}", path.string());
 

@@ -668,7 +668,7 @@ LevelDefinition LevelEditor::createDef()
         }
     );
 
-    def.isValid = true;
+    def.validate();
 
     return def;
 }
